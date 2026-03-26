@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { LOGO_URL } from "@/data/menu";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -7,8 +8,9 @@ const Navbar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-secondary/90 backdrop-blur-md border-b border-secondary-foreground/10">
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <a href="#" className="font-display text-xl font-bold text-secondary-foreground">
-          Shayboub
+        <a href="#" className="flex items-center gap-3">
+          <img src={LOGO_URL} alt="Shayboub" className="h-10 w-10 rounded-lg object-contain" />
+          <span className="font-display text-xl font-bold text-secondary-foreground">Shayboub</span>
         </a>
 
         <div className="hidden md:flex items-center gap-8 font-body text-sm text-secondary-foreground/70">

@@ -1,22 +1,5 @@
 import { MapPin } from "lucide-react";
-
-const locations = [
-  {
-    city: "New Cairo",
-    address: "شيل اوت التسعين، اسفل El-Moshir Tantawy Axis, Al Hay Al Asher, Nasr City, Cairo Governorate 11835",
-    mapUrl: "https://maps.google.com/?q=El-Moshir+Tantawy+Axis+Nasr+City+Cairo",
-  },
-  {
-    city: "Kafr Abdou, Alexandria",
-    address: "30 Abd El Aziz Agamya St, Off Saint Jenny St, Alexandria Governorate 5433124",
-    mapUrl: "https://maps.google.com/?q=30+abd+el+aziz+agamya+st+kafr+abdou+alexandria",
-  },
-  {
-    city: "Gleem, Alexandria",
-    address: "5 Ahmed Yehia St, El Raml 1, Alexandria Governorate 21532",
-    mapUrl: "https://maps.google.com/?q=5+Ahmed+Yehia+St+El+Raml+Alexandria",
-  },
-];
+import { locations } from "@/data/menu";
 
 const Locations = () => {
   return (
