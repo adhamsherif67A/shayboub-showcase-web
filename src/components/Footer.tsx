@@ -1,13 +1,18 @@
+import { LOGO_URL } from "@/data/menu";
+
 const Footer = () => {
   return (
     <footer className="bg-secondary text-secondary-foreground/60 section-padding !py-12">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="text-center md:text-left">
-            <h3 className="font-display text-2xl font-bold text-secondary-foreground mb-1">
-              Shayboub <span className="text-primary">شايبوب</span>
-            </h3>
-            <p className="font-body text-sm">Specialty Coffee & More</p>
+          <div className="flex items-center gap-4">
+            <img src={LOGO_URL} alt="Shayboub" className="h-12 w-12 rounded-lg object-contain" />
+            <div>
+              <h3 className="font-display text-xl font-bold text-secondary-foreground">
+                Shayboub <span className="text-primary">شايبوب</span>
+              </h3>
+              <p className="font-body text-sm">Specialty Coffee & More</p>
+            </div>
           </div>
 
           <nav className="flex gap-8 font-body text-sm">

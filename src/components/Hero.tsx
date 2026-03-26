@@ -1,27 +1,31 @@
-import heroCoffee from "@/assets/hero-coffee.jpg";
+import { LOGO_URL, BANNER_URL } from "@/data/menu";
 
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <img
-          src={heroCoffee}
-          alt="Shayboub Coffee interior with latte art"
+          src={BANNER_URL}
+          alt="Shayboub Coffee illustrated banner"
           width={1920}
           height={1080}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-secondary/70" />
+        <div className="absolute inset-0 bg-secondary/60" />
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-        <p className="font-body text-sm uppercase tracking-[0.3em] text-primary mb-6 animate-fade-in-up">
-          Cairo · Alexandria
-        </p>
-        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-secondary-foreground mb-6 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
+        <img
+          src={LOGO_URL}
+          alt="Shayboub Logo"
+          width={200}
+          height={200}
+          className="w-40 h-40 md:w-52 md:h-52 mx-auto mb-8 rounded-2xl object-contain animate-fade-in-up"
+        />
+        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-secondary-foreground mb-4 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
           Shayboub
         </h1>
-        <p className="font-display text-xl md:text-2xl italic text-secondary-foreground/80 mb-10 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+        <p className="font-display text-xl md:text-2xl italic text-secondary-foreground/80 mb-6 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
           شايبوب
         </p>
         <p className="font-body text-secondary-foreground/70 text-lg mb-12 max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
