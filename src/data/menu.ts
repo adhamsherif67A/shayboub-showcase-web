@@ -1,5 +1,5 @@
 // Shayboub Winter Menu data
-export const LOGO_URL = "https://media.alimento.io/logos/45/17391982875862431.jpg";
+export const LOGO_URL = "/images/shayboub-logo.webp";
 export const BANNER_URL = "https://media.alimento.io/business_banner/45/17312570137548139.png";
 
 export type MenuItem = {
