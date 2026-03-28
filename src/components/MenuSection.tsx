@@ -1,6 +1,18 @@
 import { useState } from "react";
 import { menuData } from "@/data/menu";
 
+const tagStyles: Record<string, string> = {
+  new: "bg-green-600 text-white",
+  spicy: "bg-red-500 text-white",
+  top: "bg-primary text-primary-foreground",
+};
+
+const tagLabels: Record<string, string> = {
+  new: "NEW",
+  spicy: "🌶 SPICY",
+  top: "⭐ TOP",
+};
+
 const MenuSection = () => {
   const [activeCategory, setActiveCategory] = useState(0);
   const category = menuData[activeCategory];
@@ -9,7 +21,7 @@ const MenuSection = () => {
     <section id="menu" className="section-padding">
       <div className="max-w-6xl mx-auto">
         <p className="font-body text-sm uppercase tracking-[0.3em] text-primary mb-4 text-center">
-          Our Menu
+          Winter Menu
         </p>
         <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4 text-center">
           Crafted to Perfection
@@ -47,13 +59,25 @@ const MenuSection = () => {
               key={item.name}
               className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 transition-all hover:shadow-lg"
             >
-              <div className="aspect-square overflow-hidden bg-muted">
+              <div className="aspect-square overflow-hidden bg-muted relative">
                 <img
                   src={item.image}
                   alt={item.name}
                   loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
+                {item.tags && item.tags.length > 0 && (
+                  <div className="absolute top-2 left-2 flex gap-1">
+                    {item.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagStyles[tag] || "bg-muted text-foreground"}`}
+                      >
+                        {tagLabels[tag] || tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
               <div className="p-4">
                 <h4 className="font-body font-semibold text-foreground text-sm mb-1">
