@@ -64,6 +64,8 @@ const MenuSection = () => {
                   src={item.image}
                   alt={item.name}
                   loading="lazy"
+                  width={400}
+                  height={400}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 {item.tags && item.tags.length > 0 && (

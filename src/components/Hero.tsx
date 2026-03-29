@@ -9,6 +9,7 @@ const Hero = () => {
           alt="Shayboub Coffee illustrated banner"
           width={1920}
           height={1080}
+          fetchPriority="high"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-secondary/60" />
