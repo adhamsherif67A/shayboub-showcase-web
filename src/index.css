@@ -4,6 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
   html {
     scroll-behavior: smooth;
   }
@@ -51,9 +52,7 @@
     --font-display: 'Playfair Display', serif;
     --font-body: 'DM Sans', sans-serif;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
