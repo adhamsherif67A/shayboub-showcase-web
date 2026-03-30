@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import MenuSection from "@/components/MenuSection";
 import About from "@/components/About";
 import Locations from "@/components/Locations";
+import ReservationForm from "@/components/ReservationForm";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -11,6 +12,7 @@ const Index = () => {
       <Navbar />
       <Hero />
       <MenuSection />
+      <ReservationForm />
       <About />
       <Locations />
       <Footer />

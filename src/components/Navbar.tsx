@@ -15,6 +15,7 @@ const Navbar = () => {
 
         <div className="hidden md:flex items-center gap-8 font-body text-sm text-secondary-foreground/70">
           <a href="#menu" className="hover:text-primary transition-colors">Menu</a>
+          <a href="#reservation" className="hover:text-primary transition-colors">Reservations</a>
           <a href="#locations" className="hover:text-primary transition-colors">Locations</a>
           <a href="#about" className="hover:text-primary transition-colors">About</a>
           <a
