@@ -15,6 +15,7 @@ const Navbar = () => {
 
         <div className="hidden md:flex items-center gap-8 font-body text-sm text-secondary-foreground/70">
           <a href="#menu" className="hover:text-primary transition-colors">Menu</a>
+          <a href="#reservation" className="hover:text-primary transition-colors">Reservations</a>
           <a href="#locations" className="hover:text-primary transition-colors">Locations</a>
           <a href="#about" className="hover:text-primary transition-colors">About</a>
           <a
@@ -35,6 +36,7 @@ const Navbar = () => {
       {open && (
         <div className="md:hidden bg-secondary border-t border-secondary-foreground/10 px-6 py-6 space-y-4 font-body text-sm">
           <a href="#menu" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Menu</a>
+          <a href="#reservation" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Reservations</a>
           <a href="#locations" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Locations</a>
           <a href="#about" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">About</a>
           <a
