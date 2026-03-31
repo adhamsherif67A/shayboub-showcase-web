@@ -367,20 +367,53 @@ const ReservationForm = () => {
             </div>
           )}
 
-          {/* ========== MENU ITEM PICKER ========== */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="font-body text-sm font-semibold text-foreground">
-                Pre-order Items <span className="text-muted-foreground font-normal">(Optional)</span>
-              </label>
+          {/* ========== ENHANCED PREORDER SECTION ========== */}
+          <div className="bg-gradient-to-r from-primary/5 to-orange-500/5 rounded-xl p-4 border-2 border-primary/20">
+            {/* Header with call-to-action */}
+            <div className="text-center mb-4">
+              <h3 className="font-display text-lg font-bold text-foreground mb-1 flex items-center justify-center gap-2">
+                🍽️ Pre-order Your Favorites! ☕
+              </h3>
+              <p className="text-muted-foreground text-sm mb-3">
+                Skip the wait - have your food & drinks ready when you arrive
+              </p>
+              
+              {/* Benefits */}
+              <div className="flex flex-wrap items-center justify-center gap-4 mb-4">
+                <div className="flex items-center gap-1 text-xs text-green-600">
+                  <span>✓</span> <span>Fresh & Ready</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-green-600">
+                  <span>✓</span> <span>No Waiting</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-green-600">
+                  <span>✓</span> <span>Save Time</span>
+                </div>
+              </div>
+
               <button
                 type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="text-primary text-sm font-semibold hover:underline"
+                className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white transition-all ${
+                  menuOpen 
+                    ? "bg-red-500 hover:bg-red-600" 
+                    : "bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl"
+                } transform hover:scale-105`}
               >
-                {menuOpen ? "Close Menu" : "Browse Menu"}
+                <span className="text-lg">{menuOpen ? "✖️" : "🛒"}</span>
+                <span>{menuOpen ? "Close Menu" : "Browse Menu & Pre-order"}</span>
               </button>
             </div>
+
+            {/* Empty cart promotion */}
+            {cart.length === 0 && !menuOpen && (
+              <div className="text-center py-4 bg-white/50 rounded-lg border border-dashed border-primary/30 mb-4">
+                <div className="text-2xl mb-2">🍰☕✨</div>
+                <p className="text-muted-foreground text-sm font-medium">
+                  💡 <strong>Pro tip:</strong> Pre-ordering saves you time and ensures your favorites are ready!
+                </p>
+              </div>
+            )}
 
             {/* Selected items summary */}
             {cart.length > 0 && (
