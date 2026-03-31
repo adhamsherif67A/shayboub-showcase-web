@@ -6,10 +6,14 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-secondary/90 backdrop-blur-md border-b border-secondary-foreground/10">
+    <nav 
+      className="fixed top-0 left-0 right-0 z-50 bg-secondary/90 backdrop-blur-md border-b border-secondary-foreground/10"
+      role="navigation"
+      aria-label="Main navigation"
+    >
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <a href="#" className="flex items-center gap-3">
-          <img src={LOGO_URL} alt="Shayboub" className="h-10 w-10 rounded-lg object-contain" />
+        <a href="#" className="flex items-center gap-3" aria-label="Shayboub - Home">
+          <img src={LOGO_URL} alt="" className="h-10 w-10 rounded-lg object-contain" aria-hidden="true" />
           <span className="font-display text-xl font-bold text-secondary-foreground">Shayboub</span>
         </a>
 
@@ -28,13 +32,22 @@ const Navbar = () => {
           </a>
         </div>
 
-        <button onClick={() => setOpen(!open)} className="md:hidden text-secondary-foreground">
-          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        <button 
+          onClick={() => setOpen(!open)} 
+          className="md:hidden text-secondary-foreground"
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+          aria-label={open ? "Close menu" : "Open menu"}
+        >
+          {open ? <X className="w-6 h-6" aria-hidden="true" /> : <Menu className="w-6 h-6" aria-hidden="true" />}
         </button>
       </div>
 
       {open && (
-        <div className="md:hidden bg-secondary border-t border-secondary-foreground/10 px-6 py-6 space-y-4 font-body text-sm">
+        <div 
+          id="mobile-menu"
+          className="md:hidden bg-secondary border-t border-secondary-foreground/10 px-6 py-6 space-y-4 font-body text-sm"
+        >
           <a href="#menu" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Menu</a>
           <a href="#reservation" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Reservations</a>
           <a href="#locations" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Locations</a>

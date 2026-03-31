@@ -3,28 +3,94 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Preconnect to critical origins for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://media.alimento.io" />
+    <link rel="preconnect" href="https://media.alimento.io" crossorigin />
+    <link rel="dns-prefetch" href="https://media.alimento.io" />
+    
+    <!-- Preload critical hero image for LCP optimization -->
+    <link rel="preload" as="image" href="https://media.alimento.io/business_banner/45/17312570137548139.png" fetchpriority="high" />
+    
+    <!-- Async font loading with swap for better CLS -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" media="print" onload="this.media='all'" />
-    <!-- TODO: Set the document title to the name of your application -->
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" />
+    </noscript>
+    
+    <!-- Primary Meta Tags -->
     <title>Shayboub — Specialty Coffee &amp; More | Cairo &amp; Alexandria</title>
-    <meta name="description" content="Shayboub (شايبوب) — Specialty coffee, artisan sandwiches &amp; good vibes. 3 locations across Cairo &amp; Alexandria. Order on Talabat.">
+    <meta name="title" content="Shayboub — Specialty Coffee & Artisan Sandwiches | Cairo & Alexandria" />
+    <meta name="description" content="Shayboub (شايبوب) — Specialty coffee, artisan sandwiches &amp; good vibes. 3 locations across Cairo &amp; Alexandria. Order on Talabat." />
     <meta name="author" content="Shayboub" />
-
+    <meta name="keywords" content="Shayboub, شايبوب, coffee, specialty coffee, Cairo, Alexandria, sandwiches, cafe, matcha, latte, Egyptian coffee shop" />
+    <meta name="robots" content="index, follow" />
+    <meta name="language" content="English" />
+    <link rel="canonical" href="https://shayboub.com" />
     
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#2B3441" />
+    <meta name="msapplication-TileColor" content="#2B3441" />
     
+    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5cb23916-3a36-4f1f-bc5a-e38e4e8c4da1?Expires=1774518479&amp;GoogleAccessId=go-api-on-aws%40gpt-engineer-390607.iam.gserviceaccount.com&amp;Signature=ueWY%2B84I3wrYTaqYje9qkflrRjiidY5dc%2FsYiqUeRb0O8%2BBEcKiVLHiD1lhLx7OzgxZdt2MP9UF4Q6Byenz%2BsXbXsyexfl6ih6xYJ94EW8XmDN0BiVhf8mg%2Fnn8anqNyRDoh%2FCrWYs%2FsQbdZrjRrUpBIliTHfkE4fQcu6bM7GVT%2FVDwC7PZOSKkJAe6UO9ywAygKUFcffkMlou7vn1RNgexHz4v5aAlu06gh5Smy8dJxeGVyrVPPnghTFg8USMBctPp8eoCZdkBFmQdceW6KL3yrpaZvw4%2BmOM1WBD9Or5NukKOF4ZqhKVOm%2BrzHpKX3CqM5NRBn%2FrDDIC8DpZA9Yw%3D%3D">
+    <meta property="og:url" content="https://shayboub.com" />
+    <meta property="og:title" content="Shayboub — Specialty Coffee &amp; More | Cairo &amp; Alexandria" />
+    <meta property="og:description" content="Shayboub (شايبوب) — Specialty coffee, artisan sandwiches &amp; good vibes. 3 locations across Cairo &amp; Alexandria. Order on Talabat." />
+    <meta property="og:image" content="https://media.alimento.io/business_banner/45/17312570137548139.png" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content="Shayboub" />
 
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@Lovable" />
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/5cb23916-3a36-4f1f-bc5a-e38e4e8c4da1?Expires=1774518479&amp;GoogleAccessId=go-api-on-aws%40gpt-engineer-390607.iam.gserviceaccount.com&amp;Signature=ueWY%2B84I3wrYTaqYje9qkflrRjiidY5dc%2FsYiqUeRb0O8%2BBEcKiVLHiD1lhLx7OzgxZdt2MP9UF4Q6Byenz%2BsXbXsyexfl6ih6xYJ94EW8XmDN0BiVhf8mg%2Fnn8anqNyRDoh%2FCrWYs%2FsQbdZrjRrUpBIliTHfkE4fQcu6bM7GVT%2FVDwC7PZOSKkJAe6UO9ywAygKUFcffkMlou7vn1RNgexHz4v5aAlu06gh5Smy8dJxeGVyrVPPnghTFg8USMBctPp8eoCZdkBFmQdceW6KL3yrpaZvw4%2BmOM1WBD9Or5NukKOF4ZqhKVOm%2BrzHpKX3CqM5NRBn%2FrDDIC8DpZA9Yw%3D%3D">
-    <meta property="og:title" content="Shayboub — Specialty Coffee &amp; More | Cairo &amp; Alexandria">
-  <meta name="twitter:title" content="Shayboub — Specialty Coffee &amp; More | Cairo &amp; Alexandria">
-  <meta property="og:description" content="Shayboub (شايبوب) — Specialty coffee, artisan sandwiches &amp; good vibes. 3 locations across Cairo &amp; Alexandria. Order on Talabat.">
-  <meta name="twitter:description" content="Shayboub (شايبوب) — Specialty coffee, artisan sandwiches &amp; good vibes. 3 locations across Cairo &amp; Alexandria. Order on Talabat.">
-</head>
+    <meta name="twitter:url" content="https://shayboub.com" />
+    <meta name="twitter:title" content="Shayboub — Specialty Coffee &amp; More | Cairo &amp; Alexandria" />
+    <meta name="twitter:description" content="Shayboub (شايبوب) — Specialty coffee, artisan sandwiches &amp; good vibes. 3 locations across Cairo &amp; Alexandria. Order on Talabat." />
+    <meta name="twitter:image" content="https://media.alimento.io/business_banner/45/17312570137548139.png" />
+
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Shayboub",
+      "alternateName": "شايبوب",
+      "description": "Specialty coffee, artisan sandwiches & good vibes — crafted with love since day one.",
+      "image": "https://media.alimento.io/business_banner/45/17312570137548139.png",
+      "servesCuisine": ["Coffee", "Sandwiches", "Cafe"],
+      "priceRange": "$$",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.6",
+        "reviewCount": "1000"
+      },
+      "address": [
+        {
+          "@type": "PostalAddress",
+          "addressLocality": "New Cairo",
+          "addressRegion": "Cairo Governorate",
+          "addressCountry": "EG"
+        },
+        {
+          "@type": "PostalAddress",
+          "addressLocality": "Kafr Abdou",
+          "addressRegion": "Alexandria Governorate",
+          "addressCountry": "EG"
+        },
+        {
+          "@type": "PostalAddress",
+          "addressLocality": "Gleem",
+          "addressRegion": "Alexandria Governorate",
+          "addressCountry": "EG"
+        }
+      ],
+      "sameAs": [
+        "https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
+      ]
+    }
+    </script>
+  </head>
 
   <body>
     <div id="root"></div>

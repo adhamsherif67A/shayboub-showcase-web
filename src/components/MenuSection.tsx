@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { menuData } from "@/data/menu";
 
 const tagStyles: Record<string, string> = {
@@ -12,6 +12,52 @@ const tagLabels: Record<string, string> = {
   spicy: "🌶 SPICY",
   top: "⭐ TOP",
 };
+
+// Memoized menu item component for better rendering performance
+const MenuItemCard = memo(({ item }: { item: typeof menuData[0]['items'][0] }) => (
+  <article
+    className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 transition-all hover:shadow-lg"
+  >
+    <div className="aspect-square overflow-hidden bg-muted relative">
+      <img
+        src={item.image}
+        alt={item.name}
+        loading="lazy"
+        decoding="async"
+        width={400}
+        height={400}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      />
+      {item.tags && item.tags.length > 0 && (
+        <div className="absolute top-2 left-2 flex gap-1" aria-label="Item tags">
+          {item.tags.map((tag) => (
+            <span
+              key={tag}
+              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagStyles[tag] || "bg-muted text-foreground"}`}
+            >
+              {tagLabels[tag] || tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+    <div className="p-4">
+      <h4 className="font-body font-semibold text-foreground text-sm mb-1">
+        {item.name}
+      </h4>
+      {item.description && (
+        <p className="font-body text-xs text-muted-foreground mb-2 line-clamp-2">
+          {item.description}
+        </p>
+      )}
+      <p className="font-body text-primary font-bold text-sm" aria-label={`Price: ${item.price}`}>
+        {item.price}
+      </p>
+    </div>
+  </article>
+));
+
+MenuItemCard.displayName = 'MenuItemCard';
 
 const MenuSection = () => {
   const [activeCategory, setActiveCategory] = useState(0);
@@ -31,11 +77,18 @@ const MenuSection = () => {
         </p>
 
         {/* Category tabs */}
-        <div className="flex overflow-x-auto gap-2 pb-4 mb-10 scrollbar-hide">
+        <nav 
+          className="flex overflow-x-auto gap-2 pb-4 mb-10 scrollbar-hide"
+          role="tablist"
+          aria-label="Menu categories"
+        >
           {menuData.map((cat, i) => (
             <button
               key={cat.name}
               onClick={() => setActiveCategory(i)}
+              role="tab"
+              aria-selected={i === activeCategory}
+              aria-controls={`menu-panel-${i}`}
               className={`whitespace-nowrap font-body text-sm font-medium px-5 py-2.5 rounded-full border transition-all shrink-0 ${
                 i === activeCategory
                   ? "bg-primary text-primary-foreground border-primary"
@@ -45,7 +98,7 @@ const MenuSection = () => {
               {cat.name}
             </button>
           ))}
-        </div>
+        </nav>
 
         {/* Category title */}
         <h3 className="font-display text-2xl font-semibold text-primary mb-8">
@@ -53,48 +106,14 @@ const MenuSection = () => {
         </h3>
 
         {/* Items grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div 
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+          role="tabpanel"
+          id={`menu-panel-${activeCategory}`}
+          aria-labelledby={`tab-${activeCategory}`}
+        >
           {category.items.map((item) => (
-            <div
-              key={item.name}
-              className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 transition-all hover:shadow-lg"
-            >
-              <div className="aspect-square overflow-hidden bg-muted relative">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  loading="lazy"
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                {item.tags && item.tags.length > 0 && (
-                  <div className="absolute top-2 left-2 flex gap-1">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagStyles[tag] || "bg-muted text-foreground"}`}
-                      >
-                        {tagLabels[tag] || tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <div className="p-4">
-                <h4 className="font-body font-semibold text-foreground text-sm mb-1">
-                  {item.name}
-                </h4>
-                {item.description && (
-                  <p className="font-body text-xs text-muted-foreground mb-2 line-clamp-2">
-                    {item.description}
-                  </p>
-                )}
-                <p className="font-body text-primary font-bold text-sm">
-                  {item.price}
-                </p>
-              </div>
-            </div>
+            <MenuItemCard key={item.name} item={item} />
           ))}
         </div>
 

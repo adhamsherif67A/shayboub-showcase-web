@@ -1,11 +1,11 @@
 const About = () => {
   return (
-    <section id="about" className="section-padding">
+    <section id="about" className="section-padding" aria-labelledby="about-heading">
       <div className="max-w-4xl mx-auto text-center">
         <p className="font-body text-sm uppercase tracking-[0.3em] text-primary mb-4">
           Our Story
         </p>
-        <h2 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-8">
+        <h2 id="about-heading" className="font-display text-4xl md:text-5xl font-bold text-foreground mb-8">
           More Than Just Coffee
         </h2>
         <p className="font-body text-lg text-muted-foreground leading-relaxed mb-6">
