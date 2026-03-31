@@ -483,18 +483,6 @@ const ReservationForm = () => {
               </button>
             </div>
 
-            {/* Empty cart promotion */}
-            {cart.length === 0 && !menuOpen && (
-              <div className="text-center py-4 bg-white/50 rounded-lg border border-dashed border-primary/30 mb-4">
-                <div className="w-12 h-12 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
-                  <div className="w-6 h-6 bg-primary/20 rounded-full"></div>
-                </div>
-                <p className="text-muted-foreground text-sm font-medium">
-                  <strong>Recommendation:</strong> Pre-ordering ensures your items are prepared and ready upon your arrival
-                </p>
-              </div>
-            )}
-
             {/* Selected items summary */}
             {cart.length > 0 && (
               <div className="mb-3 space-y-2">
