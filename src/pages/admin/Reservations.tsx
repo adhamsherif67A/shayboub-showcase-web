@@ -38,6 +38,7 @@ const Reservations = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [locationFilter, setLocationFilter] = useState<string>("all");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -117,15 +118,16 @@ const Reservations = () => {
       r.phone.includes(searchQuery) ||
       r.email?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || r.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesLocation = locationFilter === "all" || r.location === locationFilter;
+    return matchesSearch && matchesStatus && matchesLocation;
   });
 
-  // Stats
+  // Stats (based on current filters)
   const stats = {
-    total: reservations.length,
-    pending: reservations.filter(r => r.status === "pending").length,
-    confirmed: reservations.filter(r => r.status === "confirmed").length,
-    cancelled: reservations.filter(r => r.status === "cancelled").length
+    total: filteredReservations.length,
+    pending: filteredReservations.filter(r => r.status === "pending").length,
+    confirmed: filteredReservations.filter(r => r.status === "confirmed").length,
+    cancelled: filteredReservations.filter(r => r.status === "cancelled").length
   };
 
   if (loading) {
@@ -185,6 +187,16 @@ const Reservations = () => {
             className="w-full pl-11 pr-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
           />
         </div>
+        <select
+          value={locationFilter}
+          onChange={(e) => setLocationFilter(e.target.value)}
+          className="px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+        >
+          <option value="all">All Branches</option>
+          <option value="Cairo - New Cairo">Cairo - New Cairo</option>
+          <option value="Alexandria - Kafr Abdou">Alexandria - Kafr Abdou</option>
+          <option value="Alexandria - Gleem">Alexandria - Gleem</option>
+        </select>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
