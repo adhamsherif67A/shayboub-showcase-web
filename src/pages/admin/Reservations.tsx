@@ -19,7 +19,8 @@ import {
   Printer,
   FileSpreadsheet,
   Trash2,
-  DollarSign
+  DollarSign,
+  CalendarDays
 } from "lucide-react";
 import * as XLSX from 'xlsx';
 
@@ -47,6 +48,7 @@ const Reservations = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [locationFilter, setLocationFilter] = useState<string>("all");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [printDate, setPrintDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
     fetchReservations();
@@ -162,15 +164,14 @@ const Reservations = () => {
     XLSX.writeFile(wb, fileName);
   };
 
-  // Print today's reservations
-  const printTodayReservations = () => {
-    const today = new Date().toISOString().split('T')[0];
-    const todayReservations = filteredReservations.filter(r => r.date === today);
+  // Print reservations for selected date
+  const printReservations = () => {
+    const selectedDateReservations = filteredReservations.filter(r => r.date === printDate);
     
     const printWindow = window.open('', '', 'height=800,width=1000');
     if (!printWindow) return;
     
-    printWindow.document.write('<html><head><title>Reservations - ' + today + '</title>');
+    printWindow.document.write('<html><head><title>Reservations - ' + printDate + '</title>');
     printWindow.document.write('<style>');
     printWindow.document.write('body { font-family: Arial, sans-serif; padding: 20px; }');
     printWindow.document.write('h1 { color: #000; margin-bottom: 20px; }');
@@ -183,12 +184,22 @@ const Reservations = () => {
     printWindow.document.write('.cancelled { background: #fee2e2; color: #991b1b; }');
     printWindow.document.write('@media print { button { display: none; } }');
     printWindow.document.write('</style></head><body>');
-    printWindow.document.write('<h1>Shayboub Café - Reservations for ' + today + '</h1>');
-    printWindow.document.write('<p>Total: ' + todayReservations.length + ' reservations</p>');
-    printWindow.document.write('<table>');
-    printWindow.document.write('<tr><th>Time</th><th>Name</th><th>Phone</th><th>Guests</th><th>Location</th><th>Status</th></tr>');
+    printWindow.document.write('<h1>Shayboub Café - Reservations for ' + printDate + '</h1>');
+    printWindow.document.write('<p>Total: ' + selectedDateReservations.length + ' reservations</p>');
     
-    todayReservations.forEach(r => {
+    // Add revenue summary if there are confirmed pre-orders
+    const confirmedWithRevenue = selectedDateReservations.filter(r => 
+      r.status === "confirmed" && r.totalAmount && r.totalAmount > 0
+    );
+    if (confirmedWithRevenue.length > 0) {
+      const totalRevenue = confirmedWithRevenue.reduce((sum, r) => sum + (r.totalAmount || 0), 0);
+      printWindow.document.write('<p><strong>Pre-order Revenue: ' + totalRevenue.toFixed(2) + ' EGP (' + confirmedWithRevenue.length + ' orders)</strong></p>');
+    }
+    
+    printWindow.document.write('<table>');
+    printWindow.document.write('<tr><th>Time</th><th>Name</th><th>Phone</th><th>Guests</th><th>Location</th><th>Status</th><th>Revenue</th></tr>');
+    
+    selectedDateReservations.forEach(r => {
       printWindow.document.write('<tr>');
       printWindow.document.write('<td>' + r.time + '</td>');
       printWindow.document.write('<td>' + r.name + '</td>');
@@ -196,6 +207,7 @@ const Reservations = () => {
       printWindow.document.write('<td>' + r.guests + '</td>');
       printWindow.document.write('<td>' + (r.location || '') + '</td>');
       printWindow.document.write('<td><span class="status ' + r.status + '">' + r.status + '</span></td>');
+      printWindow.document.write('<td>' + ((r.totalAmount && r.totalAmount > 0) ? r.totalAmount.toFixed(2) + ' EGP' : '-') + '</td>');
       printWindow.document.write('</tr>');
     });
     
@@ -364,14 +376,26 @@ const Reservations = () => {
         </div>
         
         {/* Export Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          {/* Date picker for printing */}
+          <div className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg">
+            <CalendarDays className="w-4 h-4 text-muted-foreground" />
+            <input
+              type="date"
+              value={printDate}
+              onChange={(e) => setPrintDate(e.target.value)}
+              className="text-sm bg-transparent border-none outline-none"
+            />
+          </div>
+          
           <button
-            onClick={printTodayReservations}
+            onClick={printReservations}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm"
           >
             <Printer className="w-4 h-4" />
-            Print Today
+            Print Date
           </button>
+          
           <button
             onClick={exportToExcel}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity text-sm"
