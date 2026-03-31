@@ -1,8 +1,10 @@
-import { useState, memo, useMemo } from "react";
+import { useState, memo, useMemo, useEffect } from "react";
 import { Search, X, Flame, Star, Sparkles, Coffee, IceCream, Sandwich } from "lucide-react";
 import { menuData } from "@/data/menu";
 import { useAnimateOnScroll } from "@/hooks/use-animate-on-scroll";
 import { Skeleton } from "@/components/ui/skeleton";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const tagStyles: Record<string, string> = {
   new: "bg-green-600 text-white",
@@ -117,6 +119,54 @@ const MenuSection = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
   const { ref: sectionRef, isVisible } = useAnimateOnScroll<HTMLElement>();
+  const [liveMenuData, setLiveMenuData] = useState(menuData);
+  const [loadingFirestore, setLoadingFirestore] = useState(true);
+
+  // Load menu from Firestore
+  useEffect(() => {
+    const loadMenuFromFirestore = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "menu"));
+        
+        if (snapshot.size > 0) {
+          // Group items by category
+          const categoriesMap = new Map<string, typeof menuData[0]['items']>();
+          
+          snapshot.docs.forEach((doc) => {
+            const data = doc.data();
+            const category = data.category;
+            
+            if (!categoriesMap.has(category)) {
+              categoriesMap.set(category, []);
+            }
+            
+            categoriesMap.get(category)!.push({
+              name: data.name,
+              price: `EGP ${data.price}`,
+              image: data.image,
+              description: data.description || undefined,
+              tags: data.tags || []
+            });
+          });
+          
+          // Convert to menuData format
+          const firestoreMenu = Array.from(categoriesMap.entries()).map(([name, items]) => ({
+            name,
+            items
+          }));
+          
+          setLiveMenuData(firestoreMenu);
+        }
+      } catch (error) {
+        console.error("Error loading menu from Firestore:", error);
+        // Keep using hardcoded menuData as fallback
+      } finally {
+        setLoadingFirestore(false);
+      }
+    };
+    
+    loadMenuFromFirestore();
+  }, []);
 
   // Check if we're in search/filter mode
   const isSearchMode = searchQuery.trim() !== "" || activeFilter !== "all";
@@ -126,9 +176,9 @@ const MenuSection = () => {
     if (!isSearchMode) return null;
 
     const query = searchQuery.toLowerCase().trim();
-    const results: { item: typeof menuData[0]['items'][0]; categoryName: string }[] = [];
+    const results: { item: typeof liveMenuData[0]['items'][0]; categoryName: string }[] = [];
 
-    menuData.forEach((category) => {
+    liveMenuData.forEach((category) => {
       // Category-based filtering
       if (activeFilter === "hot" && !hotDrinkCategories.includes(category.name)) return;
       if (activeFilter === "cold" && !coldDrinkCategories.includes(category.name)) return;
@@ -137,7 +187,7 @@ const MenuSection = () => {
       category.items.forEach((item) => {
         // Tag-based filtering
         if (activeFilter === "new" && !item.tags?.includes("new")) return;
-        if (activeFilter === "top" && !item.tags?.includes("top")) return;
+        if (activeFilter === "top" && !item.tags?.includes("top") && !item.tags?.includes("topRated")) return;
         if (activeFilter === "spicy" && !item.tags?.includes("spicy")) return;
 
         // Search query filtering
@@ -148,9 +198,9 @@ const MenuSection = () => {
     });
 
     return results;
-  }, [searchQuery, activeFilter, isSearchMode]);
+  }, [searchQuery, activeFilter, isSearchMode, liveMenuData]);
 
-  const category = menuData[activeCategory];
+  const category = liveMenuData[activeCategory];
 
   const clearSearch = () => {
     setSearchQuery("");
@@ -236,7 +286,7 @@ const MenuSection = () => {
             role="tablist"
             aria-label="Menu categories"
           >
-            {menuData.map((cat, i) => (
+            {liveMenuData.map((cat, i) => (
               <button
                 key={cat.name}
                 onClick={() => setActiveCategory(i)}

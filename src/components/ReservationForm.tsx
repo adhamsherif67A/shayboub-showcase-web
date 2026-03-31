@@ -2,6 +2,8 @@ import { useState, useMemo } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { menuData, type MenuItem } from "@/data/menu";
 import { X, Plus, Minus, Search } from "lucide-react";
+import { collection, addDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 /** Cart item with quantity */
 interface CartItem {
@@ -9,8 +11,6 @@ interface CartItem {
   item: MenuItem;
   quantity: number;
 }
-
-const FORMSPREE_URL = "https://formspree.io/f/xzdkrawp";
 
 const ReservationForm = () => {
   const { toast } = useToast();
@@ -116,49 +116,45 @@ const ReservationForm = () => {
     );
 
     try {
-      const response = await fetch(FORMSPREE_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          serviceType: formData.serviceType === "dinein" ? "Dine In" : "Pickup Order",
-          location: locationLabels[formData.location] ?? formData.location,
-          date: formData.date,
-          time: formData.time,
-          ...(formData.serviceType === "dinein" && { partySize: formData.partySize }),
-          name: formData.name,
-          phone: formData.phone,
-          ...(formData.email && { email: formData.email }),
-          ...(formData.specialRequests && { specialRequests: formData.specialRequests }),
-          ...(orderItems.length > 0 && { orderItems: orderItems.join("\n") }),
-        }),
+      // Save to Firestore
+      await addDoc(collection(db, "reservations"), {
+        serviceType: formData.serviceType === "dinein" ? "Dine In" : "Pickup Order",
+        location: locationLabels[formData.location] ?? formData.location,
+        date: formData.date,
+        time: formData.time,
+        guests: formData.serviceType === "dinein" ? formData.partySize : 1,
+        name: formData.name,
+        phone: formData.phone,
+        email: formData.email || "",
+        message: formData.specialRequests || "",
+        orderItems: orderItems.length > 0 ? orderItems.join(", ") : "",
+        status: "pending",
+        createdAt: new Date()
       });
 
-      if (response.ok) {
-        setSubmitted(true);
-        toast({
-          title: "Success! 🎉",
-          description: "Your reservation has been submitted. We'll confirm via phone shortly.",
+      setSubmitted(true);
+      toast({
+        title: "Success! 🎉",
+        description: "Your reservation has been submitted. We'll confirm via phone shortly.",
+      });
+      setTimeout(() => {
+        setFormData({
+          serviceType: "dinein",
+          location: "cairo",
+          date: "",
+          time: "",
+          partySize: 2,
+          name: "",
+          phone: "",
+          email: "",
+          specialRequests: "",
         });
-        setTimeout(() => {
-          setFormData({
-            serviceType: "dinein",
-            location: "cairo",
-            date: "",
-            time: "",
-            partySize: 2,
-            name: "",
-            phone: "",
-            email: "",
-            specialRequests: "",
-          });
-          setCart([]);
-          setSubmitted(false);
-        }, 4000);
-      } else {
-        toast({ title: "Error", description: "Failed to submit. Please try again.", variant: "destructive" });
-      }
-    } catch {
-      toast({ title: "Error", description: "Network error. Please try again.", variant: "destructive" });
+        setCart([]);
+        setSubmitted(false);
+      }, 4000);
+    } catch (error) {
+      console.error("Error submitting reservation:", error);
+      toast({ title: "Error", description: "Failed to submit. Please try again.", variant: "destructive" });
     } finally {
       setLoading(false);
     }
