@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Coffee, Mail, Lock, AlertCircle } from "lucide-react";
+import { Mail, Lock, AlertCircle } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -50,8 +50,12 @@ const Login = () => {
         <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
           {/* Logo */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Coffee className="w-8 h-8 text-primary" />
+            <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-md">
+              <img 
+                src="/images/shayboub-logo.png" 
+                alt="Shayboub Logo" 
+                className="w-16 h-16 object-contain"
+              />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
               Shayboub Admin

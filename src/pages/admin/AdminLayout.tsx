@@ -10,7 +10,6 @@ import {
   Menu, 
   X,
   ChevronRight,
-  Coffee,
   TrendingUp
 } from "lucide-react";
 
@@ -54,8 +53,12 @@ const AdminLayout = () => {
           {/* Logo */}
           <div className="p-6 border-b border-secondary-foreground/10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
-                <Coffee className="w-5 h-5 text-primary" />
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-2">
+                <img 
+                  src="/images/shayboub-logo.png" 
+                  alt="Shayboub Logo" 
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
                 <h1 className="font-display font-bold text-secondary-foreground">Shayboub</h1>
