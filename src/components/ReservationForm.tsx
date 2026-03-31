@@ -68,7 +68,27 @@ const ReservationForm = () => {
   // Calculate cart total in EGP
   const calculateCartTotal = () => {
     return cart.reduce((total, cartItem) => {
-      const price = parseFloat(cartItem.item.price.replace(/[^0-9.]/g, '')) || 0;
+      let price = 0;
+      
+      // Handle different price formats
+      if (typeof cartItem.item.price === 'number') {
+        price = cartItem.item.price;
+      } else if (typeof cartItem.item.price === 'string') {
+        // For prices like "EGP 90 / 110", "EGP 75", etc.
+        const priceStr = cartItem.item.price;
+        
+        if (priceStr.includes('/')) {
+          // For range prices like "EGP 90 / 110", take the first price
+          const firstPrice = priceStr.split('/')[0].trim();
+          const match = firstPrice.match(/(\d+(?:\.\d+)?)/);
+          price = match ? parseFloat(match[1]) : 0;
+        } else {
+          // For single prices like "EGP 75"
+          const match = priceStr.match(/(\d+(?:\.\d+)?)/);
+          price = match ? parseFloat(match[1]) : 0;
+        }
+      }
+      
       return total + (price * cartItem.quantity);
     }, 0);
   };
