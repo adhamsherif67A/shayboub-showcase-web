@@ -269,6 +269,22 @@ const Reservations = () => {
     const totalRevenue = todaysReservations.reduce((sum, r) => sum + (r.totalAmount || 0), 0);
     const totalOrders = todaysReservations.length;
     
+    // Debug info (remove in production)
+    console.log('Revenue Debug Info:', {
+      today,
+      totalReservations: reservations.length,
+      todaysConfirmed: reservations.filter(r => r.date === today && r.status === "confirmed").length,
+      todaysWithAmount: todaysReservations.length,
+      totalRevenue,
+      reservationsBreakdown: reservations.map(r => ({
+        name: r.name,
+        date: r.date,
+        status: r.status,
+        totalAmount: r.totalAmount,
+        hasPreOrder: !!r.orderItems
+      }))
+    });
+    
     return { totalRevenue, totalOrders };
   };
 
@@ -307,13 +323,42 @@ const Reservations = () => {
                 <p className="text-xs text-green-600 font-medium">Today's Revenue</p>
               </div>
               <p className="text-lg font-bold text-green-700">{dailyStats.totalRevenue.toFixed(2)} EGP</p>
+              <p className="text-xs text-green-600">({dailyStats.totalOrders} pre-orders)</p>
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
               <div className="flex items-center gap-2">
                 <ShoppingBag className="w-4 h-4 text-blue-600" />
-                <p className="text-xs text-blue-600 font-medium">Pre-orders</p>
+                <p className="text-xs text-blue-600 font-medium">Tomorrow's Bookings</p>
               </div>
-              <p className="text-lg font-bold text-blue-700">{dailyStats.totalOrders}</p>
+              <p className="text-lg font-bold text-blue-700">
+                {(() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowDate = tomorrow.toISOString().split('T')[0];
+                  const tomorrowReservations = reservations.filter(r => 
+                    r.date === tomorrowDate && 
+                    r.status === "confirmed" && 
+                    r.totalAmount && 
+                    r.totalAmount > 0
+                  );
+                  const tomorrowRevenue = tomorrowReservations.reduce((sum, r) => sum + (r.totalAmount || 0), 0);
+                  return `${tomorrowRevenue.toFixed(2)} EGP`;
+                })()}
+              </p>
+              <p className="text-xs text-blue-600">
+                ({(() => {
+                  const tomorrow = new Date();
+                  tomorrow.setDate(tomorrow.getDate() + 1);
+                  const tomorrowDate = tomorrow.toISOString().split('T')[0];
+                  const tomorrowReservations = reservations.filter(r => 
+                    r.date === tomorrowDate && 
+                    r.status === "confirmed" && 
+                    r.totalAmount && 
+                    r.totalAmount > 0
+                  );
+                  return tomorrowReservations.length;
+                })()} pre-orders)
+              </p>
             </div>
           </div>
         </div>
