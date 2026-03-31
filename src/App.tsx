@@ -10,6 +10,7 @@ import Index from "./pages/Index.tsx";
 import Login from "./pages/Login.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import Dashboard from "./pages/admin/Dashboard.tsx";
+import Analytics from "./pages/admin/Analytics.tsx";
 import MenuManagement from "./pages/admin/MenuManagement.tsx";
 import Reservations from "./pages/admin/Reservations.tsx";
 import StaffManagement from "./pages/admin/StaffManagement.tsx";
@@ -37,6 +38,7 @@ const App = () => (
                 </ProtectedRoute>
               }>
                 <Route index element={<Dashboard />} />
+                <Route path="analytics" element={<Analytics />} />
                 <Route path="menu" element={<MenuManagement />} />
                 <Route path="reservations" element={<Reservations />} />
                 <Route path="staff" element={<StaffManagement />} />
@@ -49,6 +51,7 @@ const App = () => (
                 </ProtectedRoute>
               }>
                 <Route index element={<Dashboard />} />
+                <Route path="analytics" element={<Analytics />} />
                 <Route path="reservations" element={<Reservations />} />
               </Route>
 

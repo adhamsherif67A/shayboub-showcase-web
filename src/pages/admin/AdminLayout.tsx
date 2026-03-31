@@ -10,11 +10,13 @@ import {
   Menu, 
   X,
   ChevronRight,
-  Coffee
+  Coffee,
+  TrendingUp
 } from "lucide-react";
 
 const navItems = [
   { path: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
+  { path: "/admin/analytics", label: "Analytics", icon: TrendingUp },
   { path: "/admin/menu", label: "Menu Management", icon: UtensilsCrossed },
   { path: "/admin/reservations", label: "Reservations", icon: CalendarDays },
   { path: "/admin/staff", label: "Staff Management", icon: Users, adminOnly: true },
