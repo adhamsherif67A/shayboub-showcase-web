@@ -5,6 +5,7 @@ import About from "@/components/About";
 import Locations from "@/components/Locations";
 import ReservationForm from "@/components/ReservationForm";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 
 const Index = () => {
   return (
@@ -16,6 +17,7 @@ const Index = () => {
       <About />
       <Locations />
       <Footer />
+      <BackToTop />
     </div>
   );
 };
