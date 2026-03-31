@@ -18,7 +18,8 @@ import {
   Download,
   Printer,
   FileSpreadsheet,
-  Trash2
+  Trash2,
+  DollarSign
 } from "lucide-react";
 import * as XLSX from 'xlsx';
 
@@ -34,6 +35,7 @@ interface Reservation {
   serviceType?: string;
   location?: string;
   orderItems?: string;
+  totalAmount?: number;
   status: "pending" | "confirmed" | "cancelled";
   createdAt: any;
 }
@@ -147,6 +149,7 @@ const Reservations = () => {
       Location: r.location || "",
       "Service Type": r.serviceType || "",
       "Pre-ordered Items": r.orderItems || "",
+      "Total Amount (EGP)": r.totalAmount ? r.totalAmount.toFixed(2) : "0.00",
       "Special Request": r.message || "",
       Status: r.status,
     }));
@@ -253,6 +256,24 @@ const Reservations = () => {
     cancelled: filteredReservations.filter(r => r.status === "cancelled").length
   };
 
+  // Calculate daily revenue (confirmed reservations with pre-orders for today)
+  const calculateDailyRevenue = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const todaysReservations = reservations.filter(r => 
+      r.date === today && 
+      r.status === "confirmed" && 
+      r.totalAmount && 
+      r.totalAmount > 0
+    );
+    
+    const totalRevenue = todaysReservations.reduce((sum, r) => sum + (r.totalAmount || 0), 0);
+    const totalOrders = todaysReservations.length;
+    
+    return { totalRevenue, totalOrders };
+  };
+
+  const dailyStats = calculateDailyRevenue();
+
   if (loading) {
     return (
       <div className="space-y-6 animate-pulse">
@@ -274,9 +295,27 @@ const Reservations = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
+        <div className="flex-1">
           <h1 className="text-2xl font-bold text-foreground">Reservations</h1>
           <p className="text-muted-foreground">Manage table reservations</p>
+          
+          {/* Daily Revenue Stats */}
+          <div className="flex gap-4 mt-3">
+            <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+              <div className="flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-green-600" />
+                <p className="text-xs text-green-600 font-medium">Today's Revenue</p>
+              </div>
+              <p className="text-lg font-bold text-green-700">{dailyStats.totalRevenue.toFixed(2)} EGP</p>
+            </div>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-blue-600" />
+                <p className="text-xs text-blue-600 font-medium">Pre-orders</p>
+              </div>
+              <p className="text-lg font-bold text-blue-700">{dailyStats.totalOrders}</p>
+            </div>
+          </div>
         </div>
         
         {/* Export Buttons */}
@@ -431,9 +470,16 @@ const Reservations = () => {
                   <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
                     <div className="flex items-start gap-2">
                       <ShoppingBag className="w-4 h-4 text-primary mt-0.5 shrink-0" />
-                      <div>
+                      <div className="flex-1">
                         <p className="text-sm font-medium text-foreground mb-1">Pre-ordered Items:</p>
                         <p className="text-sm text-muted-foreground">{reservation.orderItems}</p>
+                        {reservation.totalAmount && reservation.totalAmount > 0 && (
+                          <div className="mt-2 pt-2 border-t border-primary/20">
+                            <p className="text-sm font-bold text-primary">
+                              Total: {reservation.totalAmount.toFixed(2)} EGP
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

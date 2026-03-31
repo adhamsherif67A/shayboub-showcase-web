@@ -65,6 +65,16 @@ const ReservationForm = () => {
   const getItemQuantity = (itemName: string, categoryName: string) =>
     cart.find((c) => c.item.name === itemName && c.categoryName === categoryName)?.quantity ?? 0;
 
+  // Calculate cart total in EGP
+  const calculateCartTotal = () => {
+    return cart.reduce((total, cartItem) => {
+      const price = parseFloat(cartItem.item.price.replace(/[^0-9.]/g, '')) || 0;
+      return total + (price * cartItem.quantity);
+    }, 0);
+  };
+
+  const cartTotal = calculateCartTotal();
+
   /* ---------- filtered menu for search ---------- */
 
   const filteredMenu = useMemo(() => {
@@ -128,6 +138,7 @@ const ReservationForm = () => {
         email: formData.email || "",
         message: formData.specialRequests || "",
         orderItems: orderItems.length > 0 ? orderItems.join(", ") : "",
+        totalAmount: cartTotal,
         status: "pending",
         createdAt: new Date()
       });
@@ -350,6 +361,14 @@ const ReservationForm = () => {
                     </div>
                   </div>
                 ))}
+                
+                {/* Cart Total */}
+                <div className="bg-primary/5 rounded-lg px-3 py-2 border border-primary/20">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-foreground">Total:</span>
+                    <span className="text-lg font-bold text-primary">{cartTotal.toFixed(2)} EGP</span>
+                  </div>
+                </div>
               </div>
             )}
 
