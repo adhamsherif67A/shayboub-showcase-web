@@ -10,6 +10,8 @@ interface CartItem {
   categoryName: string;
   item: MenuItem;
   quantity: number;
+  selectedSize?: 'medium' | 'large';
+  selectedPrice?: number;
 }
 
 const ReservationForm = () => {
@@ -19,6 +21,8 @@ const ReservationForm = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [sizeModalOpen, setSizeModalOpen] = useState(false);
+  const [selectedItemForSize, setSelectedItemForSize] = useState<{categoryName: string, item: MenuItem} | null>(null);
   const [formData, setFormData] = useState({
     serviceType: "dinein" as "dinein" | "pickup",
     location: "cairo",
@@ -35,26 +39,40 @@ const ReservationForm = () => {
   /* ---------- cart helpers ---------- */
 
   const addToCart = (categoryName: string, item: MenuItem) => {
+    const priceInfo = parsePriceInfo(item.price);
+    
+    // If item has multiple sizes, show size selection modal
+    if (priceInfo.hasSizes) {
+      setSelectedItemForSize({ categoryName, item });
+      setSizeModalOpen(true);
+      return;
+    }
+    
+    // For single size items, add directly to cart
+    addToCartWithSize(categoryName, item, 'medium', priceInfo.mediumPrice);
+  };
+
+  const addToCartWithSize = (categoryName: string, item: MenuItem, size: 'medium' | 'large', price: number) => {
     setCart((prev) => {
       const existing = prev.find(
-        (c) => c.item.name === item.name && c.categoryName === categoryName
+        (c) => c.item.name === item.name && c.categoryName === categoryName && c.selectedSize === size
       );
       if (existing) {
         return prev.map((c) =>
-          c.item.name === item.name && c.categoryName === categoryName
+          c.item.name === item.name && c.categoryName === categoryName && c.selectedSize === size
             ? { ...c, quantity: c.quantity + 1 }
             : c
         );
       }
-      return [...prev, { categoryName, item, quantity: 1 }];
+      return [...prev, { categoryName, item, quantity: 1, selectedSize: size, selectedPrice: price }];
     });
   };
 
-  const updateQuantity = (itemName: string, categoryName: string, delta: number) => {
+  const updateQuantity = (itemName: string, categoryName: string, size: 'medium' | 'large', delta: number) => {
     setCart((prev) =>
       prev
         .map((c) =>
-          c.item.name === itemName && c.categoryName === categoryName
+          c.item.name === itemName && c.categoryName === categoryName && c.selectedSize === size
             ? { ...c, quantity: c.quantity + delta }
             : c
         )
@@ -63,30 +81,43 @@ const ReservationForm = () => {
   };
 
   const getItemQuantity = (itemName: string, categoryName: string) =>
-    cart.find((c) => c.item.name === itemName && c.categoryName === categoryName)?.quantity ?? 0;
+    cart.filter((c) => c.item.name === itemName && c.categoryName === categoryName)
+      .reduce((total, c) => total + c.quantity, 0);
+
+  // Helper function to parse price information
+  const parsePriceInfo = (priceStr: string | number) => {
+    if (typeof priceStr === 'number') {
+      return { hasSizes: false, mediumPrice: priceStr, largePrice: priceStr };
+    }
+    
+    if (typeof priceStr === 'string' && priceStr.includes('/')) {
+      // For prices like "EGP 90 / 110"
+      const parts = priceStr.split('/').map(p => p.trim());
+      const mediumMatch = parts[0].match(/(\d+(?:\.\d+)?)/);
+      const largeMatch = parts[1].match(/(\d+(?:\.\d+)?)/);
+      
+      const mediumPrice = mediumMatch ? parseFloat(mediumMatch[1]) : 0;
+      const largePrice = largeMatch ? parseFloat(largeMatch[1]) : 0;
+      
+      return { hasSizes: true, mediumPrice, largePrice };
+    }
+    
+    // For single prices like "EGP 75"
+    const match = priceStr.toString().match(/(\d+(?:\.\d+)?)/);
+    const price = match ? parseFloat(match[1]) : 0;
+    return { hasSizes: false, mediumPrice: price, largePrice: price };
+  };
 
   // Calculate cart total in EGP
   const calculateCartTotal = () => {
     return cart.reduce((total, cartItem) => {
-      let price = 0;
+      // Use selectedPrice if available, otherwise parse the item price
+      let price = cartItem.selectedPrice;
       
-      // Handle different price formats
-      if (typeof cartItem.item.price === 'number') {
-        price = cartItem.item.price;
-      } else if (typeof cartItem.item.price === 'string') {
-        // For prices like "EGP 90 / 110", "EGP 75", etc.
-        const priceStr = cartItem.item.price;
-        
-        if (priceStr.includes('/')) {
-          // For range prices like "EGP 90 / 110", take the first price
-          const firstPrice = priceStr.split('/')[0].trim();
-          const match = firstPrice.match(/(\d+(?:\.\d+)?)/);
-          price = match ? parseFloat(match[1]) : 0;
-        } else {
-          // For single prices like "EGP 75"
-          const match = priceStr.match(/(\d+(?:\.\d+)?)/);
-          price = match ? parseFloat(match[1]) : 0;
-        }
+      if (!price) {
+        const priceInfo = parsePriceInfo(cartItem.item.price);
+        // Default to medium price if no size selected
+        price = priceInfo.mediumPrice;
       }
       
       return total + (price * cartItem.quantity);
@@ -142,7 +173,10 @@ const ReservationForm = () => {
     };
 
     const orderItems = cart.map(
-      (c) => `${c.quantity}x ${c.item.name} (${c.item.price}) [${c.categoryName}]`
+      (c) => {
+        const sizeInfo = c.selectedSize ? ` (${c.selectedSize === 'large' ? 'Large' : 'Medium'} - ${c.selectedPrice} EGP)` : ` (${c.item.price})`;
+        return `${c.quantity}x ${c.item.name}${sizeInfo} [${c.categoryName}]`;
+      }
     );
 
     try {
@@ -353,17 +387,24 @@ const ReservationForm = () => {
               <div className="mb-3 space-y-2">
                 {cart.map((c) => (
                   <div
-                    key={`${c.categoryName}-${c.item.name}`}
+                    key={`${c.categoryName}-${c.item.name}-${c.selectedSize}`}
                     className="flex items-center justify-between bg-background rounded-lg px-3 py-2 border border-border text-sm"
                   >
                     <span className="text-foreground font-medium truncate mr-2">
                       {c.item.name}
-                      <span className="text-muted-foreground ml-1">({c.item.price})</span>
+                      {c.selectedSize && (
+                        <span className="text-muted-foreground ml-1">
+                          ({c.selectedSize === 'large' ? 'Large' : 'Medium'} - {c.selectedPrice} EGP)
+                        </span>
+                      )}
+                      {!c.selectedSize && (
+                        <span className="text-muted-foreground ml-1">({c.item.price})</span>
+                      )}
                     </span>
                     <div className="flex items-center gap-2 shrink-0">
                       <button
                         type="button"
-                        onClick={() => updateQuantity(c.item.name, c.categoryName, -1)}
+                        onClick={() => updateQuantity(c.item.name, c.categoryName, c.selectedSize || 'medium', -1)}
                         className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
                         aria-label={`Decrease ${c.item.name}`}
                       >
@@ -372,7 +413,7 @@ const ReservationForm = () => {
                       <span className="w-5 text-center font-semibold text-foreground">{c.quantity}</span>
                       <button
                         type="button"
-                        onClick={() => updateQuantity(c.item.name, c.categoryName, 1)}
+                        onClick={() => updateQuantity(c.item.name, c.categoryName, c.selectedSize || 'medium', 1)}
                         className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
                         aria-label={`Increase ${c.item.name}`}
                       >
@@ -539,6 +580,82 @@ const ReservationForm = () => {
           </p>
         </form>
       </div>
+
+      {/* Size Selection Modal */}
+      {sizeModalOpen && selectedItemForSize && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-card rounded-2xl p-6 w-full max-w-md border border-border shadow-xl">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-display text-lg font-bold text-foreground">
+                Choose Size
+              </h3>
+              <button
+                type="button"
+                onClick={() => setSizeModalOpen(false)}
+                className="p-2 hover:bg-muted rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-sm text-muted-foreground mb-1">Selected item:</p>
+              <p className="font-medium text-foreground">{selectedItemForSize.item.name}</p>
+            </div>
+
+            <div className="space-y-3">
+              {(() => {
+                const priceInfo = parsePriceInfo(selectedItemForSize.item.price);
+                return (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        addToCartWithSize(
+                          selectedItemForSize.categoryName,
+                          selectedItemForSize.item,
+                          'medium',
+                          priceInfo.mediumPrice
+                        );
+                        setSizeModalOpen(false);
+                        setSelectedItemForSize(null);
+                      }}
+                      className="w-full flex items-center justify-between p-4 border-2 border-border hover:border-primary rounded-xl transition-colors hover:bg-primary/5"
+                    >
+                      <div className="text-left">
+                        <p className="font-medium text-foreground">Medium</p>
+                        <p className="text-sm text-muted-foreground">Regular size</p>
+                      </div>
+                      <p className="font-bold text-primary">{priceInfo.mediumPrice} EGP</p>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        addToCartWithSize(
+                          selectedItemForSize.categoryName,
+                          selectedItemForSize.item,
+                          'large',
+                          priceInfo.largePrice
+                        );
+                        setSizeModalOpen(false);
+                        setSelectedItemForSize(null);
+                      }}
+                      className="w-full flex items-center justify-between p-4 border-2 border-border hover:border-primary rounded-xl transition-colors hover:bg-primary/5"
+                    >
+                      <div className="text-left">
+                        <p className="font-medium text-foreground">Large</p>
+                        <p className="text-sm text-muted-foreground">Bigger serving</p>
+                      </div>
+                      <p className="font-bold text-primary">{priceInfo.largePrice} EGP</p>
+                    </button>
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
