@@ -1,9 +1,19 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { menuData, type MenuItem } from "@/data/menu";
-import { X, Plus, Minus, Search } from "lucide-react";
+import { X, Plus, Minus, Search, ShoppingBag } from "lucide-react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+
+/** Flying animation item */
+interface FlyingItem {
+  id: string;
+  image: string;
+  startX: number;
+  startY: number;
+  endX: number;
+  endY: number;
+}
 
 /** Cart item with quantity */
 interface CartItem {
@@ -23,6 +33,11 @@ const ReservationForm = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [sizeModalOpen, setSizeModalOpen] = useState(false);
   const [selectedItemForSize, setSelectedItemForSize] = useState<{categoryName: string, item: MenuItem} | null>(null);
+  const [flyingItems, setFlyingItems] = useState<FlyingItem[]>([]);
+  
+  // Refs for fly-to-cart animation
+  const cartTargetRef = useRef<HTMLDivElement>(null);
+  const [cartBounce, setCartBounce] = useState(false);
   const [formData, setFormData] = useState({
     serviceType: "dinein" as "dinein" | "pickup",
     location: "cairo",
@@ -83,6 +98,49 @@ const ReservationForm = () => {
   const getItemQuantity = (itemName: string, categoryName: string) =>
     cart.filter((c) => c.item.name === itemName && c.categoryName === categoryName)
       .reduce((total, c) => total + c.quantity, 0);
+
+  /* ---------- fly-to-cart animation ---------- */
+  
+  const triggerFlyToCart = useCallback((
+    event: React.MouseEvent,
+    item: MenuItem
+  ) => {
+    // Get positions
+    const buttonRect = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    const cartRect = cartTargetRef.current?.getBoundingClientRect();
+    
+    if (!cartRect) return;
+    
+    // Create flying item
+    const flyingItem: FlyingItem = {
+      id: `${Date.now()}-${Math.random()}`,
+      image: item.image,
+      startX: buttonRect.left + buttonRect.width / 2,
+      startY: buttonRect.top + buttonRect.height / 2,
+      endX: cartRect.left + cartRect.width / 2,
+      endY: cartRect.top + cartRect.height / 2,
+    };
+    
+    setFlyingItems(prev => [...prev, flyingItem]);
+    
+    // Remove flying item after animation completes
+    setTimeout(() => {
+      setFlyingItems(prev => prev.filter(f => f.id !== flyingItem.id));
+      // Bounce the cart icon
+      setCartBounce(true);
+      setTimeout(() => setCartBounce(false), 300);
+    }, 600);
+  }, []);
+
+  // Enhanced addToCart with animation
+  const handleAddToCartWithAnimation = (
+    event: React.MouseEvent,
+    categoryName: string,
+    item: MenuItem
+  ) => {
+    triggerFlyToCart(event, item);
+    addToCart(categoryName, item);
+  };
 
   // Helper function to parse price information
   const parsePriceInfo = (priceStr: string | number) => {
@@ -371,9 +429,25 @@ const ReservationForm = () => {
           <div className="bg-gradient-to-r from-primary/5 to-orange-500/5 rounded-xl p-4 border-2 border-primary/20">
             {/* Header with call-to-action */}
             <div className="text-center mb-4">
-              <h3 className="font-display text-lg font-bold text-foreground mb-1">
-                Pre-Order Menu Items
-              </h3>
+              <div className="flex items-center justify-center gap-3 mb-1">
+                <h3 className="font-display text-lg font-bold text-foreground">
+                  Pre-Order Menu Items
+                </h3>
+                {/* Cart icon target for fly animation */}
+                <div 
+                  ref={cartTargetRef}
+                  className={`relative flex items-center justify-center w-10 h-10 bg-primary/10 rounded-full transition-transform ${
+                    cartBounce ? 'scale-125 animate-bounce' : ''
+                  }`}
+                >
+                  <ShoppingBag className="w-5 h-5 text-primary" />
+                  {cart.length > 0 && (
+                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
+                      {cart.reduce((sum, c) => sum + c.quantity, 0)}
+                    </span>
+                  )}
+                </div>
+              </div>
               <p className="text-muted-foreground text-sm mb-3">
                 Enhance your experience by pre-ordering your favorite items with your reservation
               </p>
@@ -541,8 +615,8 @@ const ReservationForm = () => {
                               ) : (
                                 <button
                                   type="button"
-                                  onClick={() => addToCart(cat.name, item)}
-                                  className="text-xs font-semibold text-primary hover:underline shrink-0"
+                                  onClick={(e) => handleAddToCartWithAnimation(e, cat.name, item)}
+                                  className="px-3 py-1.5 text-xs font-semibold text-white bg-primary rounded-full hover:bg-primary/90 transition-all hover:scale-105 active:scale-95 shrink-0"
                                 >
                                   + Add
                                 </button>
@@ -649,7 +723,8 @@ const ReservationForm = () => {
                   <>
                     <button
                       type="button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        triggerFlyToCart(e, selectedItemForSize.item);
                         addToCartWithSize(
                           selectedItemForSize.categoryName,
                           selectedItemForSize.item,
@@ -670,7 +745,8 @@ const ReservationForm = () => {
 
                     <button
                       type="button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        triggerFlyToCart(e, selectedItemForSize.item);
                         addToCartWithSize(
                           selectedItemForSize.categoryName,
                           selectedItemForSize.item,
@@ -695,6 +771,46 @@ const ReservationForm = () => {
           </div>
         </div>
       )}
+      
+      {/* Flying items animation */}
+      {flyingItems.map((flyingItem) => (
+        <div
+          key={flyingItem.id}
+          className="fixed pointer-events-none z-[9999]"
+          style={{
+            left: flyingItem.startX,
+            top: flyingItem.startY,
+            transform: 'translate(-50%, -50%)',
+            animation: 'flyToCart 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
+            '--end-x': `${flyingItem.endX - flyingItem.startX}px`,
+            '--end-y': `${flyingItem.endY - flyingItem.startY}px`,
+          } as React.CSSProperties}
+        >
+          <img
+            src={flyingItem.image}
+            alt=""
+            className="w-12 h-12 rounded-full object-cover shadow-lg border-2 border-primary"
+          />
+        </div>
+      ))}
+      
+      {/* CSS for fly animation */}
+      <style>{`
+        @keyframes flyToCart {
+          0% {
+            transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            opacity: 1;
+          }
+          50% {
+            transform: translate(calc(-50% + var(--end-x) / 2), calc(-50% + var(--end-y) / 2 - 50px)) scale(1.2) rotate(180deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(calc(-50% + var(--end-x)), calc(-50% + var(--end-y))) scale(0.3) rotate(360deg);
+            opacity: 0.5;
+          }
+        }
+      `}</style>
     </section>
   );
 };
