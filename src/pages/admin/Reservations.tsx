@@ -10,7 +10,11 @@ import {
   Phone,
   Calendar,
   Users,
-  ChevronDown
+  ChevronDown,
+  Mail,
+  MapPin,
+  ShoppingBag,
+  UtensilsCrossed
 } from "lucide-react";
 
 interface Reservation {
@@ -22,6 +26,9 @@ interface Reservation {
   time: string;
   guests: number;
   message?: string;
+  serviceType?: string;
+  location?: string;
+  orderItems?: string;
   status: "pending" | "confirmed" | "cancelled";
   createdAt: any;
 }
@@ -203,35 +210,82 @@ const Reservations = () => {
               key={reservation.id}
               className="bg-card rounded-xl border border-border p-4 md:p-6 hover:shadow-lg transition-shadow"
             >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-foreground text-lg">{reservation.name}</h3>
-                    {getStatusBadge(reservation.status)}
+              <div className="flex flex-col gap-4">
+                {/* Header with name and status */}
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="font-semibold text-foreground text-lg">{reservation.name}</h3>
+                  {getStatusBadge(reservation.status)}
+                </div>
+
+                {/* All Details in Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                  {/* Phone */}
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Phone className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{reservation.phone}</span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4" />
-                      {reservation.phone}
+
+                  {/* Email */}
+                  {reservation.email && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Mail className="w-4 h-4 shrink-0" />
+                      <span className="truncate">{reservation.email}</span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
-                      {reservation.date} at {reservation.time}
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4" />
-                      {reservation.guests} guests
-                    </div>
+                  )}
+
+                  {/* Date & Time */}
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Calendar className="w-4 h-4 shrink-0" />
+                    <span>{reservation.date} at {reservation.time}</span>
                   </div>
-                  {reservation.message && (
-                    <p className="mt-2 text-sm text-muted-foreground italic">
-                      "{reservation.message}"
-                    </p>
+
+                  {/* Guests */}
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Users className="w-4 h-4 shrink-0" />
+                    <span>{reservation.guests} guests</span>
+                  </div>
+
+                  {/* Service Type */}
+                  {reservation.serviceType && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <UtensilsCrossed className="w-4 h-4 shrink-0" />
+                      <span>{reservation.serviceType}</span>
+                    </div>
+                  )}
+
+                  {/* Location */}
+                  {reservation.location && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="w-4 h-4 shrink-0" />
+                      <span className="truncate">{reservation.location}</span>
+                    </div>
                   )}
                 </div>
+
+                {/* Special Message */}
+                {reservation.message && (
+                  <div className="p-3 bg-muted/50 rounded-lg">
+                    <p className="text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">Special Request:</span> {reservation.message}
+                    </p>
+                  </div>
+                )}
+
+                {/* Pre-ordered Items */}
+                {reservation.orderItems && (
+                  <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
+                    <div className="flex items-start gap-2">
+                      <ShoppingBag className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium text-foreground mb-1">Pre-ordered Items:</p>
+                        <p className="text-sm text-muted-foreground">{reservation.orderItems}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {/* Actions */}
-                <div className="flex gap-2">
+                <div className="flex gap-2 pt-2 border-t border-border">
                   {reservation.status === "pending" && (
                     <>
                       <button
