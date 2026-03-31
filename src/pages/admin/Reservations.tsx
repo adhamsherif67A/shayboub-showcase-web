@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { collection, getDocs, updateDoc, doc, Timestamp } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, deleteDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { 
   Search, 
@@ -17,7 +17,8 @@ import {
   UtensilsCrossed,
   Download,
   Printer,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Trash2
 } from "lucide-react";
 import * as XLSX from 'xlsx';
 
@@ -110,6 +111,25 @@ const Reservations = () => {
     } catch (error) {
       console.error("Error updating reservation:", error);
       alert("Failed to update reservation status");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  // Delete reservation
+  const deleteReservation = async (id: string, name: string) => {
+    // Confirm deletion
+    if (!window.confirm(`Are you sure you want to delete the reservation for ${name}? This action cannot be undone.`)) {
+      return;
+    }
+
+    setUpdatingId(id);
+    try {
+      await deleteDoc(doc(db, "reservations", id));
+      setReservations(prev => prev.filter(r => r.id !== id));
+    } catch (error) {
+      console.error("Error deleting reservation:", error);
+      alert("Failed to delete reservation");
     } finally {
       setUpdatingId(null);
     }
@@ -459,6 +479,19 @@ const Reservations = () => {
                     >
                       <Clock className="w-4 h-4" />
                       Reopen
+                    </button>
+                  )}
+                  
+                  {/* Delete button - show for confirmed or cancelled reservations */}
+                  {(reservation.status === "confirmed" || reservation.status === "cancelled") && (
+                    <button
+                      onClick={() => deleteReservation(reservation.id, reservation.name)}
+                      disabled={updatingId === reservation.id}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/30 transition-colors disabled:opacity-50 ml-auto"
+                      title="Delete reservation permanently"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete
                     </button>
                   )}
                 </div>
