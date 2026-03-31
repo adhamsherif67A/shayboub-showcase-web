@@ -11,8 +11,10 @@ import {
   Save,
   Flame,
   Star,
-  Sparkles
+  Sparkles,
+  FileSpreadsheet
 } from "lucide-react";
+import * as XLSX from 'xlsx';
 
 interface MenuItem {
   id: string;
@@ -163,6 +165,26 @@ const MenuManagement = () => {
     }));
   };
 
+  // Export menu to Excel
+  const exportMenuToExcel = () => {
+    const data = filteredItems.map(item => ({
+      Name: item.name,
+      "Name (Arabic)": item.nameAr || "",
+      Description: item.description || "",
+      Price: item.price,
+      Category: item.category,
+      Tags: item.tags?.join(", ") || "",
+      "Image URL": item.image
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Menu");
+    
+    const fileName = `menu_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  };
+
   // Filter items
   const filteredItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -191,13 +213,22 @@ const MenuManagement = () => {
           <h1 className="text-2xl font-bold text-foreground">Menu Management</h1>
           <p className="text-muted-foreground">Add, edit, or remove menu items</p>
         </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
-        >
-          <Plus className="w-5 h-5" />
-          Add Item
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={exportMenuToExcel}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Export Menu
+          </button>
+          <button
+            onClick={() => handleOpenModal()}
+            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+          >
+            <Plus className="w-5 h-5" />
+            Add Item
+          </button>
+        </div>
       </div>
 
       {/* Filters */}

@@ -14,6 +14,13 @@ import {
   Mail,
   MapPin,
   ShoppingBag,
+  UtensilsCrossed,
+  Download,
+  Printer,
+  FileSpreadsheet
+} from "lucide-react";
+import * as XLSX from 'xlsx';
+  ShoppingBag,
   UtensilsCrossed
 } from "lucide-react";
 
@@ -68,10 +75,38 @@ const Reservations = () => {
     }
   };
 
+  // SMS notification function (placeholder - needs SMS service like Twilio)
+  const sendSMS = async (phone: string, message: string) => {
+    try {
+      // TODO: Implement with SMS service (Twilio, AWS SNS, etc.)
+      console.log(`SMS to ${phone}: ${message}`);
+      
+      // Example Twilio implementation:
+      // const response = await fetch('/api/send-sms', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ to: phone, message })
+      // });
+      // return response.ok;
+      
+      return true; // Placeholder
+    } catch (error) {
+      console.error("Error sending SMS:", error);
+      return false;
+    }
+  };
+
   const updateStatus = async (id: string, status: Reservation["status"]) => {
     setUpdatingId(id);
     try {
       await updateDoc(doc(db, "reservations", id), { status });
+      
+      const reservation = reservations.find(r => r.id === id);
+      if (reservation && status === "confirmed") {
+        const smsMessage = `Hi ${reservation.name}! Your reservation at Shayboub Cafe for ${reservation.date} at ${reservation.time} has been confirmed. We look forward to serving you! - Shayboub Team`;
+        await sendSMS(reservation.phone, smsMessage);
+      }
+      
       setReservations(prev => 
         prev.map(r => r.id === id ? { ...r, status } : r)
       );
@@ -81,6 +116,77 @@ const Reservations = () => {
     } finally {
       setUpdatingId(null);
     }
+  };
+
+  // Export to Excel
+  const exportToExcel = () => {
+    const data = filteredReservations.map(r => ({
+      Name: r.name,
+      Phone: r.phone,
+      Email: r.email || "",
+      Date: r.date,
+      Time: r.time,
+      Guests: r.guests,
+      Location: r.location || "",
+      "Service Type": r.serviceType || "",
+      "Pre-ordered Items": r.orderItems || "",
+      "Special Request": r.message || "",
+      Status: r.status,
+    }));
+
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Reservations");
+    
+    const fileName = `reservations_${new Date().toISOString().split('T')[0]}.xlsx`;
+    XLSX.writeFile(wb, fileName);
+  };
+
+  // Print today's reservations
+  const printTodayReservations = () => {
+    const today = new Date().toISOString().split('T')[0];
+    const todayReservations = filteredReservations.filter(r => r.date === today);
+    
+    const printWindow = window.open('', '', 'height=800,width=1000');
+    if (!printWindow) return;
+    
+    printWindow.document.write('<html><head><title>Reservations - ' + today + '</title>');
+    printWindow.document.write('<style>');
+    printWindow.document.write('body { font-family: Arial, sans-serif; padding: 20px; }');
+    printWindow.document.write('h1 { color: #000; margin-bottom: 20px; }');
+    printWindow.document.write('table { width: 100%; border-collapse: collapse; margin-top: 20px; }');
+    printWindow.document.write('th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }');
+    printWindow.document.write('th { background-color: #f5f5f5; font-weight: bold; }');
+    printWindow.document.write('.status { padding: 4px 8px; border-radius: 4px; font-size: 12px; }');
+    printWindow.document.write('.pending { background: #fef3c7; color: #92400e; }');
+    printWindow.document.write('.confirmed { background: #d1fae5; color: #065f46; }');
+    printWindow.document.write('.cancelled { background: #fee2e2; color: #991b1b; }');
+    printWindow.document.write('@media print { button { display: none; } }');
+    printWindow.document.write('</style></head><body>');
+    printWindow.document.write('<h1>Shayboub Café - Reservations for ' + today + '</h1>');
+    printWindow.document.write('<p>Total: ' + todayReservations.length + ' reservations</p>');
+    printWindow.document.write('<table>');
+    printWindow.document.write('<tr><th>Time</th><th>Name</th><th>Phone</th><th>Guests</th><th>Location</th><th>Status</th></tr>');
+    
+    todayReservations.forEach(r => {
+      printWindow.document.write('<tr>');
+      printWindow.document.write('<td>' + r.time + '</td>');
+      printWindow.document.write('<td>' + r.name + '</td>');
+      printWindow.document.write('<td>' + r.phone + '</td>');
+      printWindow.document.write('<td>' + r.guests + '</td>');
+      printWindow.document.write('<td>' + (r.location || '') + '</td>');
+      printWindow.document.write('<td><span class="status ' + r.status + '">' + r.status + '</span></td>');
+      printWindow.document.write('</tr>');
+    });
+    
+    printWindow.document.write('</table>');
+    printWindow.document.write('<button onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #000; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Print</button>');
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    
+    setTimeout(() => {
+      printWindow.focus();
+    }, 250);
   };
 
   const getStatusBadge = (status: string) => {
@@ -150,9 +256,29 @@ const Reservations = () => {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-foreground">Reservations</h1>
-        <p className="text-muted-foreground">Manage table reservations</p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Reservations</h1>
+          <p className="text-muted-foreground">Manage table reservations</p>
+        </div>
+        
+        {/* Export Buttons */}
+        <div className="flex gap-2">
+          <button
+            onClick={printTodayReservations}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm"
+          >
+            <Printer className="w-4 h-4" />
+            Print Today
+          </button>
+          <button
+            onClick={exportToExcel}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity text-sm"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            Export Excel
+          </button>
+        </div>
       </div>
 
       {/* Stats */}

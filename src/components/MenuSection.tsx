@@ -29,6 +29,15 @@ const filterOptions = [
   { id: "food", label: "Food", icon: Sandwich },
 ];
 
+// Dietary filter options
+const dietaryOptions = [
+  { id: "vegan", label: "Vegan", icon: "🌱" },
+  { id: "vegetarian", label: "Vegetarian", icon: "🥬" },
+  { id: "glutenFree", label: "Gluten Free", icon: "🌾" },
+  { id: "dairyFree", label: "Dairy Free", icon: "🥛" },
+  { id: "sugarFree", label: "Sugar Free", icon: "🍯" },
+];
+
 // Categories for filtering
 const hotDrinkCategories = ["Hot Coffee", "Signature Hot", "Hot Sweet Potato", "Hot Chocolate", "Classic Hot Tea", "Hojicha"];
 const coldDrinkCategories = ["Ice Coffee", "Ice Tea", "Mojito", "Smoothies", "Fresh Juice", "Shaky Frappe", "Matcha", "Brewing Coffee", "Redbull Creations"];
@@ -118,6 +127,7 @@ const MenuSection = () => {
   const [activeCategory, setActiveCategory] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [activeDietaryFilter, setActiveDietaryFilter] = useState("all");
   const { ref: sectionRef, isVisible } = useAnimateOnScroll<HTMLElement>();
   const [liveMenuData, setLiveMenuData] = useState(menuData);
   const [loadingFirestore, setLoadingFirestore] = useState(true);
@@ -169,7 +179,7 @@ const MenuSection = () => {
   }, []);
 
   // Check if we're in search/filter mode
-  const isSearchMode = searchQuery.trim() !== "" || activeFilter !== "all";
+  const isSearchMode = searchQuery.trim() !== "" || activeFilter !== "all" || activeDietaryFilter !== "all";
 
   // Filtered and searched items
   const filteredItems = useMemo(() => {
@@ -190,6 +200,13 @@ const MenuSection = () => {
         if (activeFilter === "top" && !item.tags?.includes("top") && !item.tags?.includes("topRated")) return;
         if (activeFilter === "spicy" && !item.tags?.includes("spicy")) return;
 
+        // Dietary filtering
+        if (activeDietaryFilter === "vegan" && !item.tags?.includes("vegan")) return;
+        if (activeDietaryFilter === "vegetarian" && !item.tags?.includes("vegetarian")) return;
+        if (activeDietaryFilter === "glutenFree" && !item.tags?.includes("glutenFree")) return;
+        if (activeDietaryFilter === "dairyFree" && !item.tags?.includes("dairyFree")) return;
+        if (activeDietaryFilter === "sugarFree" && !item.tags?.includes("sugarFree")) return;
+
         // Search query filtering
         if (query && !item.name.toLowerCase().includes(query)) return;
 
@@ -198,13 +215,14 @@ const MenuSection = () => {
     });
 
     return results;
-  }, [searchQuery, activeFilter, isSearchMode, liveMenuData]);
+  }, [searchQuery, activeFilter, activeDietaryFilter, isSearchMode, liveMenuData]);
 
   const category = liveMenuData[activeCategory];
 
   const clearSearch = () => {
     setSearchQuery("");
     setActiveFilter("all");
+    setActiveDietaryFilter("all");
   };
 
   return (
@@ -246,7 +264,7 @@ const MenuSection = () => {
         </div>
 
         {/* Filter buttons */}
-        <div className={`flex flex-wrap justify-center gap-2 mb-8 transition-all duration-700 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className={`flex flex-wrap justify-center gap-2 mb-6 transition-all duration-700 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           {filterOptions.map((filter) => {
             const Icon = filter.icon;
             return (
@@ -265,6 +283,27 @@ const MenuSection = () => {
               </button>
             );
           })}
+        </div>
+
+        {/* Dietary Filters */}
+        <div className={`flex flex-wrap justify-center gap-2 mb-8 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <span className="text-sm text-muted-foreground mr-2 self-center">Dietary:</span>
+          {dietaryOptions.map((dietary) => (
+            <button
+              key={dietary.id}
+              onClick={() => setActiveDietaryFilter(dietary.id === activeDietaryFilter ? "all" : dietary.id)}
+              className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-300
+                hover:scale-105 active:scale-95 flex items-center gap-2 ${
+                dietary.id === activeDietaryFilter
+                  ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
+                  : "bg-muted text-muted-foreground hover:bg-green-500/10 hover:text-green-600 border border-border hover:border-green-500/50"
+              }`}
+              aria-pressed={dietary.id === activeDietaryFilter}
+            >
+              <span>{dietary.icon}</span>
+              {dietary.label}
+            </button>
+          ))}
         </div>
 
         {/* Show clear button when in search mode */}
