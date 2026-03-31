@@ -371,46 +371,52 @@ const ReservationForm = () => {
           <div className="bg-gradient-to-r from-primary/5 to-orange-500/5 rounded-xl p-4 border-2 border-primary/20">
             {/* Header with call-to-action */}
             <div className="text-center mb-4">
-              <h3 className="font-display text-lg font-bold text-foreground mb-1 flex items-center justify-center gap-2">
-                🍽️ Pre-order Your Favorites! ☕
+              <h3 className="font-display text-lg font-bold text-foreground mb-1">
+                Pre-Order Menu Items
               </h3>
               <p className="text-muted-foreground text-sm mb-3">
-                Skip the wait - have your food & drinks ready when you arrive
+                Enhance your experience by pre-ordering your favorite items with your reservation
               </p>
               
               {/* Benefits */}
-              <div className="flex flex-wrap items-center justify-center gap-4 mb-4">
-                <div className="flex items-center gap-1 text-xs text-green-600">
-                  <span>✓</span> <span>Fresh & Ready</span>
+              <div className="flex flex-wrap items-center justify-center gap-6 mb-4">
+                <div className="flex items-center gap-2 text-sm text-green-700">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="font-medium">Prepared Fresh</span>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-green-600">
-                  <span>✓</span> <span>No Waiting</span>
+                <div className="flex items-center gap-2 text-sm text-green-700">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="font-medium">Ready on Arrival</span>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-green-600">
-                  <span>✓</span> <span>Save Time</span>
+                <div className="flex items-center gap-2 text-sm text-green-700">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span className="font-medium">Time Efficient</span>
                 </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
-                className={`inline-flex items-center gap-2 px-6 py-3 rounded-lg font-semibold text-white transition-all ${
+                className={`inline-flex items-center gap-3 px-8 py-3 rounded-lg font-semibold text-white transition-all ${
                   menuOpen 
                     ? "bg-red-500 hover:bg-red-600" 
                     : "bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl"
                 } transform hover:scale-105`}
               >
-                <span className="text-lg">{menuOpen ? "✖️" : "🛒"}</span>
-                <span>{menuOpen ? "Close Menu" : "Browse Menu & Pre-order"}</span>
+                <span className="text-sm">
+                  {menuOpen ? "Close Menu Selection" : "Browse Menu & Select Items"}
+                </span>
               </button>
             </div>
 
             {/* Empty cart promotion */}
             {cart.length === 0 && !menuOpen && (
               <div className="text-center py-4 bg-white/50 rounded-lg border border-dashed border-primary/30 mb-4">
-                <div className="text-2xl mb-2">🍰☕✨</div>
+                <div className="w-12 h-12 mx-auto mb-3 bg-primary/10 rounded-full flex items-center justify-center">
+                  <div className="w-6 h-6 bg-primary/20 rounded-full"></div>
+                </div>
                 <p className="text-muted-foreground text-sm font-medium">
-                  💡 <strong>Pro tip:</strong> Pre-ordering saves you time and ensures your favorites are ready!
+                  <strong>Recommendation:</strong> Pre-ordering ensures your items are prepared and ready upon your arrival
                 </p>
               </div>
             )}
