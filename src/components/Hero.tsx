@@ -1,12 +1,21 @@
+import { useState } from "react";
 import { LOGO_URL, BANNER_URL } from "@/data/menu";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Hero = () => {
+  const [bannerLoaded, setBannerLoaded] = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
+
   return (
     <section 
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       aria-label="Welcome to Shayboub"
     >
       <div className="absolute inset-0">
+        {/* Banner skeleton */}
+        {!bannerLoaded && (
+          <Skeleton className="absolute inset-0 w-full h-full rounded-none" />
+        )}
         <img
           src={BANNER_URL}
           alt="Shayboub Coffee - specialty coffee and artisan sandwiches in Cairo and Alexandria"
@@ -14,21 +23,31 @@ const Hero = () => {
           height={1080}
           fetchPriority="high"
           decoding="async"
-          className="w-full h-full object-cover animate-[scale-in_1.5s_ease-out]"
+          onLoad={() => setBannerLoaded(true)}
+          className={`w-full h-full object-cover transition-opacity duration-700 
+            ${bannerLoaded ? 'opacity-100 animate-[scale-in_1.5s_ease-out]' : 'opacity-0'}`}
         />
         <div className="absolute inset-0 bg-secondary/60" aria-hidden="true" />
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-        <img
-          src={LOGO_URL}
-          alt="Shayboub Logo"
-          width={200}
-          height={200}
-          decoding="async"
-          className="w-40 h-40 md:w-52 md:h-52 mx-auto mb-8 rounded-2xl object-contain animate-fade-in-up 
-            hover:scale-105 hover:rotate-3 transition-transform duration-300 cursor-pointer"
-        />
+        {/* Logo with skeleton */}
+        <div className="relative w-40 h-40 md:w-52 md:h-52 mx-auto mb-8">
+          {!logoLoaded && (
+            <Skeleton className="absolute inset-0 w-full h-full rounded-2xl" />
+          )}
+          <img
+            src={LOGO_URL}
+            alt="Shayboub Logo"
+            width={200}
+            height={200}
+            decoding="async"
+            onLoad={() => setLogoLoaded(true)}
+            className={`w-full h-full rounded-2xl object-contain animate-fade-in-up 
+              hover:scale-105 hover:rotate-3 transition-transform duration-300 cursor-pointer
+              ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          />
+        </div>
         <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-secondary-foreground mb-4 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
           Shayboub
         </h1>

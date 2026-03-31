@@ -1,6 +1,7 @@
 import { useState, memo } from "react";
 import { menuData } from "@/data/menu";
 import { useAnimateOnScroll } from "@/hooks/use-animate-on-scroll";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const tagStyles: Record<string, string> = {
   new: "bg-green-600 text-white",
@@ -14,54 +15,78 @@ const tagLabels: Record<string, string> = {
   top: "⭐ TOP",
 };
 
+// Skeleton for a single menu item
+const MenuItemSkeleton = () => (
+  <div className="bg-card rounded-xl overflow-hidden border border-border">
+    <Skeleton className="aspect-square w-full" />
+    <div className="p-4 space-y-3">
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-3 w-full" />
+      <Skeleton className="h-4 w-1/4" />
+    </div>
+  </div>
+);
+
 // Memoized menu item component for better rendering performance
-const MenuItemCard = memo(({ item, index }: { item: typeof menuData[0]['items'][0]; index: number }) => (
-  <article
-    className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 
-      hover:-translate-y-2 hover:shadow-xl transition-all duration-300 animate-scale-in"
-    style={{ animationDelay: `${index * 50}ms` }}
-  >
-    <div className="aspect-square overflow-hidden bg-muted relative">
-      <img
-        src={item.image}
-        alt={item.name}
-        loading="lazy"
-        decoding="async"
-        width={400}
-        height={400}
-        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-      />
-      {item.tags && item.tags.length > 0 && (
-        <div className="absolute top-2 left-2 flex gap-1" aria-label="Item tags">
-          {item.tags.map((tag) => (
-            <span
-              key={tag}
-              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagStyles[tag] || "bg-muted text-foreground"} 
-                group-hover:scale-110 transition-transform`}
-            >
-              {tagLabels[tag] || tag}
-            </span>
-          ))}
-        </div>
-      )}
-      {/* Overlay on hover */}
-      <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300" />
-    </div>
-    <div className="p-4">
-      <h4 className="font-body font-semibold text-foreground text-sm mb-1 group-hover:text-primary transition-colors">
-        {item.name}
-      </h4>
-      {item.description && (
-        <p className="font-body text-xs text-muted-foreground mb-2 line-clamp-2">
-          {item.description}
+const MenuItemCard = memo(({ item, index }: { item: typeof menuData[0]['items'][0]; index: number }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  return (
+    <article
+      className="group bg-card rounded-xl overflow-hidden border border-border hover:border-primary/30 
+        hover:-translate-y-2 hover:shadow-xl transition-all duration-300 animate-scale-in"
+      style={{ animationDelay: `${index * 50}ms` }}
+    >
+      <div className="aspect-square overflow-hidden bg-muted relative">
+        {/* Skeleton shown while image loads */}
+        {!imageLoaded && !imageError && (
+          <Skeleton className="absolute inset-0 w-full h-full" />
+        )}
+        <img
+          src={item.image}
+          alt={item.name}
+          loading="lazy"
+          decoding="async"
+          width={400}
+          height={400}
+          onLoad={() => setImageLoaded(true)}
+          onError={() => setImageError(true)}
+          className={`w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 
+            ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+        />
+        {item.tags && item.tags.length > 0 && (
+          <div className="absolute top-2 left-2 flex gap-1" aria-label="Item tags">
+            {item.tags.map((tag) => (
+              <span
+                key={tag}
+                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${tagStyles[tag] || "bg-muted text-foreground"} 
+                  group-hover:scale-110 transition-transform`}
+              >
+                {tagLabels[tag] || tag}
+              </span>
+            ))}
+          </div>
+        )}
+        {/* Overlay on hover */}
+        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300" />
+      </div>
+      <div className="p-4">
+        <h4 className="font-body font-semibold text-foreground text-sm mb-1 group-hover:text-primary transition-colors">
+          {item.name}
+        </h4>
+        {item.description && (
+          <p className="font-body text-xs text-muted-foreground mb-2 line-clamp-2">
+            {item.description}
+          </p>
+        )}
+        <p className="font-body text-primary font-bold text-sm" aria-label={`Price: ${item.price}`}>
+          {item.price}
         </p>
-      )}
-      <p className="font-body text-primary font-bold text-sm" aria-label={`Price: ${item.price}`}>
-        {item.price}
-      </p>
-    </div>
-  </article>
-));
+      </div>
+    </article>
+  );
+});
 
 MenuItemCard.displayName = 'MenuItemCard';
 
