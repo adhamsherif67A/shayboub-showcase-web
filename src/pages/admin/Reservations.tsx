@@ -20,9 +20,6 @@ import {
   FileSpreadsheet
 } from "lucide-react";
 import * as XLSX from 'xlsx';
-  ShoppingBag,
-  UtensilsCrossed
-} from "lucide-react";
 
 interface Reservation {
   id: string;
