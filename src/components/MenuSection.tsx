@@ -5,38 +5,13 @@ import { useAnimateOnScroll } from "@/hooks/use-animate-on-scroll";
 import { Skeleton } from "@/components/ui/skeleton";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const tagStyles: Record<string, string> = {
   new: "bg-green-600 text-white",
   spicy: "bg-red-500 text-white",
   top: "bg-primary text-primary-foreground",
 };
-
-const tagLabels: Record<string, string> = {
-  new: "NEW",
-  spicy: "🌶 SPICY",
-  top: "⭐ TOP",
-};
-
-// Filter button options
-const filterOptions = [
-  { id: "all", label: "All", icon: null },
-  { id: "new", label: "New", icon: Sparkles },
-  { id: "top", label: "Top Rated", icon: Star },
-  { id: "spicy", label: "Spicy", icon: Flame },
-  { id: "hot", label: "Hot Drinks", icon: Coffee },
-  { id: "cold", label: "Cold Drinks", icon: IceCream },
-  { id: "food", label: "Food", icon: Sandwich },
-];
-
-// Dietary filter options
-const dietaryOptions = [
-  { id: "vegan", label: "Vegan", icon: "🌱" },
-  { id: "vegetarian", label: "Vegetarian", icon: "🥬" },
-  { id: "glutenFree", label: "Gluten Free", icon: "🌾" },
-  { id: "dairyFree", label: "Dairy Free", icon: "🥛" },
-  { id: "sugarFree", label: "Sugar Free", icon: "🍯" },
-];
 
 // Categories for filtering
 const hotDrinkCategories = ["Hot Coffee", "Signature Hot", "Hot Sweet Potato", "Hot Chocolate", "Classic Hot Tea", "Hojicha"];
@@ -131,6 +106,34 @@ const MenuSection = () => {
   const { ref: sectionRef, isVisible } = useAnimateOnScroll<HTMLElement>();
   const [liveMenuData, setLiveMenuData] = useState(menuData);
   const [loadingFirestore, setLoadingFirestore] = useState(true);
+  const { t, isRTL } = useLanguage();
+
+  // Filter button options with translations
+  const filterOptions = [
+    { id: "all", label: t.menu.filters.all, icon: null },
+    { id: "new", label: t.menu.filters.new, icon: Sparkles },
+    { id: "top", label: t.menu.filters.topRated, icon: Star },
+    { id: "spicy", label: t.menu.filters.spicy, icon: Flame },
+    { id: "hot", label: isRTL ? "مشروبات ساخنة" : "Hot Drinks", icon: Coffee },
+    { id: "cold", label: isRTL ? "مشروبات باردة" : "Cold Drinks", icon: IceCream },
+    { id: "food", label: isRTL ? "طعام" : "Food", icon: Sandwich },
+  ];
+
+  // Dietary filter options with translations
+  const dietaryOptions = [
+    { id: "vegan", label: t.menu.dietary.vegan, icon: "🌱" },
+    { id: "vegetarian", label: t.menu.dietary.vegetarian, icon: "🥬" },
+    { id: "glutenFree", label: t.menu.dietary.glutenFree, icon: "🌾" },
+    { id: "dairyFree", label: t.menu.dietary.dairyFree, icon: "🥛" },
+    { id: "sugarFree", label: t.menu.dietary.sugarFree, icon: "🍯" },
+  ];
+
+  // Tag labels with translations
+  const tagLabels: Record<string, string> = {
+    new: isRTL ? "جديد" : "NEW",
+    spicy: isRTL ? "🌶 حار" : "🌶 SPICY",
+    top: isRTL ? "⭐ مميز" : "⭐ TOP",
+  };
 
   // Load menu from Firestore
   useEffect(() => {
@@ -226,35 +229,35 @@ const MenuSection = () => {
   };
 
   return (
-    <section id="menu" className="section-padding" ref={sectionRef}>
+    <section id="menu" className={`section-padding ${isRTL ? 'rtl' : ''}`} ref={sectionRef}>
       <div className="max-w-6xl mx-auto">
         <p className={`font-body text-sm uppercase tracking-[0.3em] text-primary mb-4 text-center transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          Winter Menu
+          {t.menu.title}
         </p>
         <h2 className={`font-display text-4xl md:text-5xl font-bold text-foreground mb-4 text-center transition-all duration-700 delay-100 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          Crafted to Perfection
+          {t.menu.subtitle}
         </h2>
         <p className={`font-body text-muted-foreground text-center max-w-md mx-auto mb-8 transition-all duration-700 delay-200 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          From rich espressos to artisan sandwiches — every item is made with premium ingredients.
+          {isRTL ? "من الإسبريسو الغني إلى الساندويتشات المميزة — كل صنف مصنوع بمكونات فاخرة." : "From rich espressos to artisan sandwiches — every item is made with premium ingredients."}
         </p>
 
         {/* Search bar */}
         <div className={`max-w-md mx-auto mb-6 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground ${isRTL ? 'right-4' : 'left-4'}`} />
             <input
               type="text"
-              placeholder="Search menu... (e.g., latte, chicken)"
+              placeholder={t.menu.searchPlaceholder}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 pr-10 py-3 rounded-full border border-border bg-card text-foreground 
+              className={`w-full py-3 rounded-full border border-border bg-card text-foreground 
                 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 
-                focus:border-primary transition-all duration-300"
+                focus:border-primary transition-all duration-300 ${isRTL ? 'pr-12 pl-10 text-right' : 'pl-12 pr-10'}`}
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                className={`absolute top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors ${isRTL ? 'left-4' : 'right-4'}`}
                 aria-label="Clear search"
               >
                 <X className="w-5 h-5" />
@@ -287,7 +290,7 @@ const MenuSection = () => {
 
         {/* Dietary Filters */}
         <div className={`flex flex-wrap justify-center gap-2 mb-8 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <span className="text-sm text-muted-foreground mr-2 self-center">Dietary:</span>
+          <span className={`text-sm text-muted-foreground self-center ${isRTL ? 'ml-2' : 'mr-2'}`}>{t.menu.dietary.title}:</span>
           {dietaryOptions.map((dietary) => (
             <button
               key={dietary.id}
@@ -313,7 +316,7 @@ const MenuSection = () => {
               onClick={clearSearch}
               className="text-sm text-primary hover:underline font-medium"
             >
-              ← Clear filters & show all categories
+              {isRTL ? 'مسح الفلاتر وعرض جميع الأصناف →' : '← Clear filters & show all categories'}
             </button>
           </div>
         )}
@@ -321,7 +324,7 @@ const MenuSection = () => {
         {/* Category tabs - only show when not in search mode */}
         {!isSearchMode && (
           <nav 
-            className="flex overflow-x-auto gap-2 pb-4 mb-10 scrollbar-hide"
+            className={`flex overflow-x-auto gap-2 pb-4 mb-10 scrollbar-hide ${isRTL ? 'flex-row-reverse' : ''}`}
             role="tablist"
             aria-label="Menu categories"
           >
@@ -352,12 +355,14 @@ const MenuSection = () => {
             <div className="mb-8">
               <h3 className="font-display text-2xl font-semibold text-primary">
                 {filteredItems?.length === 0 
-                  ? "No items found" 
-                  : `Found ${filteredItems?.length} item${filteredItems?.length === 1 ? '' : 's'}`}
+                  ? t.menu.noResults 
+                  : isRTL 
+                    ? `تم العثور على ${filteredItems?.length} عنصر`
+                    : `Found ${filteredItems?.length} item${filteredItems?.length === 1 ? '' : 's'}`}
               </h3>
               {filteredItems?.length === 0 && (
                 <p className="text-muted-foreground mt-2">
-                  Try a different search term or filter.
+                  {isRTL ? 'جرب مصطلح بحث أو فلتر مختلف.' : 'Try a different search term or filter.'}
                 </p>
               )}
             </div>
@@ -374,7 +379,7 @@ const MenuSection = () => {
         ) : (
           <>
             {/* Category title */}
-            <h3 className="font-display text-2xl font-semibold text-primary mb-8 animate-fade-in" key={category.name}>
+            <h3 className={`font-display text-2xl font-semibold text-primary mb-8 animate-fade-in ${isRTL ? 'text-right' : ''}`} key={category.name}>
               {category.name}
             </h3>
 
@@ -403,7 +408,7 @@ const MenuSection = () => {
               hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-primary/25 
               active:scale-95 transition-all duration-300"
           >
-            Order Online Now
+            {isRTL ? 'اطلب الآن' : 'Order Online Now'}
           </a>
         </div>
       </div>

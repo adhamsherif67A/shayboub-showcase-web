@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { LOGO_URL, BANNER_URL } from "@/data/menu";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Hero = () => {
   const [bannerLoaded, setBannerLoaded] = useState(false);
   const [logoLoaded, setLogoLoaded] = useState(false);
+  const { t } = useLanguage();
 
   return (
     <section 
@@ -58,7 +60,7 @@ const Hero = () => {
         
         {/* Tagline */}
         <p className="font-body text-secondary-foreground/90 text-base md:text-lg lg:text-xl mb-8 max-w-md mx-auto">
-          Specialty coffee, artisan sandwiches & good vibes
+          {t.hero.tagline}
         </p>
         
         {/* CTA Buttons */}
@@ -69,7 +71,7 @@ const Hero = () => {
               hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200
               shadow-lg shadow-primary/25"
           >
-            Explore Menu
+            {t.hero.exploreMenu}
           </a>
           <a
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
@@ -79,7 +81,7 @@ const Hero = () => {
               hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200
               shadow-lg shadow-black/10"
           >
-            Order on Talabat
+            {t.hero.orderOnTalabat}
           </a>
         </div>
       </div>

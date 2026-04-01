@@ -53,6 +53,12 @@
     --font-body: 'DM Sans', sans-serif;
   }
 
+  /* RTL support */
+  html[dir="rtl"] {
+    --font-body: 'Cairo', sans-serif;
+    --font-display: 'Cairo', serif;
+  }
+
   * {
     @apply border-border;
   }
@@ -60,6 +66,20 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+  }
+
+  /* RTL text alignment */
+  [dir="rtl"] {
+    text-align: right;
+  }
+
+  [dir="rtl"] .text-center {
+    text-align: center;
+  }
+
+  [dir="rtl"] .font-body,
+  [dir="rtl"] .font-display {
+    font-family: 'Cairo', sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {

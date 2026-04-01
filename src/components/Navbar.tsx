@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { LOGO_URL } from "@/data/menu";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { LanguageToggle } from "@/components/LanguageToggle";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const { t, isRTL } = useLanguage();
 
   return (
     <nav 
@@ -11,24 +14,27 @@ const Navbar = () => {
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-        <a href="#" className="flex items-center gap-3" aria-label="Shayboub - Home">
+      <div className={`max-w-6xl mx-auto px-6 flex items-center justify-between h-16 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <a href="#" className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`} aria-label="Shayboub - Home">
           <img src={LOGO_URL} alt="" className="h-10 w-10 rounded-lg object-contain" aria-hidden="true" />
-          <span className="font-display text-xl font-bold text-secondary-foreground">Shayboub</span>
+          <span className="font-display text-xl font-bold text-secondary-foreground">
+            {isRTL ? 'شيبوب' : 'Shayboub'}
+          </span>
         </a>
 
-        <div className="hidden md:flex items-center gap-8 font-body text-sm text-secondary-foreground/70">
-          <a href="#menu" className="hover:text-primary transition-colors">Menu</a>
-          <a href="#reservation" className="hover:text-primary transition-colors">Reservations</a>
-          <a href="#locations" className="hover:text-primary transition-colors">Locations</a>
-          <a href="#about" className="hover:text-primary transition-colors">About</a>
+        <div className={`hidden md:flex items-center gap-8 font-body text-sm text-secondary-foreground/70 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <a href="#menu" className="hover:text-primary transition-colors">{t.nav.menu}</a>
+          <a href="#reservation" className="hover:text-primary transition-colors">{t.nav.reservations}</a>
+          <a href="#locations" className="hover:text-primary transition-colors">{t.nav.locations}</a>
+          <a href="#about" className="hover:text-primary transition-colors">{t.nav.about}</a>
+          <LanguageToggle />
           <a
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
             target="_blank"
             rel="noopener noreferrer"
             className="bg-primary text-primary-foreground px-5 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity"
           >
-            Order Now
+            {t.nav.orderNow}
           </a>
         </div>
 
@@ -46,19 +52,22 @@ const Navbar = () => {
       {open && (
         <div 
           id="mobile-menu"
-          className="md:hidden bg-secondary border-t border-secondary-foreground/10 px-6 py-6 space-y-4 font-body text-sm"
+          className={`md:hidden bg-secondary border-t border-secondary-foreground/10 px-6 py-6 space-y-4 font-body text-sm ${isRTL ? 'text-right' : ''}`}
         >
-          <a href="#menu" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Menu</a>
-          <a href="#reservation" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Reservations</a>
-          <a href="#locations" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">Locations</a>
-          <a href="#about" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">About</a>
+          <a href="#menu" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">{t.nav.menu}</a>
+          <a href="#reservation" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">{t.nav.reservations}</a>
+          <a href="#locations" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">{t.nav.locations}</a>
+          <a href="#about" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary">{t.nav.about}</a>
+          <div className="pt-2">
+            <LanguageToggle />
+          </div>
           <a
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
             target="_blank"
             rel="noopener noreferrer"
             className="block bg-primary text-primary-foreground px-5 py-2 rounded-lg font-semibold text-center"
           >
-            Order Now
+            {t.nav.orderNow}
           </a>
         </div>
       )}
