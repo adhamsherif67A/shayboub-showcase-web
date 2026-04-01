@@ -2,9 +2,10 @@ import { useState, useMemo, useRef, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { menuData, type MenuItem } from "@/data/menu";
 import { X, Plus, Minus, Search, ShoppingBag, Calendar, Clock, MapPin, Users, User, Phone, Mail, FileText, CheckCircle2 } from "lucide-react";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 /** Flying animation item */
 interface FlyingItem {
@@ -28,6 +29,7 @@ interface CartItem {
 const ReservationForm = () => {
   const { toast } = useToast();
   const { t, isRTL } = useLanguage();
+  const { user, isCustomer } = useAuth();
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -295,7 +297,9 @@ const ReservationForm = () => {
         orderItems: orderItems.length > 0 ? orderItems.join(", ") : "",
         totalAmount: cartTotal,
         status: "pending",
-        createdAt: new Date()
+        createdAt: serverTimestamp(),
+        // Add customer ID for loyalty points (if logged in)
+        ...(isCustomer && user ? { customerId: user.uid } : {}),
       });
 
       setSubmitted(true);

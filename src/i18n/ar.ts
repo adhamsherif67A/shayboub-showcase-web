@@ -207,27 +207,6 @@ export const ar: Translations = {
       instagram: "انستجرام",
     },
   },
-  
-  // Common
-  common: {
-    loading: "جاري التحميل...",
-    error: "حدث خطأ ما",
-    close: "إغلاق",
-    cancel: "إلغاء",
-    confirm: "تأكيد",
-    save: "حفظ",
-    delete: "حذف",
-    edit: "تعديل",
-    add: "إضافة",
-    remove: "إزالة",
-    search: "بحث",
-    filter: "تصفية",
-    clear: "مسح",
-    viewAll: "عرض الكل",
-    seeMore: "عرض المزيد",
-    seeLess: "عرض أقل",
-    optional: "اختياري",
-  },
 
   // Admin Panel
   admin: {
@@ -238,6 +217,7 @@ export const ar: Translations = {
       menu: "إدارة القائمة",
       reservations: "الحجوزات",
       calendar: "عرض التقويم",
+      loyalty: "برنامج الولاء",
       staff: "إدارة الموظفين",
       viewWebsite: "← عرض الموقع",
     },

@@ -224,6 +224,7 @@ export const en = {
       menu: "Menu Management",
       reservations: "Reservations",
       calendar: "Calendar View",
+      loyalty: "Loyalty Program",
       staff: "Staff Management",
       viewWebsite: "View Website →",
     },

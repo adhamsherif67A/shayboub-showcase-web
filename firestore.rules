@@ -1,0 +1,136 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function: Is user authenticated?
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Helper function: Is user an admin/staff?
+    function isAdmin() {
+      return isSignedIn() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'staff'];
+    }
+    
+    // Helper function: Is user the document owner?
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    // ========================================
+    // CUSTOMERS COLLECTION
+    // ========================================
+    match /customers/{customerId} {
+      // Customers can read their own document
+      allow read: if isOwner(customerId);
+      
+      // Customers can update their own profile (but not points directly)
+      allow update: if isOwner(customerId) && 
+                       !request.resource.data.diff(resource.data).affectedKeys().hasAny(['points', 'totalPointsEarned', 'totalPointsSpent']);
+      
+      // Allow creation on signup
+      allow create: if isSignedIn() && request.auth.uid == customerId;
+      
+      // Admins can read and write all
+      allow read, write: if isAdmin();
+    }
+    
+    // ========================================
+    // VOUCHERS COLLECTION
+    // ========================================
+    match /vouchers/{voucherId} {
+      // Customers can read their own vouchers
+      allow read: if isSignedIn() && 
+                     resource.data.customerId == request.auth.uid;
+      
+      // Customers can create vouchers (claim rewards)
+      allow create: if isSignedIn() && 
+                       request.resource.data.customerId == request.auth.uid;
+      
+      // Customers can update their own vouchers (limited fields)
+      allow update: if isSignedIn() && 
+                       resource.data.customerId == request.auth.uid &&
+                       request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'usedAt', 'usedInReservation']);
+      
+      // Admins can read/update all
+      allow read, write: if isAdmin();
+    }
+    
+    // ========================================
+    // POINTS LOG COLLECTION
+    // ========================================
+    match /pointsLog/{logId} {
+      // Customers can read their own logs
+      allow read: if isSignedIn() && 
+                     resource.data.customerId == request.auth.uid;
+      
+      // No client writes - only Cloud Functions can write
+      allow create, update, delete: if false;
+      
+      // Admins can read all
+      allow read: if isAdmin();
+    }
+    
+    // ========================================
+    // RESERVATIONS COLLECTION
+    // ========================================
+    match /reservations/{reservationId} {
+      // Anyone can create reservations (public form)
+      allow create: if true;
+      
+      // Customers can read their own reservations
+      allow read: if isSignedIn() && 
+                     (resource.data.customerId == request.auth.uid || 
+                      resource.data.email == request.auth.token.email);
+      
+      // Admins/Staff can read and update all
+      allow read, update: if isAdmin();
+      
+      // Only admins can delete
+      allow delete: if isAdmin();
+    }
+    
+    // ========================================
+    // USERS COLLECTION (Admin/Staff)
+    // ========================================
+    match /users/{userId} {
+      // Only admins can read/write
+      allow read, write: if isAdmin();
+    }
+    
+    // ========================================
+    // WHATSAPP LOG COLLECTION
+    // ========================================
+    match /whatsappLog/{logId} {
+      // Only admins can read
+      allow read: if isAdmin();
+      
+      // Only Cloud Functions can write
+      allow create, update, delete: if false;
+    }
+    
+    // ========================================
+    // MENU ITEMS COLLECTION
+    // ========================================
+    match /menuItems/{itemId} {
+      // Anyone can read menu
+      allow read: if true;
+      
+      // Only admins can write
+      allow write: if isAdmin();
+    }
+    
+    // ========================================
+    // LOYALTY SETTINGS COLLECTION
+    // ========================================
+    match /loyaltySettings/{settingId} {
+      // Anyone can read settings
+      allow read: if true;
+      
+      // Only admins can write
+      allow write: if isAdmin();
+    }
+  }
+}

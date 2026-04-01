@@ -14,7 +14,8 @@ import {
   X,
   ChevronRight,
   TrendingUp,
-  Calendar
+  Calendar,
+  Gift
 } from "lucide-react";
 
 const AdminLayout = () => {
@@ -30,6 +31,7 @@ const AdminLayout = () => {
     { path: "/admin/menu", label: t.admin.nav.menu, icon: UtensilsCrossed },
     { path: "/admin/reservations", label: t.admin.nav.reservations, icon: CalendarDays },
     { path: "/admin/calendar", label: t.admin.nav.calendar, icon: Calendar },
+    { path: "/admin/loyalty", label: t.admin.nav.loyalty || "Loyalty", icon: Gift, adminOnly: true },
     { path: "/admin/staff", label: t.admin.nav.staff, icon: Users, adminOnly: true },
   ];
 

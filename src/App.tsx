@@ -19,6 +19,7 @@ import MenuManagement from "./pages/admin/MenuManagement.tsx";
 import Reservations from "./pages/admin/Reservations.tsx";
 import ReservationCalendar from "./pages/admin/ReservationCalendar.tsx";
 import StaffManagement from "./pages/admin/StaffManagement.tsx";
+import AdminLoyalty from "./pages/admin/Loyalty.tsx";
 
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
 
@@ -58,6 +59,7 @@ const App = () => (
                 <Route path="reservations" element={<Reservations />} />
                 <Route path="calendar" element={<ReservationCalendar />} />
                 <Route path="staff" element={<StaffManagement />} />
+                <Route path="loyalty" element={<AdminLoyalty />} />
               </Route>
 
               {/* Staff Routes (same layout, limited access) */}
