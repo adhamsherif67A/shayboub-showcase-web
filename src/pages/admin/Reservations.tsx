@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { collection, getDocs, updateDoc, doc, deleteDoc, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { 
@@ -42,6 +43,7 @@ interface Reservation {
 }
 
 const Reservations = () => {
+  const { t, isRTL } = useLanguage();
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -225,23 +227,23 @@ const Reservations = () => {
     switch (status) {
       case "confirmed":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 text-green-600">
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-green-500/10 text-green-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <CheckCircle2 className="w-4 h-4" />
-            Confirmed
+            {t.admin.reservationsPage.confirmed}
           </span>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-yellow-500/10 text-yellow-600">
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-yellow-500/10 text-yellow-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Clock className="w-4 h-4" />
-            Pending
+            {t.admin.reservationsPage.pending}
           </span>
         );
       case "cancelled":
         return (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-red-500/10 text-red-600">
+          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-red-500/10 text-red-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <XCircle className="w-4 h-4" />
-            Cancelled
+            {t.admin.reservationsPage.cancelled}
           </span>
         );
       default:
@@ -321,26 +323,26 @@ const Reservations = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className={`space-y-6 ${isRTL ? 'text-right' : ''}`}>
+      <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-foreground">Reservations</h1>
-          <p className="text-muted-foreground">Manage table reservations</p>
+          <h1 className="text-2xl font-bold text-foreground">{t.admin.reservationsPage.title}</h1>
+          <p className="text-muted-foreground">{t.admin.reservationsPage.subtitle}</p>
           
           {/* Daily Revenue Stats */}
-          <div className="flex gap-4 mt-3">
+          <div className={`flex gap-4 mt-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <div className="bg-green-50 border border-green-200 rounded-lg px-3 py-2">
-              <div className="flex items-center gap-2">
+              <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <DollarSign className="w-4 h-4 text-green-600" />
-                <p className="text-xs text-green-600 font-medium">Today's Revenue</p>
+                <p className="text-xs text-green-600 font-medium">{t.admin.reservationsPage.todaysRevenue}</p>
               </div>
               <p className="text-lg font-bold text-green-700">{dailyStats.totalRevenue.toFixed(2)} EGP</p>
               <p className="text-xs text-green-600">({dailyStats.totalOrders} pre-orders)</p>
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-lg px-3 py-2">
-              <div className="flex items-center gap-2">
+              <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <ShoppingBag className="w-4 h-4 text-blue-600" />
-                <p className="text-xs text-blue-600 font-medium">Tomorrow's Bookings</p>
+                <p className="text-xs text-blue-600 font-medium">{t.admin.reservationsPage.tomorrowsBookings}</p>
               </div>
               <p className="text-lg font-bold text-blue-700">
                 {(() => {
@@ -376,9 +378,9 @@ const Reservations = () => {
         </div>
         
         {/* Export Buttons */}
-        <div className="flex gap-2 items-center">
+        <div className={`flex gap-2 items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
           {/* Date picker for printing */}
-          <div className="flex items-center gap-2 px-3 py-2 border border-border rounded-lg">
+          <div className={`flex items-center gap-2 px-3 py-2 border border-border rounded-lg ${isRTL ? 'flex-row-reverse' : ''}`}>
             <CalendarDays className="w-4 h-4 text-muted-foreground" />
             <input
               type="date"
@@ -390,18 +392,18 @@ const Reservations = () => {
           
           <button
             onClick={printReservations}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <Printer className="w-4 h-4" />
-            Print Date
+            {t.admin.reservationsPage.printDate}
           </button>
           
           <button
             onClick={exportToExcel}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity text-sm"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity text-sm ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <FileSpreadsheet className="w-4 h-4" />
-            Export Excel
+            {t.admin.reservationsPage.exportExcel}
           </button>
         </div>
       </div>
@@ -409,54 +411,54 @@ const Reservations = () => {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div className="bg-card rounded-xl border border-border p-4">
-          <p className="text-sm text-muted-foreground">Total</p>
+          <p className="text-sm text-muted-foreground">{t.admin.reservationsPage.total}</p>
           <p className="text-2xl font-bold text-foreground">{stats.total}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4">
-          <p className="text-sm text-yellow-600">Pending</p>
+          <p className="text-sm text-yellow-600">{t.admin.reservationsPage.pending}</p>
           <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4">
-          <p className="text-sm text-green-600">Confirmed</p>
+          <p className="text-sm text-green-600">{t.admin.reservationsPage.confirmed}</p>
           <p className="text-2xl font-bold text-green-600">{stats.confirmed}</p>
         </div>
         <div className="bg-card rounded-xl border border-border p-4">
-          <p className="text-sm text-red-600">Cancelled</p>
+          <p className="text-sm text-red-600">{t.admin.reservationsPage.cancelled}</p>
           <p className="text-2xl font-bold text-red-600">{stats.cancelled}</p>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className={`flex flex-col sm:flex-row gap-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
           <input
             type="text"
-            placeholder="Search by name, phone, or email..."
+            placeholder={t.admin.reservationsPage.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className={`w-full py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'pr-11 pl-4' : 'pl-11 pr-4'}`}
           />
         </div>
         <select
           value={locationFilter}
           onChange={(e) => setLocationFilter(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className={`px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'text-right' : ''}`}
         >
-          <option value="all">All Branches</option>
-          <option value="Cairo - New Cairo">Cairo - New Cairo</option>
-          <option value="Alexandria - Kafr Abdou">Alexandria - Kafr Abdou</option>
-          <option value="Alexandria - Gleem">Alexandria - Gleem</option>
+          <option value="all">{t.admin.reservationsPage.allBranches}</option>
+          <option value="Cairo - New Cairo">{t.admin.locations.cairoNewCairo}</option>
+          <option value="Alexandria - Kafr Abdou">{t.admin.locations.alexKafrAbdou}</option>
+          <option value="Alexandria - Gleem">{t.admin.locations.alexGleem}</option>
         </select>
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className={`px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'text-right' : ''}`}
         >
-          <option value="all">All Status</option>
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="all">{t.admin.reservationsPage.allStatus}</option>
+          <option value="pending">{t.admin.reservationsPage.pending}</option>
+          <option value="confirmed">{t.admin.reservationsPage.confirmed}</option>
+          <option value="cancelled">{t.admin.reservationsPage.cancelled}</option>
         </select>
       </div>
 
@@ -464,7 +466,7 @@ const Reservations = () => {
       {filteredReservations.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border">
           <Calendar className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-          <p className="text-muted-foreground">No reservations found</p>
+          <p className="text-muted-foreground">{t.admin.reservationsPage.noReservations}</p>
         </div>
       ) : (
         <div className="space-y-3">
@@ -475,7 +477,7 @@ const Reservations = () => {
             >
               <div className="flex flex-col gap-4">
                 {/* Header with name and status */}
-                <div className="flex items-center justify-between gap-3">
+                <div className={`flex items-center justify-between gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <h3 className="font-semibold text-foreground text-lg">{reservation.name}</h3>
                   {getStatusBadge(reservation.status)}
                 </div>
@@ -483,34 +485,34 @@ const Reservations = () => {
                 {/* All Details in Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                   {/* Phone */}
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className={`flex items-center gap-2 text-muted-foreground ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Phone className="w-4 h-4 shrink-0" />
                     <span className="truncate">{reservation.phone}</span>
                   </div>
 
                   {/* Email */}
                   {reservation.email && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className={`flex items-center gap-2 text-muted-foreground ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Mail className="w-4 h-4 shrink-0" />
                       <span className="truncate">{reservation.email}</span>
                     </div>
                   )}
 
                   {/* Date & Time */}
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className={`flex items-center gap-2 text-muted-foreground ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Calendar className="w-4 h-4 shrink-0" />
                     <span>{reservation.date} at {reservation.time}</span>
                   </div>
 
                   {/* Guests */}
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className={`flex items-center gap-2 text-muted-foreground ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Users className="w-4 h-4 shrink-0" />
-                    <span>{reservation.guests} guests</span>
+                    <span>{reservation.guests} {t.admin.reservationsPage.guests}</span>
                   </div>
 
                   {/* Service Type */}
                   {reservation.serviceType && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className={`flex items-center gap-2 text-muted-foreground ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <UtensilsCrossed className="w-4 h-4 shrink-0" />
                       <span>{reservation.serviceType}</span>
                     </div>
@@ -518,7 +520,7 @@ const Reservations = () => {
 
                   {/* Location */}
                   {reservation.location && (
-                    <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className={`flex items-center gap-2 text-muted-foreground ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <MapPin className="w-4 h-4 shrink-0" />
                       <span className="truncate">{reservation.location}</span>
                     </div>
@@ -528,8 +530,8 @@ const Reservations = () => {
                 {/* Special Message */}
                 {reservation.message && (
                   <div className="p-3 bg-muted/50 rounded-lg">
-                    <p className="text-sm text-muted-foreground">
-                      <span className="font-medium text-foreground">Special Request:</span> {reservation.message}
+                    <p className={`text-sm text-muted-foreground ${isRTL ? 'text-right' : ''}`}>
+                      <span className="font-medium text-foreground">{t.admin.reservationsPage.specialRequest}</span> {reservation.message}
                     </p>
                   </div>
                 )}
@@ -537,15 +539,15 @@ const Reservations = () => {
                 {/* Pre-ordered Items */}
                 {reservation.orderItems && (
                   <div className="p-3 bg-primary/5 rounded-lg border border-primary/10">
-                    <div className="flex items-start gap-2">
+                    <div className={`flex items-start gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <ShoppingBag className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-foreground mb-1">Pre-ordered Items:</p>
-                        <p className="text-sm text-muted-foreground">{reservation.orderItems}</p>
+                        <p className={`text-sm font-medium text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>{t.admin.reservationsPage.preOrderedItems}</p>
+                        <p className={`text-sm text-muted-foreground ${isRTL ? 'text-right' : ''}`}>{reservation.orderItems}</p>
                         {reservation.totalAmount && reservation.totalAmount > 0 && (
                           <div className="mt-2 pt-2 border-t border-primary/20">
-                            <p className="text-sm font-bold text-primary">
-                              Total: {reservation.totalAmount.toFixed(2)} EGP
+                            <p className={`text-sm font-bold text-primary ${isRTL ? 'text-right' : ''}`}>
+                              {t.admin.reservationsPage.totalAmount} {reservation.totalAmount.toFixed(2)} EGP
                             </p>
                           </div>
                         )}
@@ -555,24 +557,24 @@ const Reservations = () => {
                 )}
                 
                 {/* Actions */}
-                <div className="flex gap-2 pt-2 border-t border-border">
+                <div className={`flex gap-2 pt-2 border-t border-border ${isRTL ? 'flex-row-reverse' : ''}`}>
                   {reservation.status === "pending" && (
                     <>
                       <button
                         onClick={() => updateStatus(reservation.id, "confirmed")}
                         disabled={updatingId === reservation.id}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 text-green-600 hover:bg-green-500/20 transition-colors disabled:opacity-50"
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-green-500/10 text-green-600 hover:bg-green-500/20 transition-colors disabled:opacity-50 ${isRTL ? 'flex-row-reverse' : ''}`}
                       >
                         <CheckCircle2 className="w-4 h-4" />
-                        Confirm
+                        {t.admin.reservationsPage.confirm}
                       </button>
                       <button
                         onClick={() => updateStatus(reservation.id, "cancelled")}
                         disabled={updatingId === reservation.id}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                        className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors disabled:opacity-50 ${isRTL ? 'flex-row-reverse' : ''}`}
                       >
                         <XCircle className="w-4 h-4" />
-                        Cancel
+                        {t.admin.reservationsPage.cancel}
                       </button>
                     </>
                   )}
@@ -580,20 +582,20 @@ const Reservations = () => {
                     <button
                       onClick={() => updateStatus(reservation.id, "cancelled")}
                       disabled={updatingId === reservation.id}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors disabled:opacity-50"
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/20 transition-colors disabled:opacity-50 ${isRTL ? 'flex-row-reverse' : ''}`}
                     >
                       <XCircle className="w-4 h-4" />
-                      Cancel
+                      {t.admin.reservationsPage.cancel}
                     </button>
                   )}
                   {reservation.status === "cancelled" && (
                     <button
                       onClick={() => updateStatus(reservation.id, "pending")}
                       disabled={updatingId === reservation.id}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20 transition-colors disabled:opacity-50"
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20 transition-colors disabled:opacity-50 ${isRTL ? 'flex-row-reverse' : ''}`}
                     >
                       <Clock className="w-4 h-4" />
-                      Reopen
+                      {t.admin.reservationsPage.reopen}
                     </button>
                   )}
                   
@@ -602,11 +604,11 @@ const Reservations = () => {
                     <button
                       onClick={() => deleteReservation(reservation.id, reservation.name)}
                       disabled={updatingId === reservation.id}
-                      className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/30 transition-colors disabled:opacity-50 ml-auto"
+                      className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/10 text-red-600 hover:bg-red-500/30 transition-colors disabled:opacity-50 ${isRTL ? 'mr-auto flex-row-reverse' : 'ml-auto'}`}
                       title="Delete reservation permanently"
                     >
                       <Trash2 className="w-4 h-4" />
-                      Delete
+                      {t.admin.reservationsPage.delete}
                     </button>
                   )}
                 </div>

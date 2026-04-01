@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs, query, orderBy, limit, where, Timestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   UtensilsCrossed, 
   CalendarDays, 
@@ -31,6 +32,7 @@ interface RecentReservation {
 
 const Dashboard = () => {
   const { isAdmin } = useAuth();
+  const { t, isRTL } = useLanguage();
   const [stats, setStats] = useState<Stats>({
     totalMenuItems: 0,
     totalReservations: 0,
@@ -95,28 +97,28 @@ const Dashboard = () => {
 
   const statCards = [
     { 
-      label: "Menu Items", 
+      label: t.admin.dashboard.menuItems, 
       value: stats.totalMenuItems, 
       icon: UtensilsCrossed, 
       color: "text-orange-500",
       bgColor: "bg-orange-500/10"
     },
     { 
-      label: "Total Reservations", 
+      label: t.admin.dashboard.totalReservations, 
       value: stats.totalReservations, 
       icon: CalendarDays, 
       color: "text-blue-500",
       bgColor: "bg-blue-500/10"
     },
     { 
-      label: "Pending", 
+      label: t.admin.dashboard.pending, 
       value: stats.pendingReservations, 
       icon: Clock, 
       color: "text-yellow-500",
       bgColor: "bg-yellow-500/10"
     },
     ...(isAdmin ? [{ 
-      label: "Staff Members", 
+      label: t.admin.dashboard.staffMembers, 
       value: stats.totalStaff, 
       icon: Users, 
       color: "text-green-500",
@@ -128,23 +130,23 @@ const Dashboard = () => {
     switch (status) {
       case "confirmed":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-600">
+          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <CheckCircle2 className="w-3 h-3" />
-            Confirmed
+            {t.admin.dashboard.confirmed}
           </span>
         );
       case "pending":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-600">
+          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-yellow-500/10 text-yellow-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Clock className="w-3 h-3" />
-            Pending
+            {t.admin.dashboard.pending}
           </span>
         );
       case "cancelled":
         return (
-          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-600">
+          <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-600 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <AlertCircle className="w-3 h-3" />
-            Cancelled
+            {t.admin.dashboard.cancelled}
           </span>
         );
       default:
@@ -170,10 +172,10 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${isRTL ? 'text-right' : ''}`}>
       <div>
-        <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome back! Here's an overview of your café.</p>
+        <h1 className="text-2xl font-bold text-foreground">{t.admin.dashboard.title}</h1>
+        <p className="text-muted-foreground">{t.admin.dashboard.subtitle}</p>
       </div>
 
       {/* Stats Grid */}
@@ -185,7 +187,7 @@ const Dashboard = () => {
               key={index}
               className="bg-card rounded-xl border border-border p-6 hover:shadow-lg transition-shadow"
             >
-              <div className="flex items-center justify-between">
+              <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <div>
                   <p className="text-sm text-muted-foreground">{stat.label}</p>
                   <p className="text-3xl font-bold text-foreground mt-1">{stat.value}</p>
@@ -202,25 +204,25 @@ const Dashboard = () => {
       {/* Recent Reservations */}
       <div className="bg-card rounded-xl border border-border">
         <div className="p-6 border-b border-border">
-          <h2 className="text-lg font-semibold text-foreground">Recent Reservations</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t.admin.dashboard.recentReservations}</h2>
         </div>
         <div className="p-6">
           {recentReservations.length === 0 ? (
             <div className="text-center py-8">
               <CalendarDays className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-              <p className="text-muted-foreground">No reservations yet</p>
+              <p className="text-muted-foreground">{t.admin.dashboard.noReservations}</p>
             </div>
           ) : (
             <div className="space-y-4">
               {recentReservations.map((reservation) => (
                 <div 
                   key={reservation.id}
-                  className="flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                  className={`flex items-center justify-between p-4 rounded-lg bg-muted/50 hover:bg-muted transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
                 >
                   <div>
                     <p className="font-medium text-foreground">{reservation.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {reservation.date} at {reservation.time} • {reservation.guests} guests
+                      {reservation.date} {isRTL ? '•' : 'at'} {reservation.time} • {reservation.guests} {t.admin.dashboard.guests}
                     </p>
                   </div>
                   {getStatusBadge(reservation.status)}

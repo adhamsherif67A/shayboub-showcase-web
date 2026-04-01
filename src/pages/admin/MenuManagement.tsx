@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   Plus, 
   Search, 
@@ -45,6 +46,7 @@ const tagOptions = [
 ];
 
 const MenuManagement = () => {
+  const { t, isRTL } = useLanguage();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -208,49 +210,49 @@ const MenuManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Menu Management</h1>
-          <p className="text-muted-foreground">Add, edit, or remove menu items</p>
+      <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
+        <div className={isRTL ? 'text-right' : ''}>
+          <h1 className="text-2xl font-bold text-foreground">{t.admin.menuManagement.title}</h1>
+          <p className="text-muted-foreground">{t.admin.menuManagement.subtitle}</p>
         </div>
-        <div className="flex gap-2">
+        <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <button
             onClick={exportMenuToExcel}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <FileSpreadsheet className="w-4 h-4" />
-            Export Menu
+            {t.admin.menuManagement.exportMenu}
           </button>
           <button
             onClick={() => handleOpenModal()}
-            className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+            className={`inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             <Plus className="w-5 h-5" />
-            Add Item
+            {t.admin.menuManagement.addItem}
           </button>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className={`flex flex-col sm:flex-row gap-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
           <input
             type="text"
-            placeholder="Search menu items..."
+            placeholder={t.admin.menuManagement.searchPlaceholder}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-11 pr-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+            className={`w-full py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'pr-11 pl-4 text-right' : 'pl-11 pr-4'}`}
           />
         </div>
         <select
           value={selectedCategory || ""}
           onChange={(e) => setSelectedCategory(e.target.value || null)}
-          className="px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className={`px-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'text-right' : ''}`}
         >
-          <option value="">All Categories</option>
+          <option value="">{t.admin.menuManagement.allCategories}</option>
           {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
+            <option key={cat} value={cat}>{t.admin.menuManagement.categories[cat as keyof typeof t.admin.menuManagement.categories] || cat}</option>
           ))}
         </select>
       </div>
@@ -258,12 +260,12 @@ const MenuManagement = () => {
       {/* Menu Items Grid */}
       {filteredItems.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border">
-          <p className="text-muted-foreground">No menu items found</p>
+          <p className="text-muted-foreground">{t.admin.menuManagement.noItems}</p>
           <button
             onClick={() => handleOpenModal()}
             className="mt-4 text-primary hover:underline"
           >
-            Add your first menu item
+            {t.admin.menuManagement.addFirstItem}
           </button>
         </div>
       ) : (
@@ -282,32 +284,32 @@ const MenuManagement = () => {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                    No image
+                    {t.admin.menuManagement.noImage}
                   </div>
                 )}
                 {/* Tags */}
                 {item.tags?.length > 0 && (
-                  <div className="absolute top-2 left-2 flex gap-1">
+                  <div className={`absolute top-2 flex gap-1 ${isRTL ? 'right-2' : 'left-2'}`}>
                     {item.tags.includes("new") && (
-                      <span className="px-2 py-1 bg-green-500 text-white text-xs font-medium rounded-full flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" /> New
+                      <span className={`px-2 py-1 bg-green-500 text-white text-xs font-medium rounded-full flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <Sparkles className="w-3 h-3" /> {t.admin.menuManagement.new}
                       </span>
                     )}
                     {item.tags.includes("topRated") && (
-                      <span className="px-2 py-1 bg-yellow-500 text-white text-xs font-medium rounded-full flex items-center gap-1">
-                        <Star className="w-3 h-3" /> Top
+                      <span className={`px-2 py-1 bg-yellow-500 text-white text-xs font-medium rounded-full flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <Star className="w-3 h-3" /> {t.admin.menuManagement.top}
                       </span>
                     )}
                     {item.tags.includes("spicy") && (
-                      <span className="px-2 py-1 bg-red-500 text-white text-xs font-medium rounded-full flex items-center gap-1">
-                        <Flame className="w-3 h-3" /> Spicy
+                      <span className={`px-2 py-1 bg-red-500 text-white text-xs font-medium rounded-full flex items-center gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <Flame className="w-3 h-3" /> {t.admin.menuManagement.spicy}
                       </span>
                     )}
                   </div>
                 )}
               </div>
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-2">
+              <div className={`p-4 ${isRTL ? 'text-right' : ''}`}>
+                <div className={`flex justify-between items-start mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div>
                     <h3 className="font-semibold text-foreground">{item.name}</h3>
                     {item.nameAr && (
@@ -316,14 +318,14 @@ const MenuManagement = () => {
                   </div>
                   <span className="font-bold text-primary">{item.price} EGP</span>
                 </div>
-                <p className="text-sm text-muted-foreground mb-3">{item.category}</p>
-                <div className="flex gap-2">
+                <p className="text-sm text-muted-foreground mb-3">{t.admin.menuManagement.categories[item.category as keyof typeof t.admin.menuManagement.categories] || item.category}</p>
+                <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <button
                     onClick={() => handleOpenModal(item)}
-                    className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm"
+                    className={`flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm ${isRTL ? 'flex-row-reverse' : ''}`}
                   >
                     <Edit2 className="w-4 h-4" />
-                    Edit
+                    {t.admin.menuManagement.edit}
                   </button>
                   <button
                     onClick={() => setDeleteConfirm(item.id)}
@@ -342,9 +344,9 @@ const MenuManagement = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-card rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-border flex items-center justify-between">
+            <div className={`p-6 border-b border-border flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
               <h2 className="text-xl font-semibold text-foreground">
-                {editingItem ? "Edit Menu Item" : "Add Menu Item"}
+                {editingItem ? t.admin.menuManagement.editItem : t.admin.menuManagement.addItemTitle}
               </h2>
               <button
                 onClick={() => setShowModal(false)}
@@ -353,10 +355,10 @@ const MenuManagement = () => {
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 space-y-4">
+            <div className={`p-6 space-y-4 ${isRTL ? 'text-right' : ''}`}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Name (English) *</label>
+                  <label className="block text-sm font-medium mb-2">{t.admin.menuManagement.nameEnglish}</label>
                   <input
                     type="text"
                     value={formData.name}
@@ -366,112 +368,115 @@ const MenuManagement = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Name (Arabic)</label>
+                  <label className="block text-sm font-medium mb-2">{t.admin.menuManagement.nameArabic}</label>
                   <input
                     type="text"
                     dir="rtl"
                     value={formData.nameAr}
                     onChange={(e) => setFormData(prev => ({ ...prev, nameAr: e.target.value }))}
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 text-right"
                     placeholder="كابتشينو"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Description</label>
+                <label className="block text-sm font-medium mb-2">{t.admin.menuManagement.description}</label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   rows={2}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none"
+                  className={`w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none ${isRTL ? 'text-right' : ''}`}
                   placeholder="Rich espresso with steamed milk..."
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Price (EGP) *</label>
+                  <label className="block text-sm font-medium mb-2">{t.admin.menuManagement.priceEGP}</label>
                   <input
                     type="number"
                     value={formData.price}
                     onChange={(e) => setFormData(prev => ({ ...prev, price: e.target.value }))}
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className={`w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'text-right' : ''}`}
                     placeholder="45"
                     min="0"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Category *</label>
+                  <label className="block text-sm font-medium mb-2">{t.admin.menuManagement.category}</label>
                   <select
                     value={formData.category}
                     onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                    className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    className={`w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'text-right' : ''}`}
                   >
                     {categories.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
+                      <option key={cat} value={cat}>{t.admin.menuManagement.categories[cat as keyof typeof t.admin.menuManagement.categories] || cat}</option>
                     ))}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Image URL</label>
+                <label className="block text-sm font-medium mb-2">{t.admin.menuManagement.imageUrl}</label>
                 <input
                   type="url"
                   value={formData.image}
                   onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                  className="w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  className={`w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'text-right' : ''}`}
                   placeholder="https://example.com/image.jpg"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Tags</label>
-                <div className="flex flex-wrap gap-2">
+                <label className="block text-sm font-medium mb-2">{t.admin.menuManagement.tags}</label>
+                <div className={`flex flex-wrap gap-2 ${isRTL ? 'justify-end' : ''}`}>
                   {tagOptions.map(tag => {
                     const Icon = tag.icon;
                     const isSelected = formData.tags.includes(tag.value);
+                    const tagLabel = tag.value === "new" ? t.admin.menuManagement.new : 
+                                     tag.value === "topRated" ? t.admin.menuManagement.top : 
+                                     t.admin.menuManagement.spicy;
                     return (
                       <button
                         key={tag.value}
                         type="button"
                         onClick={() => toggleTag(tag.value)}
-                        className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${
+                        className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg border transition-all ${isRTL ? 'flex-row-reverse' : ''} ${
                           isSelected 
                             ? "border-primary bg-primary/10 text-primary" 
                             : "border-border hover:border-primary/50"
                         }`}
                       >
                         <Icon className="w-4 h-4" />
-                        {tag.label}
+                        {tagLabel}
                       </button>
                     );
                   })}
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t border-border flex gap-3">
+            <div className={`p-6 border-t border-border flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <button
                 onClick={() => setShowModal(false)}
                 className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
               >
-                Cancel
+                {t.admin.menuManagement.cancel}
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                className={`flex-1 inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 ${isRTL ? 'flex-row-reverse' : ''}`}
               >
                 {saving ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Saving...
+                    {t.admin.menuManagement.saving || "Saving..."}
                   </>
                 ) : (
                   <>
                     <Save className="w-4 h-4" />
-                    Save
+                    {t.admin.menuManagement.save}
                   </>
                 )}
               </button>
@@ -483,23 +488,23 @@ const MenuManagement = () => {
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-card rounded-xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-semibold text-foreground mb-2">Delete Item?</h3>
+          <div className={`bg-card rounded-xl p-6 max-w-sm w-full ${isRTL ? 'text-right' : ''}`}>
+            <h3 className="text-lg font-semibold text-foreground mb-2">{t.admin.menuManagement.deleteItem}</h3>
             <p className="text-muted-foreground mb-6">
-              This action cannot be undone. The menu item will be permanently deleted.
+              {t.admin.menuManagement.deleteConfirm}
             </p>
-            <div className="flex gap-3">
+            <div className={`flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <button
                 onClick={() => setDeleteConfirm(null)}
                 className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
               >
-                Cancel
+                {t.admin.menuManagement.cancel}
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
                 className="flex-1 bg-destructive text-destructive-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
               >
-                Delete
+                {t.admin.menuManagement.delete}
               </button>
             </div>
           </div>

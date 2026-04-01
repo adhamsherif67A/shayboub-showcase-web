@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   LineChart, 
   Line, 
@@ -51,6 +52,7 @@ const Analytics = () => {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<'7d' | '30d' | '90d'>('30d');
+  const { t, isRTL } = useLanguage();
 
   useEffect(() => {
     fetchReservations();
@@ -131,7 +133,7 @@ const Analytics = () => {
     filteredReservations.forEach(r => {
       if (r.status === "confirmed") {
         const hour = parseInt(r.time.split(':')[0]);
-        const timeSlot = hour < 12 ? 'Morning' : hour < 17 ? 'Afternoon' : 'Evening';
+        const timeSlot = hour < 12 ? t.admin.analytics.morning : hour < 17 ? t.admin.analytics.afternoon : t.admin.analytics.evening;
         timeStats[timeSlot] = (timeStats[timeSlot] || 0) + 1;
       }
     });
@@ -192,16 +194,16 @@ const Analytics = () => {
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1'];
 
   return (
-    <div className="space-y-6">
+    <div className={`space-y-6 ${isRTL ? 'text-right' : ''}`}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Revenue Analytics</h1>
-          <p className="text-muted-foreground">Detailed insights into your business performance</p>
+          <h1 className="text-2xl font-bold text-foreground">{t.admin.analytics.title}</h1>
+          <p className="text-muted-foreground">{t.admin.analytics.subtitle}</p>
         </div>
         
         {/* Date Range Filter */}
-        <div className="flex gap-2">
+        <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
           {(['7d', '30d', '90d'] as const).map((range) => (
             <button
               key={range}
@@ -212,7 +214,7 @@ const Analytics = () => {
                   : "bg-card border border-border text-muted-foreground hover:text-foreground"
               }`}
             >
-              {range === '7d' ? 'Last 7 Days' : range === '30d' ? 'Last 30 Days' : 'Last 90 Days'}
+              {range === '7d' ? t.admin.analytics.last7Days : range === '30d' ? t.admin.analytics.last30Days : t.admin.analytics.last90Days}
             </button>
           ))}
         </div>
@@ -221,49 +223,49 @@ const Analytics = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div className="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
+          <div className={`flex items-center gap-2 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <DollarSign className="w-4 h-4 text-green-600" />
-            <p className="text-xs font-medium text-green-600">Total Revenue</p>
+            <p className="text-xs font-medium text-green-600">{t.admin.analytics.totalRevenue}</p>
           </div>
           <p className="text-2xl font-bold text-green-700">{analytics.kpis.totalRevenue.toFixed(2)} EGP</p>
         </div>
 
         <div className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
+          <div className={`flex items-center gap-2 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <ShoppingBag className="w-4 h-4 text-blue-600" />
-            <p className="text-xs font-medium text-blue-600">Pre-orders</p>
+            <p className="text-xs font-medium text-blue-600">{t.admin.analytics.preOrders}</p>
           </div>
           <p className="text-2xl font-bold text-blue-700">{analytics.kpis.totalOrders}</p>
         </div>
 
         <div className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
+          <div className={`flex items-center gap-2 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Target className="w-4 h-4 text-purple-600" />
-            <p className="text-xs font-medium text-purple-600">Avg Order</p>
+            <p className="text-xs font-medium text-purple-600">{t.admin.analytics.avgOrder}</p>
           </div>
           <p className="text-2xl font-bold text-purple-700">{analytics.kpis.avgOrderValue.toFixed(0)} EGP</p>
         </div>
 
         <div className="bg-gradient-to-br from-orange-50 to-orange-100 border border-orange-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
+          <div className={`flex items-center gap-2 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Calendar className="w-4 h-4 text-orange-600" />
-            <p className="text-xs font-medium text-orange-600">Reservations</p>
+            <p className="text-xs font-medium text-orange-600">{t.admin.analytics.reservations}</p>
           </div>
           <p className="text-2xl font-bold text-orange-700">{analytics.kpis.totalReservations}</p>
         </div>
 
         <div className="bg-gradient-to-br from-pink-50 to-pink-100 border border-pink-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
+          <div className={`flex items-center gap-2 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Users className="w-4 h-4 text-pink-600" />
-            <p className="text-xs font-medium text-pink-600">Total Guests</p>
+            <p className="text-xs font-medium text-pink-600">{t.admin.analytics.totalGuests}</p>
           </div>
           <p className="text-2xl font-bold text-pink-700">{analytics.kpis.totalGuests}</p>
         </div>
 
         <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 border border-indigo-200 rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
+          <div className={`flex items-center gap-2 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Activity className="w-4 h-4 text-indigo-600" />
-            <p className="text-xs font-medium text-indigo-600">Conversion</p>
+            <p className="text-xs font-medium text-indigo-600">{t.admin.analytics.conversion}</p>
           </div>
           <p className="text-2xl font-bold text-indigo-700">{analytics.kpis.conversionRate.toFixed(1)}%</p>
         </div>
@@ -271,9 +273,9 @@ const Analytics = () => {
 
       {/* Revenue Trend Chart */}
       <div className="bg-card rounded-xl border border-border p-6">
-        <div className="flex items-center gap-2 mb-6">
+        <div className={`flex items-center gap-2 mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <TrendingUp className="w-5 h-5 text-primary" />
-          <h2 className="text-lg font-semibold text-foreground">Revenue Trend</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t.admin.analytics.revenueTrend}</h2>
         </div>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
@@ -306,9 +308,9 @@ const Analytics = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Location Performance */}
         <div className="bg-card rounded-xl border border-border p-6">
-          <div className="flex items-center gap-2 mb-6">
+          <div className={`flex items-center gap-2 mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <MapPin className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">Revenue by Location</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t.admin.analytics.revenueByLocation}</h2>
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -332,9 +334,9 @@ const Analytics = () => {
 
         {/* Peak Hours */}
         <div className="bg-card rounded-xl border border-border p-6">
-          <div className="flex items-center gap-2 mb-6">
+          <div className={`flex items-center gap-2 mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Clock className="w-5 h-5 text-primary" />
-            <h2 className="text-lg font-semibold text-foreground">Peak Hours</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t.admin.analytics.peakHours}</h2>
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">

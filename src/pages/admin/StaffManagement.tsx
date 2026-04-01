@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, where } from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { db, auth } from "@/lib/firebase";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { 
   Plus, 
   Search, 
@@ -25,6 +26,7 @@ interface StaffMember {
 }
 
 const StaffManagement = () => {
+  const { t, isRTL } = useLanguage();
   const [staff, setStaff] = useState<StaffMember[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -77,12 +79,12 @@ const StaffManagement = () => {
 
   const handleSave = async () => {
     if (!formData.email || !formData.password || !formData.name) {
-      setError("Please fill in all required fields");
+      setError(t.admin.staffManagement.errors.fillAllFields);
       return;
     }
 
     if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(t.admin.staffManagement.errors.passwordLength);
       return;
     }
 
@@ -111,13 +113,13 @@ const StaffManagement = () => {
     } catch (error: any) {
       console.error("Error creating staff:", error);
       if (error.code === "auth/email-already-in-use") {
-        setError("This email is already registered");
+        setError(t.admin.staffManagement.errors.emailInUse);
       } else if (error.code === "auth/invalid-email") {
-        setError("Invalid email address");
+        setError(t.admin.staffManagement.errors.invalidEmail);
       } else if (error.code === "auth/weak-password") {
-        setError("Password is too weak");
+        setError(t.admin.staffManagement.errors.weakPassword);
       } else {
-        setError("Failed to create staff member");
+        setError(t.admin.staffManagement.errors.createFailed);
       }
     } finally {
       setSaving(false);
@@ -177,37 +179,37 @@ const StaffManagement = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Staff Management</h1>
-          <p className="text-muted-foreground">Manage admin and staff accounts</p>
+      <div className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
+        <div className={isRTL ? 'text-right' : ''}>
+          <h1 className="text-2xl font-bold text-foreground">{t.admin.staffManagement.title}</h1>
+          <p className="text-muted-foreground">{t.admin.staffManagement.subtitle}</p>
         </div>
         <button
           onClick={handleOpenModal}
-          className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+          className={`inline-flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity ${isRTL ? 'flex-row-reverse' : ''}`}
         >
           <UserPlus className="w-5 h-5" />
-          Add Staff
+          {t.admin.staffManagement.addStaff}
         </button>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+        <div className={`bg-card rounded-xl border border-border p-4 flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
             <Shield className="w-6 h-6 text-purple-500" />
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Admins</p>
+          <div className={isRTL ? 'text-right' : ''}>
+            <p className="text-sm text-muted-foreground">{t.admin.staffManagement.admins}</p>
             <p className="text-2xl font-bold text-foreground">{adminCount}</p>
           </div>
         </div>
-        <div className="bg-card rounded-xl border border-border p-4 flex items-center gap-4">
+        <div className={`bg-card rounded-xl border border-border p-4 flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
             <User className="w-6 h-6 text-blue-500" />
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground">Staff</p>
+          <div className={isRTL ? 'text-right' : ''}>
+            <p className="text-sm text-muted-foreground">{t.admin.staffManagement.staff}</p>
             <p className="text-2xl font-bold text-foreground">{staffCount}</p>
           </div>
         </div>
@@ -215,13 +217,13 @@ const StaffManagement = () => {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+        <Search className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground`} />
         <input
           type="text"
-          placeholder="Search by name or email..."
+          placeholder={t.admin.staffManagement.searchPlaceholder}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-11 pr-4 py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+          className={`w-full ${isRTL ? 'pr-11 pl-4 text-right' : 'pl-11 pr-4'} py-2 rounded-lg border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50`}
         />
       </div>
 
@@ -229,12 +231,12 @@ const StaffManagement = () => {
       {filteredStaff.length === 0 ? (
         <div className="text-center py-12 bg-card rounded-xl border border-border">
           <User className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-          <p className="text-muted-foreground">No staff members found</p>
+          <p className="text-muted-foreground">{t.admin.staffManagement.noStaff}</p>
           <button
             onClick={handleOpenModal}
             className="mt-4 text-primary hover:underline"
           >
-            Add your first staff member
+            {t.admin.staffManagement.addFirstStaff}
           </button>
         </div>
       ) : (
@@ -244,8 +246,8 @@ const StaffManagement = () => {
               key={member.id}
               className="bg-card rounded-xl border border-border p-4 md:p-6 hover:shadow-lg transition-shadow"
             >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
+              <div className={`flex flex-col md:flex-row md:items-center justify-between gap-4 ${isRTL ? 'md:flex-row-reverse' : ''}`}>
+                <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
                     member.role === "admin" ? "bg-purple-500/10" : "bg-blue-500/10"
                   }`}>
@@ -255,13 +257,13 @@ const StaffManagement = () => {
                       <User className="w-6 h-6 text-blue-500" />
                     )}
                   </div>
-                  <div>
+                  <div className={isRTL ? 'text-right' : ''}>
                     <h3 className="font-semibold text-foreground">{member.name}</h3>
                     <p className="text-sm text-muted-foreground">{member.email}</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-3">
+                <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <select
                     value={member.role}
                     onChange={(e) => handleUpdateRole(member.id, e.target.value as "admin" | "staff")}
@@ -269,10 +271,10 @@ const StaffManagement = () => {
                       member.role === "admin" 
                         ? "border-purple-500/30 bg-purple-500/10 text-purple-600"
                         : "border-blue-500/30 bg-blue-500/10 text-blue-600"
-                    }`}
+                    } ${isRTL ? 'text-right' : ''}`}
                   >
-                    <option value="admin">Admin</option>
-                    <option value="staff">Staff</option>
+                    <option value="admin">{t.admin.staffManagement.admin}</option>
+                    <option value="staff">{t.admin.staffManagement.staffRole}</option>
                   </select>
                   <button
                     onClick={() => setDeleteConfirm(member.id)}
@@ -291,8 +293,8 @@ const StaffManagement = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-card rounded-2xl w-full max-w-md">
-            <div className="p-6 border-b border-border flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-foreground">Add Staff Member</h2>
+            <div className={`p-6 border-b border-border flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <h2 className={`text-xl font-semibold text-foreground ${isRTL ? 'text-right' : ''}`}>{t.admin.staffManagement.addStaffMember}</h2>
               <button
                 onClick={() => setShowModal(false)}
                 className="p-2 rounded-lg hover:bg-muted transition-colors"
@@ -308,50 +310,50 @@ const StaffManagement = () => {
               )}
 
               <div>
-                <label className="block text-sm font-medium mb-2">Full Name *</label>
+                <label className={`block text-sm font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>{t.admin.staffManagement.fullName}</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <User className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground`} />
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="w-full pl-11 pr-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    placeholder="Ahmed Mohamed"
+                    className={`w-full ${isRTL ? 'pr-11 pl-4 text-right' : 'pl-11 pr-4'} py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50`}
+                    placeholder={t.admin.staffManagement.namePlaceholder}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Email *</label>
+                <label className={`block text-sm font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>{t.admin.staffManagement.email}</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Mail className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground`} />
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full pl-11 pr-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    placeholder="staff@shayboub.com"
+                    className={`w-full ${isRTL ? 'pr-11 pl-4 text-right' : 'pl-11 pr-4'} py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50`}
+                    placeholder={t.admin.staffManagement.emailPlaceholder}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Password *</label>
+                <label className={`block text-sm font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>{t.admin.staffManagement.password}</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Lock className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground`} />
                   <input
                     type="password"
                     value={formData.password}
                     onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                    className="w-full pl-11 pr-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    placeholder="••••••••"
+                    className={`w-full ${isRTL ? 'pr-11 pl-4 text-right' : 'pl-11 pr-4'} py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50`}
+                    placeholder={t.admin.staffManagement.passwordPlaceholder}
                   />
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">Minimum 6 characters</p>
+                <p className={`text-xs text-muted-foreground mt-1 ${isRTL ? 'text-right' : ''}`}>{t.admin.staffManagement.minPassword}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Role *</label>
+                <label className={`block text-sm font-medium mb-2 ${isRTL ? 'text-right' : ''}`}>{t.admin.staffManagement.role}</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -365,8 +367,8 @@ const StaffManagement = () => {
                     <User className={`w-6 h-6 mx-auto mb-2 ${
                       formData.role === "staff" ? "text-primary" : "text-muted-foreground"
                     }`} />
-                    <p className="font-medium">Staff</p>
-                    <p className="text-xs text-muted-foreground">View & confirm reservations</p>
+                    <p className="font-medium">{t.admin.staffManagement.staffRole}</p>
+                    <p className="text-xs text-muted-foreground">{t.admin.staffManagement.staffDesc}</p>
                   </button>
                   <button
                     type="button"
@@ -380,33 +382,33 @@ const StaffManagement = () => {
                     <Shield className={`w-6 h-6 mx-auto mb-2 ${
                       formData.role === "admin" ? "text-primary" : "text-muted-foreground"
                     }`} />
-                    <p className="font-medium">Admin</p>
-                    <p className="text-xs text-muted-foreground">Full access to everything</p>
+                    <p className="font-medium">{t.admin.staffManagement.admin}</p>
+                    <p className="text-xs text-muted-foreground">{t.admin.staffManagement.adminDesc}</p>
                   </button>
                 </div>
               </div>
             </div>
-            <div className="p-6 border-t border-border flex gap-3">
+            <div className={`p-6 border-t border-border flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <button
                 onClick={() => setShowModal(false)}
                 className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
               >
-                Cancel
+                {t.admin.staffManagement.cancel}
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50"
+                className={`flex-1 inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 ${isRTL ? 'flex-row-reverse' : ''}`}
               >
                 {saving ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Creating...
+                    {t.admin.staffManagement.creating}
                   </>
                 ) : (
                   <>
                     <UserPlus className="w-4 h-4" />
-                    Create Account
+                    {t.admin.staffManagement.createAccount}
                   </>
                 )}
               </button>
@@ -419,22 +421,22 @@ const StaffManagement = () => {
       {deleteConfirm && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-card rounded-xl p-6 max-w-sm w-full">
-            <h3 className="text-lg font-semibold text-foreground mb-2">Remove Staff Member?</h3>
-            <p className="text-muted-foreground mb-6">
-              This will remove their access to the admin panel. This action cannot be undone.
+            <h3 className={`text-lg font-semibold text-foreground mb-2 ${isRTL ? 'text-right' : ''}`}>{t.admin.staffManagement.removeStaff}</h3>
+            <p className={`text-muted-foreground mb-6 ${isRTL ? 'text-right' : ''}`}>
+              {t.admin.staffManagement.removeConfirm}
             </p>
-            <div className="flex gap-3">
+            <div className={`flex gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
               <button
                 onClick={() => setDeleteConfirm(null)}
                 className="flex-1 px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors"
               >
-                Cancel
+                {t.admin.staffManagement.cancel}
               </button>
               <button
                 onClick={() => handleDelete(deleteConfirm)}
                 className="flex-1 bg-destructive text-destructive-foreground px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
               >
-                Remove
+                {t.admin.staffManagement.remove}
               </button>
             </div>
           </div>
