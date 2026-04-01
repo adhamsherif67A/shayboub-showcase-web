@@ -7,6 +7,11 @@ const PWAInstallPrompt = () => {
 
   useEffect(() => {
     const handler = (e: Event) => {
+      // Don't show on admin/staff routes - they have their own prompt
+      if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff')) {
+        return;
+      }
+      
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
       // Stash the event so it can be triggered later
@@ -42,8 +47,13 @@ const PWAInstallPrompt = () => {
     sessionStorage.setItem('pwa-prompt-dismissed', 'true');
   };
 
-  // Don't show if already dismissed or if already installed
+  // Don't show if already dismissed or on admin routes
   if (!showPrompt || sessionStorage.getItem('pwa-prompt-dismissed')) {
+    return null;
+  }
+  
+  // Extra check: don't show on admin routes
+  if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff')) {
     return null;
   }
 
