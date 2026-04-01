@@ -14,22 +14,39 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 
 const translations: Record<Language, Translations> = { en, ar };
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(() => {
-    // Check localStorage first
+// Safe localStorage access
+const getStoredLanguage = (): Language | null => {
+  try {
     const saved = localStorage.getItem('shayboub-lang');
     if (saved === 'ar' || saved === 'en') return saved;
-    
-    // Check browser language
+  } catch {
+    // localStorage not available
+  }
+  return null;
+};
+
+const getBrowserLanguage = (): Language => {
+  try {
     const browserLang = navigator.language.toLowerCase();
     if (browserLang.startsWith('ar')) return 'ar';
-    
-    return 'en';
+  } catch {
+    // navigator not available
+  }
+  return 'en';
+};
+
+export function LanguageProvider({ children }: { children: ReactNode }) {
+  const [language, setLanguageState] = useState<Language>(() => {
+    return getStoredLanguage() || getBrowserLanguage();
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('shayboub-lang', lang);
+    try {
+      localStorage.setItem('shayboub-lang', lang);
+    } catch {
+      // localStorage not available
+    }
   };
 
   // Update document direction and lang attribute

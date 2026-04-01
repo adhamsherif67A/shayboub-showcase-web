@@ -30,8 +30,20 @@ const MenuItemSkeleton = () => (
   </div>
 );
 
+// Static tag labels (will be overridden by language-aware version in MenuSection)
+const defaultTagLabels: Record<string, string> = {
+  new: "NEW",
+  spicy: "🌶 SPICY",
+  top: "⭐ TOP",
+};
+
 // Memoized menu item component for better rendering performance
-const MenuItemCard = memo(({ item, index, categoryName }: { item: typeof menuData[0]['items'][0]; index: number; categoryName?: string }) => {
+const MenuItemCard = memo(({ item, index, categoryName, tagLabels = defaultTagLabels }: { 
+  item: typeof menuData[0]['items'][0]; 
+  index: number; 
+  categoryName?: string;
+  tagLabels?: Record<string, string>;
+}) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -371,7 +383,7 @@ const MenuSection = () => {
             {filteredItems && filteredItems.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredItems.map(({ item, categoryName }, index) => (
-                  <MenuItemCard key={`${categoryName}-${item.name}`} item={item} index={index} categoryName={categoryName} />
+                  <MenuItemCard key={`${categoryName}-${item.name}`} item={item} index={index} categoryName={categoryName} tagLabels={tagLabels} />
                 ))}
               </div>
             )}
@@ -392,7 +404,7 @@ const MenuSection = () => {
               key={activeCategory}
             >
               {category.items.map((item, index) => (
-                <MenuItemCard key={item.name} item={item} index={index} />
+                <MenuItemCard key={item.name} item={item} index={index} tagLabels={tagLabels} />
               ))}
             </div>
           </>
