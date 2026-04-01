@@ -68,6 +68,32 @@
       })();
     </script>
     
+    <!-- iOS PWA Admin Redirect Fix - MUST run before React -->
+    <script>
+      (function() {
+        // Check if running as standalone PWA (iOS or Android)
+        var isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                           window.navigator.standalone === true;
+        
+        var currentPath = window.location.pathname;
+        var savedAdminRoute = localStorage.getItem('shayboub-admin-pwa-route');
+        
+        // If on admin page, save it
+        if (currentPath.startsWith('/admin') || currentPath.startsWith('/staff')) {
+          localStorage.setItem('shayboub-admin-pwa-route', currentPath);
+          console.log('[PWA] Saved admin route:', currentPath);
+        }
+        
+        // If in standalone mode and on root, check if should go to admin
+        if (isStandalone && (currentPath === '/' || currentPath === '')) {
+          if (savedAdminRoute && savedAdminRoute.startsWith('/admin')) {
+            console.log('[PWA] Redirecting to saved admin route:', savedAdminRoute);
+            window.location.replace(savedAdminRoute);
+          }
+        }
+      })();
+    </script>
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://shayboub.com" />

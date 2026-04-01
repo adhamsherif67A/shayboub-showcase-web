@@ -13,8 +13,8 @@ const AdminPWAInstallPrompt = () => {
       return;
     }
 
-    // Save the admin route for PWA startup (iOS fix)
-    localStorage.setItem('pwa-start-route', window.location.pathname);
+    // Save the admin route for PWA startup (iOS fix) - use specific key
+    localStorage.setItem('shayboub-admin-pwa-route', window.location.pathname);
 
     // Check if already installed (running as standalone)
     const standalone = window.matchMedia('(display-mode: standalone)').matches || 
