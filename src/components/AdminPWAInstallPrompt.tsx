@@ -13,6 +13,9 @@ const AdminPWAInstallPrompt = () => {
       return;
     }
 
+    // Save the admin route for PWA startup (iOS fix)
+    localStorage.setItem('pwa-start-route', window.location.pathname);
+
     // Check if already installed (running as standalone)
     const standalone = window.matchMedia('(display-mode: standalone)').matches || 
                        (window.navigator as any).standalone === true;
