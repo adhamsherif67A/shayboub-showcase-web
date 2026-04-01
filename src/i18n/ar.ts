@@ -251,9 +251,29 @@ export const ar: Translations = {
     analytics: {
       title: "تحليلات الإيرادات",
       subtitle: "رؤى تفصيلية حول أداء عملك",
+      
+      // Date Filters
+      today: "اليوم",
+      yesterday: "أمس",
       last7Days: "آخر 7 أيام",
       last30Days: "آخر 30 يوم",
       last90Days: "آخر 90 يوم",
+      customRange: "نطاق مخصص",
+      
+      // Real-time Metrics
+      realTime: {
+        todayRevenue: "إيرادات اليوم",
+        todayOrders: "طلبات اليوم",
+        todayGuests: "ضيوف اليوم",
+        avgOrderValue: "متوسط قيمة الطلب",
+        conversionRate: "معدل التحويل",
+        livePending: "معلقة الآن",
+        vsYesterday: "مقارنة بالأمس",
+        vsLastWeek: "مقارنة بالأسبوع الماضي",
+        vsLastMonth: "مقارنة بالشهر الماضي",
+      },
+      
+      // Revenue Analytics
       totalRevenue: "إجمالي الإيرادات",
       preOrders: "الطلبات المسبقة",
       avgOrder: "متوسط الطلب",
@@ -262,12 +282,121 @@ export const ar: Translations = {
       conversion: "معدل التحويل",
       revenueTrend: "اتجاه الإيرادات",
       revenueByLocation: "الإيرادات حسب الفرع",
+      revenueByServiceType: "الإيرادات حسب نوع الخدمة",
+      revenueByTimeSlot: "الإيرادات حسب الوقت",
+      preOrderRevenue: "إيرادات الطلبات المسبقة",
+      reservationOnlyRevenue: "حجوزات فقط",
+      
+      // Menu Performance
+      menuPerformance: {
+        title: "أداء القائمة",
+        topSellers: "الأكثر مبيعاً",
+        trending: "الأكثر رواجاً",
+        underperforming: "ضعيف الأداء",
+        categoryPerformance: "أداء الفئات",
+        avgItemsPerOrder: "متوسط العناصر لكل طلب",
+        quantity: "الكمية",
+        revenue: "الإيرادات",
+        orders: "الطلبات",
+      },
+      
+      // Customer Insights
+      customerInsights: {
+        title: "رؤى العملاء",
+        newCustomers: "عملاء جدد",
+        returningCustomers: "عملاء عائدون",
+        customerLifetimeValue: "القيمة الدائمة للعميل",
+        avgPartySize: "متوسط حجم المجموعة",
+        bookingLeadTime: "وقت الحجز المسبق",
+        cancellationRate: "معدل الإلغاء",
+        noShowRate: "معدل عدم الحضور",
+      },
+      
+      // Time Analytics
+      timeAnalytics: {
+        title: "التحليلات الزمنية",
+        hourlyHeatmap: "خريطة الساعات",
+        dayOfWeek: "الأداء حسب اليوم",
+        peakHours: "ساعات الذروة",
+        breakfast: "الإفطار (6-11 ص)",
+        lunch: "الغداء (11 ص-3 م)",
+        dinner: "العشاء (3-10 م)",
+        night: "الليل (10 م+)",
+        monday: "الإثنين",
+        tuesday: "الثلاثاء",
+        wednesday: "الأربعاء",
+        thursday: "الخميس",
+        friday: "الجمعة",
+        saturday: "السبت",
+        sunday: "الأحد",
+      },
+      
+      // Location Performance
+      locationPerformance: {
+        title: "أداء الفروع",
+        rankings: "ترتيب الفروع",
+        utilization: "معدل الاستخدام",
+        busiestLocation: "الفرع الأكثر ازدحاماً",
+        topLocation: "الفرع الأول",
+      },
+      
+      // Operational Metrics
+      operational: {
+        title: "المقاييس التشغيلية",
+        confirmationRate: "معدل التأكيد",
+        avgResponseTime: "متوسط وقت الاستجابة",
+        tableTurnover: "معدل دوران الطاولات",
+        specialRequests: "الطلبات الخاصة",
+        minutes: "دقيقة",
+        hours: "ساعة",
+      },
+      
+      // Growth Metrics
+      growth: {
+        title: "النمو والاتجاهات",
+        weekOverWeek: "أسبوع بعد أسبوع",
+        monthOverMonth: "شهر بعد شهر",
+        customerAcquisition: "اكتساب العملاء",
+        retentionRate: "معدل الاحتفاظ",
+        forecast: "توقع الإيرادات",
+      },
+      
+      // Funnel
+      funnel: {
+        title: "مسار الحجز",
+        totalBookings: "إجمالي الحجوزات",
+        pending: "معلقة",
+        confirmed: "مؤكدة",
+        completed: "مكتملة",
+        cancelled: "ملغاة",
+      },
+      
+      // Export
+      export: {
+        title: "تصدير التقارير",
+        pdf: "تصدير PDF",
+        excel: "تصدير Excel",
+        email: "إرسال التقرير",
+        generating: "جاري الإنشاء...",
+      },
+      
+      // Common
       peakHours: "ساعات الذروة",
       morning: "صباحاً",
       afternoon: "ظهراً",
       evening: "مساءً",
+      night: "ليلاً",
       revenue: "الإيرادات",
       guests: "الضيوف",
+      orders: "الطلبات",
+      items: "العناصر",
+      total: "الإجمالي",
+      average: "المتوسط",
+      percentage: "النسبة",
+      trend: "الاتجاه",
+      comparison: "المقارنة",
+      noData: "لا توجد بيانات",
+      loading: "جاري تحميل التحليلات...",
     },
     
     // Menu Management

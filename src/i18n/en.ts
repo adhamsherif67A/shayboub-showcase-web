@@ -249,9 +249,29 @@ export const en = {
     analytics: {
       title: "Revenue Analytics",
       subtitle: "Detailed insights into your business performance",
+      
+      // Date Filters
+      today: "Today",
+      yesterday: "Yesterday",
       last7Days: "Last 7 Days",
       last30Days: "Last 30 Days",
       last90Days: "Last 90 Days",
+      customRange: "Custom Range",
+      
+      // Real-time Metrics
+      realTime: {
+        todayRevenue: "Today's Revenue",
+        todayOrders: "Today's Orders",
+        todayGuests: "Today's Guests",
+        avgOrderValue: "Avg Order Value",
+        conversionRate: "Conversion Rate",
+        livePending: "Live Pending",
+        vsYesterday: "vs Yesterday",
+        vsLastWeek: "vs Last Week",
+        vsLastMonth: "vs Last Month",
+      },
+      
+      // Revenue Analytics
       totalRevenue: "Total Revenue",
       preOrders: "Pre-orders",
       avgOrder: "Avg Order",
@@ -260,12 +280,121 @@ export const en = {
       conversion: "Conversion",
       revenueTrend: "Revenue Trend",
       revenueByLocation: "Revenue by Location",
+      revenueByServiceType: "Revenue by Service Type",
+      revenueByTimeSlot: "Revenue by Time Slot",
+      preOrderRevenue: "Pre-order Revenue",
+      reservationOnlyRevenue: "Reservation Only",
+      
+      // Menu Performance
+      menuPerformance: {
+        title: "Menu Performance",
+        topSellers: "Top Selling Items",
+        trending: "Trending Items",
+        underperforming: "Underperforming Items",
+        categoryPerformance: "Category Performance",
+        avgItemsPerOrder: "Avg Items per Order",
+        quantity: "Quantity",
+        revenue: "Revenue",
+        orders: "Orders",
+      },
+      
+      // Customer Insights
+      customerInsights: {
+        title: "Customer Insights",
+        newCustomers: "New Customers",
+        returningCustomers: "Returning Customers",
+        customerLifetimeValue: "Customer Lifetime Value",
+        avgPartySize: "Avg Party Size",
+        bookingLeadTime: "Booking Lead Time",
+        cancellationRate: "Cancellation Rate",
+        noShowRate: "No-Show Rate",
+      },
+      
+      // Time Analytics
+      timeAnalytics: {
+        title: "Time-Based Analytics",
+        hourlyHeatmap: "Hourly Heatmap",
+        dayOfWeek: "Performance by Day",
+        peakHours: "Peak Hours",
+        breakfast: "Breakfast (6-11 AM)",
+        lunch: "Lunch (11 AM-3 PM)",
+        dinner: "Dinner (3-10 PM)",
+        night: "Night (10 PM+)",
+        monday: "Monday",
+        tuesday: "Tuesday",
+        wednesday: "Wednesday",
+        thursday: "Thursday",
+        friday: "Friday",
+        saturday: "Saturday",
+        sunday: "Sunday",
+      },
+      
+      // Location Performance
+      locationPerformance: {
+        title: "Location Performance",
+        rankings: "Location Rankings",
+        utilization: "Utilization Rate",
+        busiestLocation: "Busiest Location",
+        topLocation: "Top Location",
+      },
+      
+      // Operational Metrics
+      operational: {
+        title: "Operational Metrics",
+        confirmationRate: "Confirmation Rate",
+        avgResponseTime: "Avg Response Time",
+        tableTurnover: "Table Turnover",
+        specialRequests: "Special Requests",
+        minutes: "minutes",
+        hours: "hours",
+      },
+      
+      // Growth Metrics
+      growth: {
+        title: "Growth & Trends",
+        weekOverWeek: "Week-over-Week",
+        monthOverMonth: "Month-over-Month",
+        customerAcquisition: "Customer Acquisition",
+        retentionRate: "Retention Rate",
+        forecast: "Revenue Forecast",
+      },
+      
+      // Funnel
+      funnel: {
+        title: "Booking Funnel",
+        totalBookings: "Total Bookings",
+        pending: "Pending",
+        confirmed: "Confirmed",
+        completed: "Completed",
+        cancelled: "Cancelled",
+      },
+      
+      // Export
+      export: {
+        title: "Export Reports",
+        pdf: "Export PDF",
+        excel: "Export Excel",
+        email: "Email Report",
+        generating: "Generating...",
+      },
+      
+      // Common
       peakHours: "Peak Hours",
       morning: "Morning",
       afternoon: "Afternoon",
       evening: "Evening",
+      night: "Night",
       revenue: "Revenue",
       guests: "Guests",
+      orders: "Orders",
+      items: "Items",
+      total: "Total",
+      average: "Average",
+      percentage: "Percentage",
+      trend: "Trend",
+      comparison: "Comparison",
+      noData: "No data available",
+      loading: "Loading analytics...",
     },
     
     // Menu Management
