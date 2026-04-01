@@ -1,6 +1,13 @@
 # 📱 PWA Installation Guide
 
-## How to Install Shayboub App
+## 🎯 Two Apps Available:
+
+1. **🍵 Public Shayboub App** - For customers to browse menu & make reservations
+2. **🛡️ Admin Dashboard App** - For staff to manage operations
+
+---
+
+## How to Install Shayboub App (Public)
 
 ### **On Android (Chrome/Edge):**
 
@@ -26,6 +33,35 @@
 2. **Look for install icon** (⊕) in the address bar
 3. **Click "Install"** in the prompt
 4. **Done!** Shayboub opens as a standalone app
+
+---
+
+## 🛡️ How to Install Admin Dashboard App (Staff Only)
+
+### **On Android/Tablet (Chrome/Edge):**
+
+1. **Visit:** https://shayboub.com/admin
+2. **Login** with your admin/staff credentials
+3. **Install prompt appears:** "Install Admin Dashboard"
+4. **Click "Install Admin App"** button
+5. **Done!** "Shayboub Admin" icon appears on home screen
+
+### **Features:**
+- 🚀 **Quick Launch:** Tap icon → Opens directly to admin dashboard
+- 📱 **App Shortcuts:** Long-press icon for quick access to:
+  - Dashboard
+  - Reservations
+  - Menu Management
+  - Analytics
+- 🌙 **Dark Theme:** Professional dark interface
+- 📴 **Offline Access:** View cached data when offline
+
+### **On Desktop:**
+
+1. Visit https://shayboub.com/admin and login
+2. Look for install icon (⊕) in address bar
+3. Click "Install"
+4. Access admin panel from your apps!
 
 ---
 
