@@ -4,6 +4,7 @@ import { menuData, type MenuItem } from "@/data/menu";
 import { X, Plus, Minus, Search, ShoppingBag, Calendar, Clock, MapPin, Users, User, Phone, Mail, FileText, CheckCircle2 } from "lucide-react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 /** Flying animation item */
 interface FlyingItem {
@@ -26,6 +27,7 @@ interface CartItem {
 
 const ReservationForm = () => {
   const { toast } = useToast();
+  const { t, isRTL } = useLanguage();
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -242,10 +244,10 @@ const ReservationForm = () => {
 
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!formData.name.trim()) errs.name = "Name is required";
-    if (!formData.phone.trim()) errs.phone = "Phone number is required";
-    if (!formData.date) errs.date = "Date is required";
-    if (!formData.time) errs.time = "Time is required";
+    if (!formData.name.trim()) errs.name = t.reservation.errors.name;
+    if (!formData.phone.trim()) errs.phone = t.reservation.errors.phone;
+    if (!formData.date) errs.date = t.reservation.errors.date;
+    if (!formData.time) errs.time = t.reservation.errors.time;
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -298,8 +300,8 @@ const ReservationForm = () => {
 
       setSubmitted(true);
       toast({
-        title: "Success! 🎉",
-        description: "Your reservation has been submitted. We'll confirm via phone shortly.",
+        title: t.reservation.toast.successTitle,
+        description: t.reservation.toast.successMessage,
       });
       setTimeout(() => {
         setFormData({
@@ -318,7 +320,7 @@ const ReservationForm = () => {
       }, 4000);
     } catch (error) {
       console.error("Error submitting reservation:", error);
-      toast({ title: "Error", description: "Failed to submit. Please try again.", variant: "destructive" });
+      toast({ title: t.reservation.toast.errorTitle, description: t.reservation.toast.errorMessage, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -328,18 +330,18 @@ const ReservationForm = () => {
 
   if (submitted) {
     return (
-      <section id="reservation" className="py-20 bg-muted/40">
+      <section id="reservation" className={`py-20 bg-muted/40 ${isRTL ? 'rtl' : ''}`}>
         <div className="max-w-xl mx-auto px-6 text-center">
           <div className="bg-card rounded-2xl p-10 shadow-lg border border-border">
             <p className="text-5xl mb-4">✅</p>
             <h3 className="font-display text-2xl font-bold text-foreground mb-2">
-              Reservation Submitted!
+              {t.reservation.success.title}
             </h3>
             <p className="text-muted-foreground">
-              Thank you for your {formData.serviceType === "dinein" ? "reservation" : "booking"}!
+              {formData.serviceType === "dinein" ? t.reservation.success.message : t.reservation.success.pickupMessage}
             </p>
             <p className="text-muted-foreground mt-1 text-sm">
-              We'll confirm your booking via phone within the next hour.
+              {t.reservation.success.confirmMessage}
             </p>
           </div>
         </div>
@@ -350,22 +352,22 @@ const ReservationForm = () => {
   /* ---------- shared styles ---------- */
 
   const inputCls =
-    "w-full border border-input rounded-lg px-4 py-3 font-body bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors";
-  const errorCls = "text-destructive text-xs mt-1";
+    `w-full border border-input rounded-lg px-4 py-3 font-body bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors ${isRTL ? 'text-right' : ''}`;
+  const errorCls = `text-destructive text-xs mt-1 ${isRTL ? 'text-right' : ''}`;
 
   return (
-    <section id="reservation" className="py-20 bg-muted/40">
+    <section id="reservation" className={`py-20 bg-muted/40 ${isRTL ? 'rtl' : ''}`}>
       <div className="max-w-2xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-10">
           <span className="inline-block text-primary font-body text-sm tracking-widest uppercase mb-2">
-            Reserve Your Spot
+            {t.reservation.header}
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Make a Reservation
+            {t.reservation.title}
           </h2>
           <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-            Choose your preferred way to experience Shayboub
+            {t.reservation.subtitle}
           </p>
         </div>
 
@@ -376,8 +378,8 @@ const ReservationForm = () => {
         >
           {/* Service Type */}
           <fieldset>
-            <legend className="font-body text-sm font-semibold text-foreground mb-3">
-              How would you like to visit us?
+            <legend className={`font-body text-sm font-semibold text-foreground mb-3 ${isRTL ? 'text-right w-full' : ''}`}>
+              {t.reservation.serviceType.title}
             </legend>
             <div className="grid grid-cols-2 gap-3">
               {(["dinein", "pickup"] as const).map((type) => (
@@ -399,10 +401,10 @@ const ReservationForm = () => {
                   />
                   <span className="text-2xl">{type === "dinein" ? "🍽️" : "📦"}</span>
                   <span className="font-body font-semibold text-foreground text-sm">
-                    {type === "dinein" ? "Dine In" : "Pickup"}
+                    {type === "dinein" ? t.reservation.serviceType.dineIn : t.reservation.serviceType.pickup}
                   </span>
                   <span className="text-xs text-muted-foreground">
-                    {type === "dinein" ? "Reserve a table" : "Book pickup time"}
+                    {type === "dinein" ? t.reservation.serviceType.dineInDesc : t.reservation.serviceType.pickupDesc}
                   </span>
                 </label>
               ))}
@@ -411,20 +413,20 @@ const ReservationForm = () => {
 
           {/* Location */}
           <div>
-            <label htmlFor="location" className="block font-body text-sm font-semibold text-foreground mb-1">
-              Location
+            <label htmlFor="location" className={`block font-body text-sm font-semibold text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>
+              {t.reservation.location.title}
             </label>
             <select id="location" name="location" value={formData.location} onChange={handleChange} className={inputCls}>
-              <option value="cairo">Cairo - New Cairo (El-Moshir Tantawy)</option>
-              <option value="alexandria-kafr">Alexandria - Kafr Abdou</option>
-              <option value="alexandria-gleem">Alexandria - Gleem (El Raml)</option>
+              <option value="cairo">{t.reservation.location.cairo}</option>
+              <option value="alexandria-kafr">{t.reservation.location.alexKafr}</option>
+              <option value="alexandria-gleem">{t.reservation.location.alexGleem}</option>
             </select>
           </div>
 
           {/* Date & Time */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="date" className="block font-body text-sm font-semibold text-foreground mb-1">Date</label>
+              <label htmlFor="date" className={`block font-body text-sm font-semibold text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>{t.reservation.date}</label>
               <input
                 type="date"
                 id="date"
@@ -439,7 +441,7 @@ const ReservationForm = () => {
               {errors.date && <p id="date-error" className={errorCls} role="alert">{errors.date}</p>}
             </div>
             <div>
-              <label htmlFor="time" className="block font-body text-sm font-semibold text-foreground mb-1">Time</label>
+              <label htmlFor="time" className={`block font-body text-sm font-semibold text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>{t.reservation.time}</label>
               <input
                 type="time"
                 id="time"
@@ -457,10 +459,10 @@ const ReservationForm = () => {
           {/* Party Size (dine-in only) */}
           {formData.serviceType === "dinein" && (
             <div>
-              <label htmlFor="partySize" className="block font-body text-sm font-semibold text-foreground mb-1">Party Size</label>
+              <label htmlFor="partySize" className={`block font-body text-sm font-semibold text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>{t.reservation.partySize}</label>
               <select id="partySize" name="partySize" value={formData.partySize} onChange={handleChange} className={inputCls}>
                 {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15].map((n) => (
-                  <option key={n} value={n}>{n} {n === 1 ? "person" : "people"}</option>
+                  <option key={n} value={n}>{n} {n === 1 ? t.reservation.person : t.reservation.people}</option>
                 ))}
               </select>
             </div>
@@ -470,9 +472,9 @@ const ReservationForm = () => {
           <div className="bg-gradient-to-r from-primary/5 to-orange-500/5 rounded-xl p-4 border-2 border-primary/20">
             {/* Header with call-to-action */}
             <div className="text-center mb-4">
-              <div className="flex items-center justify-center gap-3 mb-1">
+              <div className={`flex items-center justify-center gap-3 mb-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <h3 className="font-display text-lg font-bold text-foreground">
-                  Pre-Order Menu Items
+                  {t.reservation.preOrder.title}
                 </h3>
                 {/* Cart icon target for fly animation */}
                 <div 
@@ -483,29 +485,29 @@ const ReservationForm = () => {
                 >
                   <ShoppingBag className="w-5 h-5 text-primary" />
                   {cart.length > 0 && (
-                    <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse">
+                    <span className={`absolute -top-1 w-5 h-5 bg-primary text-white text-xs font-bold rounded-full flex items-center justify-center animate-pulse ${isRTL ? '-left-1' : '-right-1'}`}>
                       {cart.reduce((sum, c) => sum + c.quantity, 0)}
                     </span>
                   )}
                 </div>
               </div>
               <p className="text-muted-foreground text-sm mb-3">
-                Enhance your experience by pre-ordering your favorite items with your reservation
+                {t.reservation.preOrder.subtitle}
               </p>
               
               {/* Benefits */}
-              <div className="flex flex-wrap items-center justify-center gap-6 mb-4">
-                <div className="flex items-center gap-2 text-sm text-green-700">
+              <div className={`flex flex-wrap items-center justify-center gap-6 mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <div className={`flex items-center gap-2 text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="font-medium">Prepared Fresh</span>
+                  <span className="font-medium">{t.reservation.preOrder.benefits.fresh}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-green-700">
+                <div className={`flex items-center gap-2 text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="font-medium">Ready on Arrival</span>
+                  <span className="font-medium">{t.reservation.preOrder.benefits.ready}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-green-700">
+                <div className={`flex items-center gap-2 text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  <span className="font-medium">Time Efficient</span>
+                  <span className="font-medium">{t.reservation.preOrder.benefits.efficient}</span>
                 </div>
               </div>
 
@@ -519,7 +521,7 @@ const ReservationForm = () => {
                 } transform hover:scale-105`}
               >
                 <span className="text-sm">
-                  {menuOpen ? "Close Menu Selection" : "Browse Menu & Select Items"}
+                  {menuOpen ? t.reservation.preOrder.closeMenu : t.reservation.preOrder.addItems}
                 </span>
               </button>
             </div>
@@ -530,25 +532,25 @@ const ReservationForm = () => {
                 {cart.map((c) => (
                   <div
                     key={`${c.categoryName}-${c.item.name}-${c.selectedSize}`}
-                    className="flex items-center justify-between bg-background rounded-lg px-3 py-2 border border-border text-sm"
+                    className={`flex items-center justify-between bg-background rounded-lg px-3 py-2 border border-border text-sm ${isRTL ? 'flex-row-reverse' : ''}`}
                   >
-                    <span className="text-foreground font-medium truncate mr-2">
+                    <span className={`text-foreground font-medium truncate ${isRTL ? 'ml-2' : 'mr-2'}`}>
                       {c.item.name}
                       {c.selectedSize && (
-                        <span className="text-muted-foreground ml-1">
-                          ({c.selectedSize === 'large' ? 'Large' : 'Medium'} - {c.selectedPrice} EGP)
+                        <span className={`text-muted-foreground ${isRTL ? 'mr-1' : 'ml-1'}`}>
+                          ({c.selectedSize === 'large' ? t.reservation.preOrder.large : t.reservation.preOrder.medium} - {c.selectedPrice} EGP)
                         </span>
                       )}
                       {!c.selectedSize && (
-                        <span className="text-muted-foreground ml-1">({c.item.price})</span>
+                        <span className={`text-muted-foreground ${isRTL ? 'mr-1' : 'ml-1'}`}>({c.item.price})</span>
                       )}
                     </span>
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className={`flex items-center gap-2 shrink-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <button
                         type="button"
                         onClick={() => updateQuantity(c.item.name, c.categoryName, c.selectedSize || 'medium', -1)}
                         className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
-                        aria-label={`Decrease ${c.item.name}`}
+                        aria-label={`${t.reservation.preOrder.decrease} ${c.item.name}`}
                       >
                         <Minus className="w-3 h-3" />
                       </button>
@@ -557,7 +559,7 @@ const ReservationForm = () => {
                         type="button"
                         onClick={() => updateQuantity(c.item.name, c.categoryName, c.selectedSize || 'medium', 1)}
                         className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
-                        aria-label={`Increase ${c.item.name}`}
+                        aria-label={`${t.reservation.preOrder.increase} ${c.item.name}`}
                       >
                         <Plus className="w-3 h-3" />
                       </button>
@@ -567,8 +569,8 @@ const ReservationForm = () => {
                 
                 {/* Cart Total */}
                 <div className="bg-primary/5 rounded-lg px-3 py-2 border border-primary/20">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium text-foreground">Total:</span>
+                  <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <span className="text-sm font-medium text-foreground">{t.reservation.summary.total}:</span>
                     <span className="text-lg font-bold text-primary">{cartTotal.toFixed(2)} EGP</span>
                   </div>
                 </div>
@@ -581,13 +583,13 @@ const ReservationForm = () => {
                 {/* Search */}
                 <div className="sticky top-0 bg-background border-b border-border p-3 z-10">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                     <input
                       type="text"
-                      placeholder="Search menu items..."
+                      placeholder={t.reservation.preOrder.searchPlaceholder}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 text-sm border border-input rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      className={`w-full py-2 text-sm border border-input rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${isRTL ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3'}`}
                     />
                   </div>
                 </div>
@@ -596,7 +598,7 @@ const ReservationForm = () => {
                 <div className="p-3 space-y-4">
                   {filteredMenu.map((cat) => (
                     <div key={cat.name}>
-                      <h4 className="font-display text-sm font-bold text-foreground mb-2 sticky top-[60px] bg-background py-1">
+                      <h4 className={`font-display text-sm font-bold text-foreground mb-2 sticky top-[60px] bg-background py-1 ${isRTL ? 'text-right' : ''}`}>
                         {cat.name}
                       </h4>
                       <div className="space-y-1">
@@ -605,9 +607,9 @@ const ReservationForm = () => {
                           return (
                             <div
                               key={`${cat.name}-${item.name}`}
-                              className="flex items-center justify-between py-2 px-2 rounded-lg hover:bg-muted/50 transition-colors"
+                              className={`flex items-center justify-between py-2 px-2 rounded-lg hover:bg-muted/50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
                             >
-                              <div className="flex items-center gap-3 min-w-0">
+                              <div className={`flex items-center gap-3 min-w-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
                                 <img
                                   src={item.image}
                                   alt={item.name}
@@ -616,18 +618,18 @@ const ReservationForm = () => {
                                   width={40}
                                   height={40}
                                 />
-                                <div className="min-w-0">
+                                <div className={`min-w-0 ${isRTL ? 'text-right' : ''}`}>
                                   <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
                                   <p className="text-xs text-muted-foreground">{item.price}</p>
                                 </div>
                               </div>
                               {qty > 0 ? (
-                                <div className="flex items-center gap-1.5 shrink-0">
+                                <div className={`flex items-center gap-1.5 shrink-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
                                   <button
                                     type="button"
                                     onClick={() => updateQuantity(item.name, cat.name, -1)}
                                     className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-colors"
-                                    aria-label={`Decrease ${item.name}`}
+                                    aria-label={`${t.reservation.preOrder.decrease} ${item.name}`}
                                   >
                                     <Minus className="w-3 h-3" />
                                   </button>
@@ -636,7 +638,7 @@ const ReservationForm = () => {
                                     type="button"
                                     onClick={() => updateQuantity(item.name, cat.name, 1)}
                                     className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-colors"
-                                    aria-label={`Increase ${item.name}`}
+                                    aria-label={`${t.reservation.preOrder.increase} ${item.name}`}
                                   >
                                     <Plus className="w-3 h-3" />
                                   </button>
@@ -647,7 +649,7 @@ const ReservationForm = () => {
                                   onClick={(e) => handleAddToCartWithAnimation(e, cat.name, item)}
                                   className="px-3 py-1.5 text-xs font-semibold text-white bg-primary rounded-full hover:bg-primary/90 transition-all hover:scale-105 active:scale-95 shrink-0"
                                 >
-                                  + Add
+                                  + {t.reservation.preOrder.add}
                                 </button>
                               )}
                             </div>
@@ -657,7 +659,7 @@ const ReservationForm = () => {
                     </div>
                   ))}
                   {filteredMenu.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-6">No items found</p>
+                    <p className="text-sm text-muted-foreground text-center py-6">{t.reservation.preOrder.noItems}</p>
                   )}
                 </div>
               </div>
@@ -666,44 +668,44 @@ const ReservationForm = () => {
 
           {/* Name */}
           <div>
-            <label htmlFor="name" className="block font-body text-sm font-semibold text-foreground mb-1">
-              Your Name <span className="text-destructive">*</span>
+            <label htmlFor="name" className={`block font-body text-sm font-semibold text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>
+              {t.reservation.name} <span className="text-destructive">*</span>
             </label>
             <input type="text" id="name" name="name" value={formData.name} onChange={handleChange}
-              placeholder="Full name" className={inputCls}
+              placeholder={t.reservation.namePlaceholder} className={`${inputCls} ${isRTL ? 'text-right' : ''}`}
               aria-invalid={!!errors.name} aria-describedby={errors.name ? "name-error" : undefined} />
             {errors.name && <p id="name-error" className={errorCls} role="alert">{errors.name}</p>}
           </div>
 
           {/* Phone */}
           <div>
-            <label htmlFor="phone" className="block font-body text-sm font-semibold text-foreground mb-1">
-              Phone Number <span className="text-destructive">*</span>
+            <label htmlFor="phone" className={`block font-body text-sm font-semibold text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>
+              {t.reservation.phone} <span className="text-destructive">*</span>
             </label>
             <input type="tel" id="phone" name="phone" value={formData.phone} onChange={handleChange}
-              placeholder="+20 1xx xxx xxxx" className={inputCls}
+              placeholder="+20 1xx xxx xxxx" className={`${inputCls} ${isRTL ? 'text-right' : ''}`}
               aria-invalid={!!errors.phone} aria-describedby={errors.phone ? "phone-error" : undefined} />
             {errors.phone && <p id="phone-error" className={errorCls} role="alert">{errors.phone}</p>}
           </div>
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block font-body text-sm font-semibold text-foreground mb-1">
-              Email Address <span className="text-muted-foreground font-normal">(Optional)</span>
+            <label htmlFor="email" className={`block font-body text-sm font-semibold text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>
+              {t.reservation.email} <span className="text-muted-foreground font-normal">({t.common.optional})</span>
             </label>
             <input type="email" id="email" name="email" value={formData.email} onChange={handleChange}
-              placeholder="you@email.com" className={inputCls} />
+              placeholder={t.reservation.emailPlaceholder} className={`${inputCls} ${isRTL ? 'text-right' : ''}`} />
           </div>
 
           {/* Special Requests */}
           <div>
-            <label htmlFor="specialRequests" className="block font-body text-sm font-semibold text-foreground mb-1">
-              Special Requests or Notes
+            <label htmlFor="specialRequests" className={`block font-body text-sm font-semibold text-foreground mb-1 ${isRTL ? 'text-right' : ''}`}>
+              {t.reservation.specialRequests}
             </label>
             <textarea id="specialRequests" name="specialRequests" value={formData.specialRequests}
               onChange={handleChange} rows={3}
-              placeholder="Allergies, birthday setup, highchair needed..."
-              className={inputCls + " resize-none"} />
+              placeholder={t.reservation.specialRequestsPlaceholder}
+              className={inputCls + ` resize-none ${isRTL ? 'text-right' : ''}`} />
           </div>
 
           {/* ========== RESERVATION SUMMARY CARD ========== */}
@@ -711,10 +713,10 @@ const ReservationForm = () => {
             <div className="bg-gradient-to-br from-primary/5 via-background to-orange-500/5 rounded-xl border-2 border-primary/20 overflow-hidden">
               {/* Header */}
               <div className="bg-primary/10 px-4 py-3 border-b border-primary/20">
-                <div className="flex items-center gap-2">
+                <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <CheckCircle2 className="w-5 h-5 text-primary" />
                   <h3 className="font-display text-base font-bold text-foreground">
-                    Reservation Summary
+                    {t.reservation.summary.title}
                   </h3>
                 </div>
               </div>
@@ -722,22 +724,22 @@ const ReservationForm = () => {
               {/* Details */}
               <div className="p-4 space-y-3">
                 {/* Service Type & Location */}
-                <div className="flex items-start gap-3">
+                <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse text-right' : ''}`}>
                   <MapPin className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">
-                      {formData.serviceType === "dinein" ? "Dine-In" : "Pickup"}
+                      {formData.serviceType === "dinein" ? t.reservation.serviceType.dineIn : t.reservation.serviceType.pickup}
                     </p>
                     <p className="text-xs text-muted-foreground">{getLocationName(formData.location)}</p>
                   </div>
                 </div>
                 
                 {/* Date & Time */}
-                <div className="flex items-start gap-3">
+                <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse text-right' : ''}`}>
                   <Calendar className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                   <div>
                     <p className="text-sm font-medium text-foreground">{formatDisplayDate(formData.date)}</p>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <div className={`flex items-center gap-1 text-xs text-muted-foreground ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Clock className="w-3 h-3" />
                       <span>{formatDisplayTime(formData.time)}</span>
                     </div>
@@ -746,26 +748,26 @@ const ReservationForm = () => {
                 
                 {/* Party Size (dine-in only) */}
                 {formData.serviceType === "dinein" && (
-                  <div className="flex items-center gap-3">
+                  <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Users className="w-4 h-4 text-primary shrink-0" />
                     <p className="text-sm font-medium text-foreground">
-                      {formData.partySize} {formData.partySize === 1 ? "Guest" : "Guests"}
+                      {formData.partySize} {formData.partySize === 1 ? t.reservation.summary.guest : t.reservation.summary.guests}
                     </p>
                   </div>
                 )}
                 
                 {/* Contact Info */}
                 <div className="pt-2 border-t border-border/50 space-y-2">
-                  <div className="flex items-center gap-3">
+                  <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <User className="w-4 h-4 text-primary shrink-0" />
                     <p className="text-sm font-medium text-foreground">{formData.name}</p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Phone className="w-4 h-4 text-primary shrink-0" />
                     <p className="text-sm text-muted-foreground">{formData.phone}</p>
                   </div>
                   {formData.email && (
-                    <div className="flex items-center gap-3">
+                    <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Mail className="w-4 h-4 text-primary shrink-0" />
                       <p className="text-sm text-muted-foreground">{formData.email}</p>
                     </div>
@@ -775,13 +777,13 @@ const ReservationForm = () => {
                 {/* Pre-ordered Items */}
                 {cart.length > 0 && (
                   <div className="pt-2 border-t border-border/50">
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className={`flex items-center gap-2 mb-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <ShoppingBag className="w-4 h-4 text-primary" />
-                      <p className="text-sm font-medium text-foreground">Pre-ordered Items</p>
+                      <p className="text-sm font-medium text-foreground">{t.reservation.summary.preorderedItems}</p>
                     </div>
                     <div className="bg-background/50 rounded-lg p-2 space-y-1">
                       {cart.map((c) => (
-                        <div key={`${c.categoryName}-${c.item.name}-${c.selectedSize}`} className="flex justify-between text-xs">
+                        <div key={`${c.categoryName}-${c.item.name}-${c.selectedSize}`} className={`flex justify-between text-xs ${isRTL ? 'flex-row-reverse' : ''}`}>
                           <span className="text-muted-foreground">
                             {c.quantity}x {c.item.name}
                             {c.selectedSize && <span className="opacity-70"> ({c.selectedSize === 'large' ? 'L' : 'M'})</span>}
@@ -791,8 +793,8 @@ const ReservationForm = () => {
                           </span>
                         </div>
                       ))}
-                      <div className="flex justify-between text-sm pt-1 border-t border-border/30 mt-1">
-                        <span className="font-medium text-foreground">Total</span>
+                      <div className={`flex justify-between text-sm pt-1 border-t border-border/30 mt-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <span className="font-medium text-foreground">{t.reservation.summary.total}</span>
                         <span className="font-bold text-primary">{cartTotal.toFixed(0)} EGP</span>
                       </div>
                     </div>
@@ -802,7 +804,7 @@ const ReservationForm = () => {
                 {/* Special Requests */}
                 {formData.specialRequests && (
                   <div className="pt-2 border-t border-border/50">
-                    <div className="flex items-start gap-3">
+                    <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse text-right' : ''}`}>
                       <FileText className="w-4 h-4 text-primary mt-0.5 shrink-0" />
                       <p className="text-xs text-muted-foreground italic">"{formData.specialRequests}"</p>
                     </div>
@@ -819,12 +821,12 @@ const ReservationForm = () => {
             className="w-full bg-primary text-primary-foreground font-body font-semibold px-8 py-4 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading
-              ? "Submitting..."
-              : `Submit Reservation${cart.length > 0 ? ` (${cart.reduce((s, c) => s + c.quantity, 0)} items)` : ""}`}
+              ? t.reservation.submitting
+              : `${t.reservation.submitButton}${cart.length > 0 ? ` (${cart.reduce((s, c) => s + c.quantity, 0)} ${t.reservation.items})` : ""}`}
           </button>
 
           <p className="text-xs text-muted-foreground text-center">
-            We'll confirm your booking within the next hour
+            {t.reservation.confirmationNote}
           </p>
         </form>
       </div>
