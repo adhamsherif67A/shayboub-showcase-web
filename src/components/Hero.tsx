@@ -24,46 +24,50 @@ const Hero = () => {
           fetchPriority="high"
           decoding="async"
           onLoad={() => setBannerLoaded(true)}
-          className={`w-full h-full object-cover transition-opacity duration-700 
+          className={`w-full h-full object-cover transition-opacity duration-500 
             ${bannerLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
-        {/* Simplified gradient vignette */}
+        {/* Gradient vignette */}
         <div 
-          className="absolute inset-0 bg-gradient-to-b from-secondary/50 via-secondary/70 to-secondary/90" 
+          className="absolute inset-0 bg-gradient-to-b from-secondary/40 via-secondary/60 to-secondary/85" 
           aria-hidden="true" 
         />
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-        {/* Main logo - original colors with white background */}
-        <div className="relative w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 mx-auto mb-8 p-5 rounded-3xl
-          bg-white
-          hover:scale-105
-          transition-all duration-300">
+        {/* Logo with refined styling */}
+        <div className="relative w-44 h-44 md:w-56 md:h-56 lg:w-64 lg:h-64 mx-auto mb-6">
           {!logoLoaded && (
-            <Skeleton className="absolute inset-5 w-[calc(100%-2.5rem)] h-[calc(100%-2.5rem)] rounded-2xl" />
+            <Skeleton className="absolute inset-0 w-full h-full rounded-2xl" />
           )}
-          <img
-            src={LOGO_URL}
-            alt="Shayboub - Specialty Coffee"
-            width={300}
-            height={300}
-            decoding="async"
-            onLoad={() => setLogoLoaded(true)}
-            className={`w-full h-full object-contain animate-fade-in-up
-              ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
-          />
+          <div className="w-full h-full p-4 rounded-2xl bg-white shadow-xl shadow-black/10
+            hover:shadow-2xl hover:shadow-black/20 hover:scale-[1.02]
+            transition-all duration-300">
+            <img
+              src={LOGO_URL}
+              alt="Shayboub - Specialty Coffee"
+              width={256}
+              height={256}
+              decoding="async"
+              onLoad={() => setLogoLoaded(true)}
+              className={`w-full h-full object-contain
+                ${logoLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+            />
+          </div>
         </div>
-        {/* Tagline only - logo has the name */}
-        <p className="font-body text-secondary-foreground text-lg md:text-xl mb-10 max-w-lg mx-auto animate-fade-in-up" 
-          style={{ animationDelay: "0.2s" }}>
+        
+        {/* Tagline */}
+        <p className="font-body text-secondary-foreground/90 text-base md:text-lg lg:text-xl mb-8 max-w-md mx-auto">
           Specialty coffee, artisan sandwiches & good vibes
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.4s" }}>
+        
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <a
             href="#menu"
-            className="inline-block bg-primary text-white font-body font-semibold px-8 py-4 rounded-lg 
-              hover:scale-105 hover:bg-primary/90 active:scale-95 transition-all duration-200"
+            className="inline-block bg-primary text-white font-body font-semibold px-8 py-3.5 rounded-xl 
+              hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200
+              shadow-lg shadow-primary/25"
           >
             Explore Menu
           </a>
@@ -71,8 +75,9 @@ const Hero = () => {
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-white/90 text-secondary font-body font-semibold px-8 py-4 rounded-lg 
-              hover:bg-white hover:scale-105 active:scale-95 transition-all duration-200"
+            className="inline-block bg-white text-secondary font-body font-semibold px-8 py-3.5 rounded-xl 
+              hover:bg-white/90 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200
+              shadow-lg shadow-black/10"
           >
             Order on Talabat
           </a>
