@@ -1,63 +1,97 @@
 // Service Worker for Shayboub PWA
-const CACHE_NAME = 'shayboub-v1';
-const RUNTIME_CACHE = 'shayboub-runtime-v1';
+const CACHE_NAME = 'shayboub-v2';
 
 // Assets to cache on install
 const PRECACHE_URLS = [
   '/',
   '/index.html',
   '/images/shayboub-logo.png',
+  '/manifest.json',
+  '/manifest-admin.json'
 ];
 
 // Install event - cache critical assets
 self.addEventListener('install', (event) => {
+  console.log('[SW] Installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(PRECACHE_URLS))
-      .then(() => self.skipWaiting())
+      .then((cache) => {
+        console.log('[SW] Caching files');
+        return cache.addAll(PRECACHE_URLS);
+      })
+      .then(() => {
+        console.log('[SW] Install complete, skipping waiting');
+        return self.skipWaiting();
+      })
+      .catch((err) => {
+        console.error('[SW] Install failed:', err);
+      })
   );
 });
 
 // Activate event - clean up old caches
 self.addEventListener('activate', (event) => {
+  console.log('[SW] Activating...');
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
-          .filter((name) => name !== CACHE_NAME && name !== RUNTIME_CACHE)
-          .map((name) => caches.delete(name))
+          .filter((name) => name !== CACHE_NAME)
+          .map((name) => {
+            console.log('[SW] Deleting old cache:', name);
+            return caches.delete(name);
+          })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => {
+      console.log('[SW] Claiming clients');
+      return self.clients.claim();
+    })
   );
 });
 
-// Fetch event - network first, fallback to cache
+// Fetch event - network first with cache fallback
 self.addEventListener('fetch', (event) => {
-  // Skip cross-origin requests
-  if (!event.request.url.startsWith(self.location.origin)) {
+  const url = new URL(event.request.url);
+  
+  // Skip non-GET requests
+  if (event.request.method !== 'GET') {
     return;
   }
+  
+  // Skip cross-origin requests except for allowed domains
+  if (url.origin !== self.location.origin) {
+    // Allow Google Fonts and menu images
+    if (!url.hostname.includes('fonts.googleapis.com') && 
+        !url.hostname.includes('fonts.gstatic.com') &&
+        !url.hostname.includes('media.alimento.io')) {
+      return;
+    }
+  }
 
-  // Skip Firebase and API requests - always use network
+  // Skip Firebase/API requests - always go to network
   if (
-    event.request.url.includes('firestore.googleapis.com') ||
-    event.request.url.includes('firebase') ||
-    event.request.method !== 'GET'
+    url.hostname.includes('firestore.googleapis.com') ||
+    url.hostname.includes('firebase') ||
+    url.hostname.includes('identitytoolkit')
   ) {
     return;
   }
 
   event.respondWith(
-    // Try network first
+    // Network first strategy
     fetch(event.request)
       .then((response) => {
-        // Cache successful responses
-        if (response && response.status === 200) {
-          const responseClone = response.clone();
-          caches.open(RUNTIME_CACHE).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+        // Don't cache non-successful responses
+        if (!response || response.status !== 200) {
+          return response;
         }
+        
+        // Clone and cache the response
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseClone);
+        });
+        
         return response;
       })
       .catch(() => {
@@ -67,24 +101,17 @@ self.addEventListener('fetch', (event) => {
             return cachedResponse;
           }
           
-          // If offline and no cache, return offline page
+          // For navigation requests, return cached index.html (SPA support)
           if (event.request.mode === 'navigate') {
             return caches.match('/index.html');
           }
           
-          return new Response('Network error happened', {
-            status: 408,
-            headers: { 'Content-Type': 'text/plain' },
+          // No cache available
+          return new Response('Offline - content not available', {
+            status: 503,
+            headers: { 'Content-Type': 'text/plain' }
           });
         });
       })
-  );
-});
-
-// Handle notification clicks
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close();
-  event.waitUntil(
-    clients.openWindow('/')
   );
 });

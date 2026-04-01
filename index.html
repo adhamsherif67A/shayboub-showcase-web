@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     
     <!-- Preconnect to critical origins for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,26 +29,44 @@
     <meta name="language" content="English" />
     <link rel="canonical" href="https://shayboub.com" />
     
-    <!-- PWA Manifest - dynamically loaded based on route -->
+    <!-- PWA Manifest -->
     <link rel="manifest" href="/manifest.json" id="manifest-link" />
-    <script>
-      // Load admin manifest if on admin route
-      if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff')) {
-        document.getElementById('manifest-link').setAttribute('href', '/manifest-admin.json');
-        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#1e293b');
-        document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Shayboub Admin');
-      }
-    </script>
     
     <!-- Theme color for mobile browsers -->
-    <meta name="theme-color" content="#2B3441" />
+    <meta name="theme-color" content="#2B3441" id="theme-color-meta" />
     <meta name="msapplication-TileColor" content="#2B3441" />
+    <meta name="msapplication-TileImage" content="/images/shayboub-logo.png" />
     
-    <!-- Apple Touch Icons -->
-    <link rel="apple-touch-icon" href="/images/shayboub-logo.png" />
+    <!-- iOS PWA Support - CRITICAL -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Shayboub" />
+    <meta name="apple-mobile-web-app-title" content="Shayboub" id="apple-title" />
+    <link rel="apple-touch-icon" href="/images/shayboub-logo.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/images/shayboub-logo.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/shayboub-logo.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="/images/shayboub-logo.png" />
+    
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" href="/images/shayboub-logo.png" />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/shayboub-logo.png" />
+    <link rel="shortcut icon" href="/images/shayboub-logo.png" />
+    
+    <!-- Dynamic manifest and theme for admin routes -->
+    <script>
+      (function() {
+        var isAdmin = window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff');
+        if (isAdmin) {
+          // Update manifest
+          document.getElementById('manifest-link').href = '/manifest-admin.json';
+          // Update theme color
+          document.getElementById('theme-color-meta').content = '#1e293b';
+          // Update apple title
+          document.getElementById('apple-title').content = 'Shayboub Admin';
+        }
+      })();
+    </script>
     
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />

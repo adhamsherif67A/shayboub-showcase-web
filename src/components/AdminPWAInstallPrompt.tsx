@@ -1,55 +1,76 @@
 import { useState, useEffect } from "react";
-import { X, Download, Shield } from "lucide-react";
+import { X, Download, Shield, Share, PlusSquare } from "lucide-react";
 
 const AdminPWAInstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
-    const handler = (e: Event) => {
-      // Prevent the mini-infobar from appearing
-      e.preventDefault();
-      // Stash the event
-      setDeferredPrompt(e);
-      // Show prompt only if on admin routes
-      if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff')) {
+    // Only show on admin routes
+    if (!window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/staff')) {
+      return;
+    }
+
+    // Check if already installed (running as standalone)
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || 
+                       (window.navigator as any).standalone === true;
+    setIsStandalone(standalone);
+    
+    if (standalone) {
+      return; // Already installed
+    }
+
+    // Check if already dismissed
+    if (sessionStorage.getItem('admin-pwa-prompt-dismissed')) {
+      return;
+    }
+
+    // Detect iOS
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsIOS(iOS);
+
+    if (iOS) {
+      // On iOS, show custom instructions after delay
+      const timer = setTimeout(() => {
         setShowPrompt(true);
-      }
-    };
+      }, 2000);
+      return () => clearTimeout(timer);
+    } else {
+      // On other platforms, listen for beforeinstallprompt
+      const handler = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setShowPrompt(true);
+      };
 
-    window.addEventListener('beforeinstallprompt', handler);
-
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+      window.addEventListener('beforeinstallprompt', handler);
+      return () => window.removeEventListener('beforeinstallprompt', handler);
+    }
   }, []);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
 
-    // Show the install prompt
     deferredPrompt.prompt();
-    
-    // Wait for the user to respond
     const { outcome } = await deferredPrompt.userChoice;
-    
     console.log(`Admin PWA install: ${outcome}`);
     
-    // Clear the prompt
     setDeferredPrompt(null);
     setShowPrompt(false);
   };
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    // Don't show again for this session
     sessionStorage.setItem('admin-pwa-prompt-dismissed', 'true');
   };
 
-  // Don't show if dismissed or not on admin route
-  if (!showPrompt || sessionStorage.getItem('admin-pwa-prompt-dismissed')) {
+  // Don't show if already installed, dismissed, or not on admin route
+  if (!showPrompt || isStandalone) {
     return null;
   }
 
-  // Only show on admin routes
   if (!window.location.pathname.startsWith('/admin') && !window.location.pathname.startsWith('/staff')) {
     return null;
   }
@@ -74,23 +95,39 @@ const AdminPWAInstallPrompt = () => {
             <h3 className="font-display font-bold text-white text-sm mb-1">
               Install Admin Dashboard
             </h3>
-            <p className="text-xs text-slate-300 mb-3">
-              Quick access to manage reservations, menu, and analytics from your home screen.
-            </p>
             
-            <div className="space-y-2">
-              <button
-                onClick={handleInstall}
-                className="w-full bg-blue-600 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-              >
-                <Download className="w-4 h-4" />
-                Install Admin App
-              </button>
-              
-              <p className="text-xs text-slate-400 text-center">
-                Includes shortcuts to Reservations, Menu, and Analytics
-              </p>
-            </div>
+            {isIOS ? (
+              // iOS Instructions
+              <div>
+                <p className="text-xs text-slate-300 mb-3">
+                  Add admin panel to your home screen!
+                </p>
+                <div className="bg-slate-800 rounded-lg p-3 space-y-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    <Share className="w-4 h-4 text-blue-400" />
+                    <span className="text-slate-200">1. Tap the <strong>Share</strong> button</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <PlusSquare className="w-4 h-4 text-blue-400" />
+                    <span className="text-slate-200">2. Select <strong>"Add to Home Screen"</strong></span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Android/Desktop Install
+              <div>
+                <p className="text-xs text-slate-300 mb-3">
+                  Quick access to manage reservations, menu, and analytics.
+                </p>
+                <button
+                  onClick={handleInstall}
+                  className="w-full bg-blue-600 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Install Admin App
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -1,58 +1,76 @@
 import { useState, useEffect } from "react";
-import { X, Download } from "lucide-react";
+import { X, Download, Share, PlusSquare } from "lucide-react";
 
 const PWAInstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
-    const handler = (e: Event) => {
-      // Don't show on admin/staff routes - they have their own prompt
-      if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff')) {
-        return;
-      }
-      
-      // Prevent the mini-infobar from appearing on mobile
-      e.preventDefault();
-      // Stash the event so it can be triggered later
-      setDeferredPrompt(e);
-      // Show our custom install prompt
-      setShowPrompt(true);
-    };
+    // Check if on admin routes - don't show there
+    if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff')) {
+      return;
+    }
 
-    window.addEventListener('beforeinstallprompt', handler);
+    // Check if already installed (running as standalone)
+    const standalone = window.matchMedia('(display-mode: standalone)').matches || 
+                       (window.navigator as any).standalone === true;
+    setIsStandalone(standalone);
+    
+    if (standalone) {
+      return; // Already installed, don't show prompt
+    }
 
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    // Check if already dismissed
+    if (sessionStorage.getItem('pwa-prompt-dismissed')) {
+      return;
+    }
+
+    // Detect iOS
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    setIsIOS(iOS);
+
+    if (iOS) {
+      // On iOS, show our custom instructions after a delay
+      const timer = setTimeout(() => {
+        setShowPrompt(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    } else {
+      // On other platforms, listen for beforeinstallprompt
+      const handler = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setShowPrompt(true);
+      };
+
+      window.addEventListener('beforeinstallprompt', handler);
+      return () => window.removeEventListener('beforeinstallprompt', handler);
+    }
   }, []);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
 
-    // Show the install prompt
     deferredPrompt.prompt();
-    
-    // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice;
+    console.log(`PWA install: ${outcome}`);
     
-    console.log(`User response to the install prompt: ${outcome}`);
-    
-    // Clear the deferredPrompt
     setDeferredPrompt(null);
     setShowPrompt(false);
   };
 
   const handleDismiss = () => {
     setShowPrompt(false);
-    // Don't show again for this session
     sessionStorage.setItem('pwa-prompt-dismissed', 'true');
   };
 
-  // Don't show if already dismissed or on admin routes
-  if (!showPrompt || sessionStorage.getItem('pwa-prompt-dismissed')) {
+  // Don't show if already installed, dismissed, or on admin routes
+  if (!showPrompt || isStandalone) {
     return null;
   }
   
-  // Extra check: don't show on admin routes
   if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff')) {
     return null;
   }
@@ -81,17 +99,39 @@ const PWAInstallPrompt = () => {
             <h3 className="font-display font-bold text-foreground text-sm mb-1">
               Install Shayboub App
             </h3>
-            <p className="text-xs text-muted-foreground mb-3">
-              Install our app for quick access to reservations, menu, and exclusive offers!
-            </p>
             
-            <button
-              onClick={handleInstall}
-              className="w-full bg-primary text-primary-foreground font-semibold text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-            >
-              <Download className="w-4 h-4" />
-              Install App
-            </button>
+            {isIOS ? (
+              // iOS Instructions
+              <div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Add to your home screen for quick access!
+                </p>
+                <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+                  <div className="flex items-center gap-2 text-xs">
+                    <Share className="w-4 h-4 text-primary" />
+                    <span className="text-foreground">1. Tap the <strong>Share</strong> button below</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <PlusSquare className="w-4 h-4 text-primary" />
+                    <span className="text-foreground">2. Select <strong>"Add to Home Screen"</strong></span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Android/Desktop Install Button
+              <div>
+                <p className="text-xs text-muted-foreground mb-3">
+                  Install for quick access to reservations, menu, and offers!
+                </p>
+                <button
+                  onClick={handleInstall}
+                  className="w-full bg-primary text-primary-foreground font-semibold text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Install App
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
