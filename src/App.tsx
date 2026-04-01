@@ -14,6 +14,7 @@ import Dashboard from "./pages/admin/Dashboard.tsx";
 import Analytics from "./pages/admin/Analytics.tsx";
 import MenuManagement from "./pages/admin/MenuManagement.tsx";
 import Reservations from "./pages/admin/Reservations.tsx";
+import ReservationCalendar from "./pages/admin/ReservationCalendar.tsx";
 import StaffManagement from "./pages/admin/StaffManagement.tsx";
 
 const NotFound = lazy(() => import("./pages/NotFound.tsx"));
@@ -43,6 +44,7 @@ const App = () => (
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="menu" element={<MenuManagement />} />
                 <Route path="reservations" element={<Reservations />} />
+                <Route path="calendar" element={<ReservationCalendar />} />
                 <Route path="staff" element={<StaffManagement />} />
               </Route>
 
@@ -55,6 +57,7 @@ const App = () => (
                 <Route index element={<Dashboard />} />
                 <Route path="analytics" element={<Analytics />} />
                 <Route path="reservations" element={<Reservations />} />
+                <Route path="calendar" element={<ReservationCalendar />} />
               </Route>
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

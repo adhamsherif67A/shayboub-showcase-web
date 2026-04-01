@@ -11,7 +11,8 @@ import {
   Menu, 
   X,
   ChevronRight,
-  TrendingUp
+  TrendingUp,
+  Calendar
 } from "lucide-react";
 
 const navItems = [
@@ -19,6 +20,7 @@ const navItems = [
   { path: "/admin/analytics", label: "Analytics", icon: TrendingUp },
   { path: "/admin/menu", label: "Menu Management", icon: UtensilsCrossed },
   { path: "/admin/reservations", label: "Reservations", icon: CalendarDays },
+  { path: "/admin/calendar", label: "Calendar View", icon: Calendar },
   { path: "/admin/staff", label: "Staff Management", icon: Users, adminOnly: true },
 ];
 
