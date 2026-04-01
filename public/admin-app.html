@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Shayboub Admin</title>
+  
+  <!-- iOS PWA Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Shayboub Admin">
+  <link rel="apple-touch-icon" href="/images/shayboub-logo.png">
+  
+  <!-- Theme -->
+  <meta name="theme-color" content="#1e293b">
+  
+  <!-- Manifest for admin -->
+  <link rel="manifest" href="/manifest-admin.json">
+  
+  <!-- Immediate redirect to admin -->
+  <meta http-equiv="refresh" content="0;url=/admin">
+  
+  <style>
+    body {
+      margin: 0;
+      background: #0f172a;
+      color: white;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .loader {
+      text-align: center;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="loader">
+    <div class="spinner"></div>
+    <p>Loading Admin Panel...</p>
+  </div>
+  
+  <script>
+    // Immediate redirect via JavaScript as backup
+    window.location.replace('/admin');
+  </script>
+</body>
+</html>

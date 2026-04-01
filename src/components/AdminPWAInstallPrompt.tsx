@@ -78,6 +78,11 @@ const AdminPWAInstallPrompt = () => {
     return null;
   }
 
+  // Redirect to admin-app.html for iOS install
+  const handleIOSInstall = () => {
+    window.location.href = '/admin-app.html';
+  };
+
   return (
     <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-50 animate-in slide-in-from-bottom duration-300">
       <div className="bg-slate-900 border-2 border-slate-700 rounded-xl shadow-2xl p-4">
@@ -100,21 +105,21 @@ const AdminPWAInstallPrompt = () => {
             </h3>
             
             {isIOS ? (
-              // iOS Instructions
+              // iOS Instructions - redirect to install page first
               <div>
                 <p className="text-xs text-slate-300 mb-3">
-                  Add admin panel to your home screen!
+                  Tap the button, then use Share → Add to Home Screen
                 </p>
-                <div className="bg-slate-800 rounded-lg p-3 space-y-2">
-                  <div className="flex items-center gap-2 text-xs">
-                    <Share className="w-4 h-4 text-blue-400" />
-                    <span className="text-slate-200">1. Tap the <strong>Share</strong> button</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs">
-                    <PlusSquare className="w-4 h-4 text-blue-400" />
-                    <span className="text-slate-200">2. Select <strong>"Add to Home Screen"</strong></span>
-                  </div>
-                </div>
+                <button
+                  onClick={handleIOSInstall}
+                  className="w-full bg-blue-600 text-white font-semibold text-sm px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 mb-2"
+                >
+                  <Share className="w-4 h-4" />
+                  Open Install Page
+                </button>
+                <p className="text-xs text-slate-400 text-center">
+                  Then tap Share (↗️) → Add to Home Screen
+                </p>
               </div>
             ) : (
               // Android/Desktop Install

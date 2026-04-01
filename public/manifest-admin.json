@@ -3,7 +3,7 @@
   "name": "Shayboub Admin Panel",
   "short_name": "Shayboub Admin",
   "description": "Admin dashboard for managing Shayboub reservations, menu, analytics, and staff.",
-  "start_url": "/admin?source=pwa",
+  "start_url": "/admin-app.html",
   "scope": "/",
   "display": "standalone",
   "background_color": "#0f172a",
@@ -33,22 +33,22 @@
   "shortcuts": [
     {
       "name": "Dashboard",
-      "url": "/admin?source=pwa",
+      "url": "/admin",
       "icons": [{ "src": "/images/shayboub-logo.png", "sizes": "192x192" }]
     },
     {
       "name": "Reservations",
-      "url": "/admin/reservations?source=pwa",
+      "url": "/admin/reservations",
       "icons": [{ "src": "/images/shayboub-logo.png", "sizes": "192x192" }]
     },
     {
       "name": "Menu",
-      "url": "/admin/menu?source=pwa",
+      "url": "/admin/menu",
       "icons": [{ "src": "/images/shayboub-logo.png", "sizes": "192x192" }]
     },
     {
       "name": "Analytics",
-      "url": "/admin/analytics?source=pwa",
+      "url": "/admin/analytics",
       "icons": [{ "src": "/images/shayboub-logo.png", "sizes": "192x192" }]
     }
   ]
