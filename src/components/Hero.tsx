@@ -52,7 +52,7 @@ const Hero = () => {
           Shayboub
         </h1>
         <p className="font-display text-xl md:text-2xl italic text-secondary-foreground/80 mb-6 animate-fade-in-up" style={{ animationDelay: "0.3s" }} lang="ar">
-          شايبوب
+          شيبوب
         </p>
         <p className="font-body text-secondary-foreground/70 text-lg mb-12 max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
           Specialty coffee, artisan sandwiches & good vibes — crafted with love since day one.

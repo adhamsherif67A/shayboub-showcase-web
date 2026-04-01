@@ -1,6 +1,6 @@
 # Shayboub - Specialty Coffee Website
 
-A modern, performant website for Shayboub (شايبوب) - a specialty coffee & artisan sandwich café with locations in Cairo and Alexandria, Egypt.
+A modern, performant website for Shayboub (شيبوب) - a specialty coffee & artisan sandwich café with locations in Cairo and Alexandria, Egypt.
 
 ## 🚀 Tech Stack
 
