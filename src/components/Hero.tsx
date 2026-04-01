@@ -25,31 +25,23 @@ const Hero = () => {
           decoding="async"
           onLoad={() => setBannerLoaded(true)}
           className={`w-full h-full object-cover transition-opacity duration-700 
-            md:animate-[gentle-float_12s_ease-in-out_infinite]
-            ${bannerLoaded ? 'opacity-100 animate-[scale-in_1.5s_ease-out]' : 'opacity-0'}`}
+            ${bannerLoaded ? 'opacity-100' : 'opacity-0'}`}
         />
-        {/* Enhanced gradient vignette - mobile optimized */}
+        {/* Simplified gradient vignette */}
         <div 
-          className="absolute inset-0 bg-gradient-radial from-secondary/30 via-secondary/60 to-secondary/90" 
+          className="absolute inset-0 bg-gradient-to-b from-secondary/50 via-secondary/70 to-secondary/90" 
           aria-hidden="true" 
-        />
-        {/* Subtle grain texture for premium feel */}
-        <div 
-          className="absolute inset-0 opacity-[0.02] mix-blend-overlay pointer-events-none"
-          style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }}
-          aria-hidden="true"
         />
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-        {/* Logo with glass morphism effect */}
-        <div className="relative w-40 h-40 md:w-52 md:h-52 mx-auto mb-8 p-5 rounded-3xl
-          bg-white/10 backdrop-blur-xl border border-white/20
-          shadow-[0_8px_32px_rgba(0,0,0,0.1)]
-          hover:bg-white/15 hover:border-white/30 hover:shadow-[0_12px_48px_rgba(0,0,0,0.15)]
-          transition-all duration-500">
+        {/* Simplified logo - less decoration */}
+        <div className="relative w-32 h-32 md:w-40 md:h-40 mx-auto mb-6 p-4 rounded-2xl
+          bg-white/90 
+          hover:bg-white hover:scale-105
+          transition-all duration-300">
           {!logoLoaded && (
-            <Skeleton className="absolute inset-5 w-[calc(100%-2.5rem)] h-[calc(100%-2.5rem)] rounded-2xl" />
+            <Skeleton className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] rounded-xl" />
           )}
           <img
             src={LOGO_URL}
@@ -59,24 +51,29 @@ const Hero = () => {
             decoding="async"
             onLoad={() => setLogoLoaded(true)}
             className={`w-full h-full object-contain animate-fade-in-up 
-              hover:scale-110 hover:rotate-3 transition-transform duration-300 cursor-pointer
               ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
           />
         </div>
-        <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-secondary-foreground mb-4 animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
+        <h1 className="font-display text-6xl md:text-8xl lg:text-9xl font-bold text-primary mb-4 animate-fade-in-up 
+          drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]" 
+          style={{ animationDelay: "0.15s" }}>
           Shayboub
         </h1>
-        <p className="font-display text-xl md:text-2xl italic text-secondary-foreground/80 mb-6 animate-fade-in-up" style={{ animationDelay: "0.3s" }} lang="ar">
+        <p className="font-display text-2xl md:text-3xl text-primary/90 mb-6 animate-fade-in-up 
+          drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]" 
+          style={{ animationDelay: "0.3s" }} 
+          lang="ar">
           شيبوب
         </p>
-        <p className="font-body text-secondary-foreground/70 text-lg mb-12 max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: "0.45s" }}>
-          Specialty coffee, artisan sandwiches & good vibes — crafted with love since day one.
+        <p className="font-body text-secondary-foreground/90 text-base md:text-lg mb-10 max-w-lg mx-auto animate-fade-in-up" 
+          style={{ animationDelay: "0.45s" }}>
+          Specialty coffee, artisan sandwiches & good vibes
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
           <a
             href="#menu"
-            className="inline-block bg-primary text-primary-foreground font-body font-semibold px-8 py-4 rounded-lg 
-              hover:scale-105 hover:shadow-xl hover:shadow-primary/30 active:scale-95 transition-all duration-300"
+            className="inline-block bg-primary text-white font-body font-semibold px-8 py-4 rounded-lg 
+              hover:scale-105 hover:bg-primary/90 active:scale-95 transition-all duration-200"
           >
             Explore Menu
           </a>
@@ -84,18 +81,11 @@ const Hero = () => {
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block border border-secondary-foreground/30 text-secondary-foreground font-body font-semibold px-8 py-4 rounded-lg 
-              hover:bg-secondary-foreground/10 hover:scale-105 hover:border-secondary-foreground/50 active:scale-95 transition-all duration-300"
+            className="inline-block bg-white/90 text-secondary font-body font-semibold px-8 py-4 rounded-lg 
+              hover:bg-white hover:scale-105 active:scale-95 transition-all duration-200"
           >
             Order on Talabat
           </a>
-        </div>
-      </div>
-
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-subtle">
-        <div className="w-6 h-10 border-2 border-secondary-foreground/30 rounded-full flex justify-center pt-2">
-          <div className="w-1.5 h-3 bg-secondary-foreground/50 rounded-full animate-[fade-in_1s_ease-in-out_infinite_alternate]" />
         </div>
       </div>
     </section>

@@ -10,10 +10,10 @@ const Footer = () => {
           <div className="flex items-center gap-4">
             <img src={LOGO_URL} alt="" className="h-12 w-12 rounded-lg object-contain" aria-hidden="true" />
             <div>
-              <h3 className="font-display text-xl font-bold text-secondary-foreground">
-                Shayboub <span className="text-primary" lang="ar">شيبوب</span>
+              <h3 className="font-display text-2xl font-bold text-primary">
+                Shayboub
               </h3>
-              <p className="font-body text-sm">Specialty Coffee & More</p>
+              <p className="font-body text-sm text-secondary-foreground/70">Specialty Coffee & More</p>
             </div>
           </div>
 

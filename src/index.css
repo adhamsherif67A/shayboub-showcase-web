@@ -49,7 +49,7 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
 
-    --font-display: 'Playfair Display', serif;
+    --font-display: 'Permanent Marker', cursive;
     --font-body: 'DM Sans', sans-serif;
   }
 
@@ -87,21 +87,17 @@
   .transition-smooth {
     @apply transition-all duration-300 ease-out;
   }
-
-  /* Radial gradient utility */
-  .bg-gradient-radial {
-    background-image: radial-gradient(ellipse at center, var(--tw-gradient-stops));
-  }
 }
 
 /* Mobile-optimized animations - respect user preferences */
 @media (prefers-reduced-motion: no-preference) {
-  @keyframes gentle-float {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-8px);
-    }
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes scale-in {
+    from { transform: scale(1.1); }
+    to { transform: scale(1); }
   }
 }
