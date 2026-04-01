@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, X, User, LogOut } from "lucide-react";
+import { Menu, X, User, LogOut, Star } from "lucide-react";
 import { LOGO_URL } from "@/data/menu";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { t, isRTL } = useLanguage();
-  const { user, isCustomer, logout } = useAuth();
+  const { user, isCustomer, logout, loading } = useAuth();
 
   const handleLogout = async () => {
     await logout();
@@ -38,34 +38,37 @@ const Navbar = () => {
           <a href="#about" className="hover:text-primary transition-colors">{t.nav.about}</a>
           <LanguageToggle />
           
-          {/* Customer Auth Buttons */}
-          {isCustomer && user ? (
+          {/* Customer Auth Buttons - Always show unless loading */}
+          {!loading && (
             <>
-              <Link to="/my-account">
-                <Button variant="outline" size="sm" className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                  <User className="w-4 h-4" />
-                  {user.customerData?.points || 0} {t.loyalty.points}
-                </Button>
-              </Link>
-              <Button variant="ghost" size="sm" onClick={handleLogout} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                <LogOut className="w-4 h-4" />
-                {t.auth.logout}
-              </Button>
+              {isCustomer && user ? (
+                <>
+                  <Link to="/my-account">
+                    <Button variant="default" size="sm" className={`gap-2 bg-primary hover:bg-primary/90 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <Star className="w-4 h-4" />
+                      {user.customerData?.points || 0} {t.loyalty?.points || "pts"}
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" size="sm" onClick={handleLogout} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <LogOut className="w-4 h-4" />
+                  </Button>
+                </>
+              ) : !user ? (
+                <Link to="/customer-login">
+                  <Button variant="default" size="sm" className={`gap-2 bg-primary hover:bg-primary/90 text-white ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <User className="w-4 h-4" />
+                    {t.auth?.login || "Login"}
+                  </Button>
+                </Link>
+              ) : null}
             </>
-          ) : !user ? (
-            <Link to="/customer-login">
-              <Button variant="outline" size="sm" className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                <User className="w-4 h-4" />
-                {t.auth.login}
-              </Button>
-            </Link>
-          ) : null}
+          )}
           
           <a
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-primary text-primary-foreground px-5 py-2 rounded-lg font-semibold hover:opacity-90 transition-opacity"
+            className="bg-orange-500 text-white px-5 py-2 rounded-lg font-semibold hover:bg-orange-600 transition-colors"
           >
             {t.nav.orderNow}
           </a>
@@ -95,34 +98,40 @@ const Navbar = () => {
             <LanguageToggle />
           </div>
           
-          {/* Mobile Customer Auth */}
-          {isCustomer && user ? (
+          {/* Mobile Customer Auth - Always show unless loading */}
+          {!loading && (
             <>
-              <Link to="/my-account" onClick={() => setOpen(false)}>
-                <Button variant="outline" className="w-full gap-2">
-                  <User className="w-4 h-4" />
-                  {t.auth.myAccount} ({user.customerData?.points || 0} {t.loyalty.points})
-                </Button>
-              </Link>
-              <Button variant="ghost" className="w-full gap-2" onClick={handleLogout}>
-                <LogOut className="w-4 h-4" />
-                {t.auth.logout}
-              </Button>
+              {isCustomer && user ? (
+                <div className="space-y-3 pt-3 border-t border-secondary-foreground/10">
+                  <Link to="/my-account" onClick={() => setOpen(false)}>
+                    <Button variant="default" className="w-full gap-2 bg-primary hover:bg-primary/90">
+                      <Star className="w-4 h-4" />
+                      {t.auth?.myAccount || "My Account"} ({user.customerData?.points || 0} {t.loyalty?.points || "pts"})
+                    </Button>
+                  </Link>
+                  <Button variant="outline" className="w-full gap-2" onClick={handleLogout}>
+                    <LogOut className="w-4 h-4" />
+                    {t.auth?.logout || "Logout"}
+                  </Button>
+                </div>
+              ) : !user ? (
+                <div className="space-y-3 pt-3 border-t border-secondary-foreground/10">
+                  <Link to="/customer-login" onClick={() => setOpen(false)}>
+                    <Button variant="default" className="w-full gap-2 bg-primary hover:bg-primary/90 text-white">
+                      <User className="w-4 h-4" />
+                      {t.auth?.login || "Login"} / {t.auth?.signUp || "Sign Up"}
+                    </Button>
+                  </Link>
+                </div>
+              ) : null}
             </>
-          ) : !user ? (
-            <Link to="/customer-login" onClick={() => setOpen(false)}>
-              <Button variant="outline" className="w-full gap-2">
-                <User className="w-4 h-4" />
-                {t.auth.login}
-              </Button>
-            </Link>
-          ) : null}
+          )}
           
           <a
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
             target="_blank"
             rel="noopener noreferrer"
-            className="block bg-primary text-primary-foreground px-5 py-2 rounded-lg font-semibold text-center"
+            className="block bg-orange-500 text-white px-5 py-2 rounded-lg font-semibold text-center hover:bg-orange-600 transition-colors"
           >
             {t.nav.orderNow}
           </a>
