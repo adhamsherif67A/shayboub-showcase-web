@@ -35,13 +35,10 @@ const Hero = () => {
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-        {/* Logo with border for visibility */}
-        <div className="relative w-52 h-52 md:w-64 md:h-64 lg:w-80 lg:h-80 mx-auto mb-6 
-          p-4 rounded-2xl border-2 border-white/30
-          hover:border-white/50 hover:scale-105 
-          transition-all duration-300">
+        {/* Logo with white glow outline */}
+        <div className="relative w-52 h-52 md:w-64 md:h-64 lg:w-80 lg:h-80 mx-auto mb-6">
           {!logoLoaded && (
-            <Skeleton className="absolute inset-4 w-[calc(100%-2rem)] h-[calc(100%-2rem)] rounded-xl" />
+            <Skeleton className="absolute inset-0 w-full h-full rounded-xl" />
           )}
           <img
             src={LOGO_URL}
@@ -50,8 +47,12 @@ const Hero = () => {
             height={320}
             decoding="async"
             onLoad={() => setLogoLoaded(true)}
+            style={{
+              filter: 'drop-shadow(0 0 1px white) drop-shadow(0 0 2px white) drop-shadow(0 0 3px rgba(255,255,255,0.8))'
+            }}
             className={`w-full h-full object-contain
-              ${logoLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
+              hover:scale-105 transition-transform duration-300
+              ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
           />
         </div>
         
