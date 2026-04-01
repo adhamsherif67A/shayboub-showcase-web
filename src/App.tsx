@@ -11,6 +11,7 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import Index from "./pages/Index.tsx";
 import Login from "./pages/Login.tsx";
 import CustomerLogin from "./pages/CustomerLogin.tsx";
+import Signup from "./pages/Signup.tsx";
 import MyAccount from "./pages/MyAccount.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import Dashboard from "./pages/admin/Dashboard.tsx";
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
               <Route path="/customer-login" element={<CustomerLogin />} />
+              <Route path="/signup" element={<Signup />} />
               
               {/* Customer Routes */}
               <Route path="/my-account" element={
