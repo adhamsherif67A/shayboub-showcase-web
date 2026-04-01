@@ -35,25 +35,22 @@ const Hero = () => {
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-        {/* Logo with refined styling */}
-        <div className="relative w-44 h-44 md:w-56 md:h-56 lg:w-64 lg:h-64 mx-auto mb-6">
+        {/* Logo - no background, just the logo */}
+        <div className="relative w-52 h-52 md:w-64 md:h-64 lg:w-80 lg:h-80 mx-auto mb-6">
           {!logoLoaded && (
             <Skeleton className="absolute inset-0 w-full h-full rounded-2xl" />
           )}
-          <div className="w-full h-full p-4 rounded-2xl bg-white shadow-xl shadow-black/10
-            hover:shadow-2xl hover:shadow-black/20 hover:scale-[1.02]
-            transition-all duration-300">
-            <img
-              src={LOGO_URL}
-              alt="Shayboub - Specialty Coffee"
-              width={256}
-              height={256}
-              decoding="async"
-              onLoad={() => setLogoLoaded(true)}
-              className={`w-full h-full object-contain
-                ${logoLoaded ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300`}
-            />
-          </div>
+          <img
+            src={LOGO_URL}
+            alt="Shayboub - Specialty Coffee"
+            width={320}
+            height={320}
+            decoding="async"
+            onLoad={() => setLogoLoaded(true)}
+            className={`w-full h-full object-contain drop-shadow-[0_4px_20px_rgba(255,255,255,0.15)]
+              hover:scale-105 transition-transform duration-300
+              ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
+          />
         </div>
         
         {/* Tagline */}
