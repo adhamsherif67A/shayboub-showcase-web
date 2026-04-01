@@ -1,7 +1,7 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { menuData, type MenuItem } from "@/data/menu";
-import { X, Plus, Minus, Search, ShoppingBag } from "lucide-react";
+import { X, Plus, Minus, Search, ShoppingBag, Calendar, Clock, MapPin, Users, User, Phone, Mail, FileText, CheckCircle2 } from "lucide-react";
 import { collection, addDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -183,6 +183,47 @@ const ReservationForm = () => {
   };
 
   const cartTotal = calculateCartTotal();
+
+  /* ---------- location name helper ---------- */
+  
+  const getLocationName = (loc: string) => {
+    const locations: Record<string, string> = {
+      cairo: "Maadi, Cairo",
+      alex: "San Stefano, Alexandria", 
+      alex2: "Smouha, Alexandria"
+    };
+    return locations[loc] || loc;
+  };
+
+  /* ---------- check if summary should show ---------- */
+  
+  const isReadyForSummary = useMemo(() => {
+    return formData.name.trim() && formData.phone.trim() && formData.date && formData.time;
+  }, [formData.name, formData.phone, formData.date, formData.time]);
+
+  /* ---------- format date for display ---------- */
+  
+  const formatDisplayDate = (dateStr: string) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+
+  /* ---------- format time for display ---------- */
+  
+  const formatDisplayTime = (timeStr: string) => {
+    if (!timeStr) return "";
+    const [hours, minutes] = timeStr.split(':');
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12;
+    return `${hour12}:${minutes} ${ampm}`;
+  };
 
   /* ---------- filtered menu for search ---------- */
 
@@ -664,6 +705,112 @@ const ReservationForm = () => {
               placeholder="Allergies, birthday setup, highchair needed..."
               className={inputCls + " resize-none"} />
           </div>
+
+          {/* ========== RESERVATION SUMMARY CARD ========== */}
+          {isReadyForSummary && (
+            <div className="bg-gradient-to-br from-primary/5 via-background to-orange-500/5 rounded-xl border-2 border-primary/20 overflow-hidden">
+              {/* Header */}
+              <div className="bg-primary/10 px-4 py-3 border-b border-primary/20">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-primary" />
+                  <h3 className="font-display text-base font-bold text-foreground">
+                    Reservation Summary
+                  </h3>
+                </div>
+              </div>
+              
+              {/* Details */}
+              <div className="p-4 space-y-3">
+                {/* Service Type & Location */}
+                <div className="flex items-start gap-3">
+                  <MapPin className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">
+                      {formData.serviceType === "dinein" ? "Dine-In" : "Pickup"}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{getLocationName(formData.location)}</p>
+                  </div>
+                </div>
+                
+                {/* Date & Time */}
+                <div className="flex items-start gap-3">
+                  <Calendar className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium text-foreground">{formatDisplayDate(formData.date)}</p>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Clock className="w-3 h-3" />
+                      <span>{formatDisplayTime(formData.time)}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Party Size (dine-in only) */}
+                {formData.serviceType === "dinein" && (
+                  <div className="flex items-center gap-3">
+                    <Users className="w-4 h-4 text-primary shrink-0" />
+                    <p className="text-sm font-medium text-foreground">
+                      {formData.partySize} {formData.partySize === 1 ? "Guest" : "Guests"}
+                    </p>
+                  </div>
+                )}
+                
+                {/* Contact Info */}
+                <div className="pt-2 border-t border-border/50 space-y-2">
+                  <div className="flex items-center gap-3">
+                    <User className="w-4 h-4 text-primary shrink-0" />
+                    <p className="text-sm font-medium text-foreground">{formData.name}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Phone className="w-4 h-4 text-primary shrink-0" />
+                    <p className="text-sm text-muted-foreground">{formData.phone}</p>
+                  </div>
+                  {formData.email && (
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-4 h-4 text-primary shrink-0" />
+                      <p className="text-sm text-muted-foreground">{formData.email}</p>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Pre-ordered Items */}
+                {cart.length > 0 && (
+                  <div className="pt-2 border-t border-border/50">
+                    <div className="flex items-center gap-2 mb-2">
+                      <ShoppingBag className="w-4 h-4 text-primary" />
+                      <p className="text-sm font-medium text-foreground">Pre-ordered Items</p>
+                    </div>
+                    <div className="bg-background/50 rounded-lg p-2 space-y-1">
+                      {cart.map((c) => (
+                        <div key={`${c.categoryName}-${c.item.name}-${c.selectedSize}`} className="flex justify-between text-xs">
+                          <span className="text-muted-foreground">
+                            {c.quantity}x {c.item.name}
+                            {c.selectedSize && <span className="opacity-70"> ({c.selectedSize === 'large' ? 'L' : 'M'})</span>}
+                          </span>
+                          <span className="text-foreground font-medium">
+                            {((c.selectedPrice || 0) * c.quantity).toFixed(0)} EGP
+                          </span>
+                        </div>
+                      ))}
+                      <div className="flex justify-between text-sm pt-1 border-t border-border/30 mt-1">
+                        <span className="font-medium text-foreground">Total</span>
+                        <span className="font-bold text-primary">{cartTotal.toFixed(0)} EGP</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {/* Special Requests */}
+                {formData.specialRequests && (
+                  <div className="pt-2 border-t border-border/50">
+                    <div className="flex items-start gap-3">
+                      <FileText className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                      <p className="text-xs text-muted-foreground italic">"{formData.specialRequests}"</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Submit */}
           <button
