@@ -1,0 +1,38 @@
+{
+  "name": "Shayboub - Specialty Coffee & More",
+  "short_name": "Shayboub",
+  "description": "Specialty coffee, artisan sandwiches & good vibes. Reserve a table or order ahead at Shayboub.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2B3441",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/images/shayboub-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/images/shayboub-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/shayboub-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "https://media.alimento.io/business_banner/45/17312570137548139.png",
+      "sizes": "1920x1080",
+      "type": "image/png"
+    }
+  ]
+}
