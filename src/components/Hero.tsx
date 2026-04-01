@@ -25,9 +25,20 @@ const Hero = () => {
           decoding="async"
           onLoad={() => setBannerLoaded(true)}
           className={`w-full h-full object-cover transition-opacity duration-700 
+            md:animate-[gentle-float_12s_ease-in-out_infinite]
             ${bannerLoaded ? 'opacity-100 animate-[scale-in_1.5s_ease-out]' : 'opacity-0'}`}
         />
-        <div className="absolute inset-0 bg-secondary/60" aria-hidden="true" />
+        {/* Enhanced gradient vignette - mobile optimized */}
+        <div 
+          className="absolute inset-0 bg-gradient-radial from-secondary/30 via-secondary/60 to-secondary/90" 
+          aria-hidden="true" 
+        />
+        {/* Subtle grain texture for premium feel */}
+        <div 
+          className="absolute inset-0 opacity-[0.02] mix-blend-overlay pointer-events-none"
+          style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")' }}
+          aria-hidden="true"
+        />
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">

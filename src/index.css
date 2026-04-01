@@ -87,4 +87,21 @@
   .transition-smooth {
     @apply transition-all duration-300 ease-out;
   }
+
+  /* Radial gradient utility */
+  .bg-gradient-radial {
+    background-image: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+  }
+}
+
+/* Mobile-optimized animations - respect user preferences */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes gentle-float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
 }
