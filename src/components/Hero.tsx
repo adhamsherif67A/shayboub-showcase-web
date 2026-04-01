@@ -31,10 +31,14 @@ const Hero = () => {
       </div>
 
       <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-        {/* Logo with skeleton */}
-        <div className="relative w-40 h-40 md:w-52 md:h-52 mx-auto mb-8">
+        {/* Logo with glass morphism effect */}
+        <div className="relative w-40 h-40 md:w-52 md:h-52 mx-auto mb-8 p-5 rounded-3xl
+          bg-white/10 backdrop-blur-xl border border-white/20
+          shadow-[0_8px_32px_rgba(0,0,0,0.1)]
+          hover:bg-white/15 hover:border-white/30 hover:shadow-[0_12px_48px_rgba(0,0,0,0.15)]
+          transition-all duration-500">
           {!logoLoaded && (
-            <Skeleton className="absolute inset-0 w-full h-full rounded-2xl" />
+            <Skeleton className="absolute inset-5 w-[calc(100%-2.5rem)] h-[calc(100%-2.5rem)] rounded-2xl" />
           )}
           <img
             src={LOGO_URL}
@@ -43,8 +47,8 @@ const Hero = () => {
             height={200}
             decoding="async"
             onLoad={() => setLogoLoaded(true)}
-            className={`w-full h-full rounded-2xl object-contain animate-fade-in-up 
-              hover:scale-105 hover:rotate-3 transition-transform duration-300 cursor-pointer
+            className={`w-full h-full object-contain animate-fade-in-up 
+              hover:scale-110 hover:rotate-3 transition-transform duration-300 cursor-pointer
               ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
           />
         </div>
