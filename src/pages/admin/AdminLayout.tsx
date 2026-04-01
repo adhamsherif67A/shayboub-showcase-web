@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import AdminPWAInstallPrompt from "@/components/AdminPWAInstallPrompt";
 import { 
   LayoutDashboard, 
   UtensilsCrossed, 
@@ -145,6 +146,9 @@ const AdminLayout = () => {
           <Outlet />
         </main>
       </div>
+      
+      {/* Admin PWA Install Prompt */}
+      <AdminPWAInstallPrompt />
     </div>
   );
 };

@@ -29,8 +29,16 @@
     <meta name="language" content="English" />
     <link rel="canonical" href="https://shayboub.com" />
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json" />
+    <!-- PWA Manifest - dynamically loaded based on route -->
+    <link rel="manifest" href="/manifest.json" id="manifest-link" />
+    <script>
+      // Load admin manifest if on admin route
+      if (window.location.pathname.startsWith('/admin') || window.location.pathname.startsWith('/staff')) {
+        document.getElementById('manifest-link').setAttribute('href', '/manifest-admin.json');
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#1e293b');
+        document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', 'Shayboub Admin');
+      }
+    </script>
     
     <!-- Theme color for mobile browsers -->
     <meta name="theme-color" content="#2B3441" />
