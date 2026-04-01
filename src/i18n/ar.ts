@@ -1,6 +1,18 @@
 import type { Translations } from './en';
 
 export const ar: Translations = {
+  // الترجمات الشائعة
+  common: {
+    back: "رجوع",
+    cancel: "إلغاء",
+    confirm: "تأكيد",
+    save: "حفظ",
+    delete: "حذف",
+    edit: "تعديل",
+    loading: "جاري التحميل...",
+    home: "الرئيسية",
+  },
+
   // Navigation
   nav: {
     menu: "القائمة",
@@ -536,6 +548,361 @@ export const ar: Translations = {
       alexGleem: "الإسكندرية - جليم",
       alexSmouha: "الإسكندرية - سموحة",
       alexSidiGaber: "الإسكندرية - سيدي جابر",
+    },
+  },
+
+  // المصادقة
+  auth: {
+    // صفحات تسجيل الدخول/الاشتراك
+    login: "تسجيل الدخول",
+    signup: "إنشاء حساب",
+    welcome: "مرحباً بك في شايبوب",
+    welcomeBack: "مرحباً بعودتك",
+    loginSubtitle: "سجل الدخول للوصول إلى مكافآت الولاء",
+    signupSubtitle: "أنشئ حساباً لتبدأ في كسب النقاط",
+    
+    // طرق المصادقة
+    continueWithGoogle: "المتابعة بحساب Google",
+    continueWithApple: "المتابعة بحساب Apple",
+    continueWithEmail: "المتابعة بالبريد الإلكتروني",
+    continueWithPhone: "المتابعة برقم الهاتف",
+    orDivider: "أو",
+    
+    // نموذج البريد الإلكتروني/كلمة المرور
+    emailAddress: "البريد الإلكتروني",
+    emailPlaceholder: "your@email.com",
+    phoneNumber: "رقم الهاتف",
+    phonePlaceholder: "٠١٢٣٤٥٦٧٨٩٠+",
+    password: "كلمة المرور",
+    passwordPlaceholder: "••••••••",
+    confirmPassword: "تأكيد كلمة المرور",
+    fullName: "الاسم الكامل",
+    namePlaceholder: "أحمد محمد",
+    birthday: "تاريخ الميلاد (اختياري)",
+    birthdayPlaceholder: "يوم/شهر/سنة",
+    birthdayBonus: "احصل على نقاط إضافية في عيد ميلادك!",
+    
+    // الإجراءات
+    signInButton: "تسجيل الدخول",
+    signUpButton: "إنشاء حساب",
+    signingIn: "جاري تسجيل الدخول...",
+    signingUp: "جاري إنشاء الحساب...",
+    forgotPassword: "نسيت كلمة المرور؟",
+    dontHaveAccount: "ليس لديك حساب؟",
+    alreadyHaveAccount: "لديك حساب بالفعل؟",
+    signUpLink: "إنشاء حساب",
+    signInLink: "تسجيل الدخول",
+    logout: "تسجيل الخروج",
+    myAccount: "حسابي",
+    
+    // التحقق من الهاتف
+    verifyPhone: "تحقق من رقم الهاتف",
+    enterCode: "أدخل الرمز المرسل إلى",
+    verificationCode: "رمز التحقق",
+    resendCode: "إعادة إرسال الرمز",
+    verify: "تحقق",
+    verifying: "جاري التحقق...",
+    
+    // الأخطاء
+    errors: {
+      invalidEmail: "البريد الإلكتروني غير صالح",
+      invalidPhone: "رقم الهاتف غير صالح",
+      weakPassword: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+      passwordMismatch: "كلمات المرور غير متطابقة",
+      emailExists: "البريد الإلكتروني مسجل مسبقاً",
+      phoneExists: "رقم الهاتف مسجل مسبقاً",
+      wrongPassword: "كلمة المرور غير صحيحة",
+      userNotFound: "لا يوجد حساب بهذا البريد",
+      networkError: "خطأ في الشبكة. حاول مرة أخرى.",
+      tooManyRequests: "محاولات كثيرة. حاول لاحقاً.",
+      accountDisabled: "تم تعطيل هذا الحساب",
+      invalidVerificationCode: "رمز التحقق غير صالح",
+      verificationExpired: "انتهت صلاحية رمز التحقق",
+      fillAllFields: "يرجى ملء جميع الحقول المطلوبة",
+    },
+    
+    // رسائل النجاح
+    success: {
+      accountCreated: "تم إنشاء الحساب بنجاح!",
+      loggedIn: "مرحباً بعودتك!",
+      codeSent: "تم إرسال رمز التحقق",
+      phoneVerified: "تم التحقق من رقم الهاتف",
+    },
+  },
+
+  // نظام الولاء
+  loyalty: {
+    // صفحة حسابي
+    myAccount: "حسابي",
+    memberSince: "عضو منذ",
+    editProfile: "تعديل الملف الشخصي",
+    settings: "الإعدادات",
+    
+    // قسم النقاط
+    yourPoints: "نقاطك",
+    pointsBalance: "رصيد النقاط",
+    points: "نقطة",
+    currentBalance: "الرصيد الحالي",
+    totalEarned: "إجمالي المكتسب",
+    totalSpent: "إجمالي المُنفق",
+    pointsHistory: "سجل النقاط",
+    
+    // التقدم
+    progressTo25: "التقدم نحو خصم ٢٥٪",
+    progressTo100: "التقدم نحو مشروب مجاني",
+    earnMorePoints: "اكسب {points} نقطة إضافية للحصول على المكافأة!",
+    needMoreBookings: "يحتاج إلى {count} حجوزات مؤكدة إضافية",
+    nextReward: "المكافأة التالية",
+    
+    // المكافآت
+    availableRewards: "المكافآت المتاحة",
+    claimReward: "استلم المكافأة",
+    rewardClaimed: "تم استلام المكافأة!",
+    yourVouchers: "قسائمك",
+    activeVouchers: "القسائم النشطة",
+    usedVouchers: "القسائم المستخدمة",
+    noActiveVouchers: "لا توجد قسائم نشطة",
+    noUsedVouchers: "لم تستخدم أي قسائم بعد",
+    
+    // أنواع المكافآت
+    reward25Off: "خصم ٢٥٪ على أي منتج",
+    reward25OffDesc: "احصل على خصم ٢٥٪ على أي منتج من القائمة",
+    rewardFreeDrink: "مشروب مجاني",
+    rewardFreeDrinkDesc: "احصل على أي مشروب من اختيارك مجاناً",
+    rewardFreeItem: "منتج مجاني",
+    rewardFreeItemDesc: "احصل على أي منتج من القائمة مجاناً",
+    birthdayReward: "عرض عيد الميلاد",
+    birthdayRewardDesc: "منتج مجاني من اختيارك في عيد ميلادك!",
+    
+    // تفاصيل القسيمة
+    voucherCode: "رمز القسيمة",
+    copyCode: "نسخ الرمز",
+    codeCopied: "تم نسخ الرمز!",
+    useNow: "استخدم الآن",
+    expires: "تنتهي في",
+    neverExpires: "لا تنتهي صلاحيتها",
+    usedOn: "استُخدمت في",
+    discount: "الخصم",
+    
+    // نافذة القسيمة
+    congratulations: "مبروك!",
+    rewardClaimedSuccess: "تم استلام مكافأتك بنجاح!",
+    yourDiscountCode: "رمز الخصم الخاص بك:",
+    howToUse: "كيفية الاستخدام:",
+    step1: "١. قم بعمل حجزك التالي",
+    step2: "٢. أدخل هذا الرمز أثناء الحجز",
+    step3: "٣. احصل على خصمك تلقائياً!",
+    close: "إغلاق",
+    
+    // قسم الإحصائيات
+    yourStats: "إحصائياتك",
+    totalVisits: "إجمالي الزيارات",
+    confirmedBookings: "الحجوزات المؤكدة",
+    lifetimeSpent: "إجمالي الإنفاق",
+    currentPoints: "النقاط الحالية",
+    visits: "زيارات",
+    spent: "منفق",
+    
+    // سجل الحجوزات
+    bookingHistory: "سجل الحجوزات",
+    noBookings: "لا توجد حجوزات بعد",
+    makeFirstBooking: "قم بأول حجز لتبدأ في كسب النقاط!",
+    pointsEarned: "+{points} نقطة مكتسبة",
+    pointsPending: "النقاط معلقة (غير مؤكدة بعد)",
+    usedVoucher: "استُخدمت القسيمة: {code}",
+    statusPending: "في انتظار التأكيد",
+    statusConfirmed: "مؤكد",
+    statusCancelled: "ملغي",
+    statusCompleted: "مكتمل",
+    
+    // المنتجات المفضلة
+    favoriteItems: "الأكثر طلباً",
+    noFavorites: "لا توجد طلبات بعد",
+    orderedTimes: "{count} مرة",
+    favoriteTag: "⭐ المفضل",
+    
+    // معلومات كسب النقاط
+    howToEarn: "كيفية كسب النقاط",
+    earnPerBooking: "١٠ نقاط لكل حجز مؤكد",
+    earnFirstBooking: "٢٠ نقطة إضافية للحجز الأول",
+    earnBirthday: "٥٠ نقطة إضافية في عيد ميلادك",
+    pointsOnConfirmation: "يتم منح النقاط عند تأكيد المسؤول لحجزك",
+    
+    // عيد الميلاد
+    happyBirthday: "🎂 عيد ميلاد سعيد!",
+    birthdayMessage: "استمتع بمنتج مجاني منا!",
+    birthdayBadge: "🎉 إنه عيد ميلادك!",
+    
+    // الأخطاء
+    errors: {
+      loadingProfile: "فشل في تحميل الملف الشخصي",
+      claimingReward: "فشل في استلام المكافأة",
+      notEnoughPoints: "النقاط غير كافية",
+      invalidVoucher: "رمز القسيمة غير صالح",
+      voucherUsed: "تم استخدام هذه القسيمة بالفعل",
+      voucherExpired: "انتهت صلاحية هذه القسيمة",
+      voucherNotFound: "القسيمة غير موجودة",
+    },
+  },
+
+  // نظام القسائم (عام)
+  voucher: {
+    haveCode: "لديك رمز خصم؟",
+    enterCode: "أدخل رمز القسيمة",
+    codePlaceholder: "SHAYBOUB25",
+    apply: "تطبيق",
+    applied: "تم التطبيق!",
+    remove: "إزالة",
+    codeApplied: "تم تطبيق الرمز {code}!",
+    discountApplied: "تم تفعيل خصم {discount}٪!",
+    freeDrinkApplied: "تم تطبيق قسيمة المشروب المجاني!",
+    freeItemApplied: "تم تطبيق قسيمة المنتج المجاني!",
+    selectYourDrink: "اختر مشروبك المجاني",
+    selectYourItem: "اختر منتجك المجاني",
+    validating: "جاري التحقق...",
+    invalid: "رمز غير صالح",
+  },
+
+  // إدارة الولاء للمسؤولين
+  adminLoyalty: {
+    title: "إدارة الولاء",
+    overview: "نظرة عامة على الولاء",
+    customers: "العملاء",
+    vouchers: "القسائم",
+    settings: "الإعدادات",
+    
+    // إحصائيات النظرة العامة
+    totalMembers: "إجمالي الأعضاء",
+    activeToday: "نشطون اليوم",
+    vouchersIssued: "القسائم الصادرة",
+    pointsGiven: "النقاط الممنوحة",
+    totalCustomers: "إجمالي العملاء",
+    newThisMonth: "جدد هذا الشهر",
+    activeVouchers: "القسائم النشطة",
+    usedVouchers: "القسائم المستخدمة",
+    
+    // قائمة العملاء
+    searchCustomers: "بحث بالاسم أو البريد أو الهاتف...",
+    customerName: "اسم العميل",
+    email: "البريد الإلكتروني",
+    phone: "الهاتف",
+    points: "النقاط",
+    totalVisits: "الزيارات",
+    lastVisit: "آخر زيارة",
+    joined: "انضم في",
+    actions: "الإجراءات",
+    viewDetails: "عرض التفاصيل",
+    adjustPoints: "تعديل النقاط",
+    noCustomers: "لم يتم العثور على عملاء",
+    
+    // تفاصيل العميل
+    customerDetails: "تفاصيل العميل",
+    contactInfo: "معلومات الاتصال",
+    loyaltyInfo: "معلومات الولاء",
+    birthday: "تاريخ الميلاد",
+    pointsBalance: "رصيد النقاط",
+    totalEarned: "إجمالي المكتسب",
+    totalSpent: "إجمالي المُنفق",
+    memberSince: "عضو منذ",
+    
+    // سجل النقاط
+    pointsHistory: "سجل النقاط",
+    transaction: "المعاملة",
+    date: "التاريخ",
+    amount: "المبلغ",
+    reason: "السبب",
+    bookingConfirmed: "تم تأكيد الحجز",
+    firstBookingBonus: "مكافأة الحجز الأول",
+    birthdayBonus: "مكافأة عيد الميلاد",
+    rewardClaimed: "تم استلام المكافأة",
+    manualAdjustment: "تعديل يدوي",
+    noTransactions: "لا توجد معاملات بعد",
+    
+    // تعديل النقاط اليدوي
+    manualPointsTitle: "تعديل النقاط اليدوي",
+    addPoints: "إضافة نقاط",
+    subtractPoints: "خصم نقاط",
+    pointsAmount: "عدد النقاط",
+    adjustmentReason: "سبب التعديل",
+    reasonPlaceholder: "مثال: تعويض عن شكوى العميل",
+    confirm: "تأكيد",
+    cancel: "إلغاء",
+    adjusting: "جاري التعديل...",
+    successAdjusted: "تم تعديل النقاط بنجاح",
+    
+    // التحقق من القسيمة
+    validateVoucher: "التحقق من رمز القسيمة",
+    enterVoucherCode: "أدخل رمز القسيمة للتحقق منه",
+    checkCode: "فحص الرمز",
+    checking: "جاري الفحص...",
+    voucherDetails: "تفاصيل القسيمة",
+    voucherCode: "الرمز",
+    voucherType: "النوع",
+    voucherCustomer: "العميل",
+    voucherStatus: "الحالة",
+    voucherCreated: "تم الإنشاء",
+    voucherUsed: "تم الاستخدام",
+    voucherExpires: "تنتهي في",
+    statusUnused: "غير مستخدمة ✓",
+    statusUsed: "مستخدمة",
+    statusExpired: "منتهية",
+    markAsUsed: "تحديد كمستخدمة",
+    cancelVoucher: "إلغاء القسيمة",
+    discount25: "خصم ٢٥٪",
+    freeDrink: "مشروب مجاني",
+    freeItem: "منتج مجاني",
+    birthdaySpecial: "عرض عيد الميلاد",
+    
+    // النشاط الأخير
+    recentActivity: "نشاط النقاط الأخير",
+    earnedPoints: "{customer} اكتسب {points} نقطة",
+    redeemedPoints: "{customer} استبدل {points} نقطة",
+    adjustedPoints: "تم تعديل نقاط {customer}",
+    
+    // الإعدادات
+    loyaltySettings: "إعدادات الولاء",
+    pointsPerBooking: "النقاط لكل حجز مؤكد",
+    firstBookingBonusSetting: "نقاط مكافأة الحجز الأول",
+    birthdayBonusPoints: "نقاط مكافأة عيد الميلاد",
+    saveSettings: "حفظ الإعدادات",
+    saving: "جاري الحفظ...",
+    settingsSaved: "تم حفظ الإعدادات بنجاح",
+    
+    // التصدير
+    exportData: "تصدير بيانات العملاء",
+    exportCSV: "تصدير كـ CSV",
+    exportExcel: "تصدير كـ Excel",
+    exporting: "جاري التصدير...",
+  },
+
+  // رسائل واتساب
+  whatsapp: {
+    bookingReceived: {
+      greeting: "☕ مقهى شايبوب",
+      thanks: "شكراً {name}!",
+      reservationDetails: "📋 حجزك:",
+      date: "📅 {date} الساعة {time}",
+      location: "📍 {location}",
+      guests: "👥 {count} ضيوف",
+      status: "⏳ الحالة: في انتظار التأكيد",
+      confirmation: "سنؤكد خلال ساعة واحدة.",
+    },
+    bookingConfirmed: {
+      title: "✅ تم التأكيد!",
+      reserved: "تم حجز طاولتك:",
+      date: "📅 {date} الساعة {time}",
+      location: "📍 {location}",
+      pointsEarned: "⭐ لقد كسبت {points} نقطة!",
+      totalPoints: "الإجمالي: {total} نقطة",
+      seeYouSoon: "نراك قريباً! 🎉",
+    },
+    birthdayMessage: {
+      title: "🎂 عيد ميلاد سعيد {name}!",
+      message: "استمتع بمنتج مجاني منا!",
+      code: "رمزك: {code}",
+      howToUse: "استخدم هذا الرمز في زيارتك القادمة!",
+      bonusPoints: "⭐ أضفنا أيضاً {points} نقطة إضافية!",
+      wishes: "نتمنى لك يوماً رائعاً! 🎉",
     },
   },
 };

@@ -536,6 +536,361 @@ export const en = {
       alexSidiGaber: "Alexandria - Sidi Gaber",
     },
   },
+
+  // Authentication
+  auth: {
+    // Login/Signup Pages
+    login: "Log In",
+    signup: "Sign Up",
+    welcome: "Welcome to Shayboub",
+    welcomeBack: "Welcome Back",
+    loginSubtitle: "Sign in to access your loyalty rewards",
+    signupSubtitle: "Create an account to start earning points",
+    
+    // Auth Methods
+    continueWithGoogle: "Continue with Google",
+    continueWithApple: "Continue with Apple",
+    continueWithEmail: "Continue with Email",
+    continueWithPhone: "Continue with Phone",
+    orDivider: "OR",
+    
+    // Email/Password Form
+    emailAddress: "Email Address",
+    emailPlaceholder: "your@email.com",
+    phoneNumber: "Phone Number",
+    phonePlaceholder: "+20 123 456 7890",
+    password: "Password",
+    passwordPlaceholder: "••••••••",
+    confirmPassword: "Confirm Password",
+    fullName: "Full Name",
+    namePlaceholder: "Ahmed Mohamed",
+    birthday: "Birthday (Optional)",
+    birthdayPlaceholder: "DD/MM/YYYY",
+    birthdayBonus: "Get bonus points on your birthday!",
+    
+    // Actions
+    signInButton: "Sign In",
+    signUpButton: "Sign Up",
+    signingIn: "Signing in...",
+    signingUp: "Creating account...",
+    forgotPassword: "Forgot Password?",
+    dontHaveAccount: "Don't have an account?",
+    alreadyHaveAccount: "Already have an account?",
+    signUpLink: "Sign Up",
+    signInLink: "Sign In",
+    logout: "Logout",
+    myAccount: "My Account",
+    
+    // Phone Verification
+    verifyPhone: "Verify Phone Number",
+    enterCode: "Enter the code sent to",
+    verificationCode: "Verification Code",
+    resendCode: "Resend Code",
+    verify: "Verify",
+    verifying: "Verifying...",
+    
+    // Errors
+    errors: {
+      invalidEmail: "Invalid email address",
+      invalidPhone: "Invalid phone number",
+      weakPassword: "Password must be at least 6 characters",
+      passwordMismatch: "Passwords don't match",
+      emailExists: "Email already registered",
+      phoneExists: "Phone number already registered",
+      wrongPassword: "Incorrect password",
+      userNotFound: "No account found with this email",
+      networkError: "Network error. Please try again.",
+      tooManyRequests: "Too many attempts. Please try again later.",
+      accountDisabled: "This account has been disabled",
+      invalidVerificationCode: "Invalid verification code",
+      verificationExpired: "Verification code expired",
+      fillAllFields: "Please fill in all required fields",
+    },
+    
+    // Success Messages
+    success: {
+      accountCreated: "Account created successfully!",
+      loggedIn: "Welcome back!",
+      codeSent: "Verification code sent",
+      phoneVerified: "Phone number verified",
+    },
+  },
+
+  // Loyalty System
+  loyalty: {
+    // My Account Page
+    myAccount: "My Account",
+    memberSince: "Member since",
+    editProfile: "Edit Profile",
+    settings: "Settings",
+    
+    // Points Section
+    yourPoints: "Your Points",
+    pointsBalance: "Points Balance",
+    points: "Points",
+    currentBalance: "Current Balance",
+    totalEarned: "Total Earned",
+    totalSpent: "Total Spent",
+    pointsHistory: "Points History",
+    
+    // Progress
+    progressTo25: "Progress to 25% OFF",
+    progressTo100: "Progress to Free Drink",
+    earnMorePoints: "Earn {points} more points to unlock!",
+    needMoreBookings: "Needs {count} more confirmed bookings",
+    nextReward: "Next Reward",
+    
+    // Rewards
+    availableRewards: "Available Rewards",
+    claimReward: "Claim Reward",
+    rewardClaimed: "Reward Claimed!",
+    yourVouchers: "Your Vouchers",
+    activeVouchers: "Active Vouchers",
+    usedVouchers: "Used Vouchers",
+    noActiveVouchers: "No active vouchers",
+    noUsedVouchers: "No vouchers used yet",
+    
+    // Reward Types
+    reward25Off: "25% OFF Any Item",
+    reward25OffDesc: "Get 25% discount on any menu item",
+    rewardFreeDrink: "Free Drink",
+    rewardFreeDrinkDesc: "Get any drink of your choice for free",
+    rewardFreeItem: "Free Item",
+    rewardFreeItemDesc: "Get any menu item for free",
+    birthdayReward: "Birthday Special",
+    birthdayRewardDesc: "Free item of your choice on your birthday!",
+    
+    // Voucher Details
+    voucherCode: "Voucher Code",
+    copyCode: "Copy Code",
+    codeCopied: "Code copied!",
+    useNow: "Use Now",
+    expires: "Expires",
+    neverExpires: "Never expires",
+    usedOn: "Used on",
+    discount: "Discount",
+    
+    // Voucher Modal
+    congratulations: "Congratulations!",
+    rewardClaimedSuccess: "Your reward has been claimed successfully!",
+    yourDiscountCode: "Your Discount Code:",
+    howToUse: "How to use:",
+    step1: "1. Make your next reservation",
+    step2: "2. Enter this code during booking",
+    step3: "3. Get your discount automatically!",
+    close: "Close",
+    
+    // Stats Section
+    yourStats: "Your Stats",
+    totalVisits: "Total Visits",
+    confirmedBookings: "Confirmed Bookings",
+    lifetimeSpent: "Lifetime Spent",
+    currentPoints: "Current Points",
+    visits: "Visits",
+    spent: "Spent",
+    
+    // Booking History
+    bookingHistory: "Booking History",
+    noBookings: "No bookings yet",
+    makeFirstBooking: "Make your first reservation to start earning points!",
+    pointsEarned: "+{points} points earned",
+    pointsPending: "Points pending (not confirmed yet)",
+    usedVoucher: "Used voucher: {code}",
+    statusPending: "Pending confirmation",
+    statusConfirmed: "Confirmed",
+    statusCancelled: "Cancelled",
+    statusCompleted: "Completed",
+    
+    // Favorite Items
+    favoriteItems: "Most Ordered",
+    noFavorites: "No orders yet",
+    orderedTimes: "{count} times",
+    favoriteTag: "⭐ Favorite",
+    
+    // Points Earning Info
+    howToEarn: "How to Earn Points",
+    earnPerBooking: "10 points per confirmed booking",
+    earnFirstBooking: "20 bonus points on first booking",
+    earnBirthday: "50 bonus points on your birthday",
+    pointsOnConfirmation: "Points awarded when admin confirms your reservation",
+    
+    // Birthday
+    happyBirthday: "🎂 Happy Birthday!",
+    birthdayMessage: "Enjoy a free item on us!",
+    birthdayBadge: "🎉 It's your birthday!",
+    
+    // Errors
+    errors: {
+      loadingProfile: "Failed to load profile",
+      claimingReward: "Failed to claim reward",
+      notEnoughPoints: "Not enough points",
+      invalidVoucher: "Invalid voucher code",
+      voucherUsed: "This voucher has already been used",
+      voucherExpired: "This voucher has expired",
+      voucherNotFound: "Voucher not found",
+    },
+  },
+
+  // Voucher System (Public)
+  voucher: {
+    haveCode: "Have a discount code?",
+    enterCode: "Enter voucher code",
+    codePlaceholder: "SHAYBOUB25",
+    apply: "Apply",
+    applied: "Applied!",
+    remove: "Remove",
+    codeApplied: "Code {code} applied!",
+    discountApplied: "{discount}% discount activated!",
+    freeDrinkApplied: "Free drink voucher applied!",
+    freeItemApplied: "Free item voucher applied!",
+    selectYourDrink: "Select your free drink",
+    selectYourItem: "Select your free item",
+    validating: "Validating...",
+    invalid: "Invalid code",
+  },
+
+  // Admin Loyalty Management
+  adminLoyalty: {
+    title: "Loyalty Management",
+    overview: "Loyalty Overview",
+    customers: "Customers",
+    vouchers: "Vouchers",
+    settings: "Settings",
+    
+    // Overview Stats
+    totalMembers: "Total Members",
+    activeToday: "Active Today",
+    vouchersIssued: "Vouchers Issued",
+    pointsGiven: "Points Given",
+    totalCustomers: "Total Customers",
+    newThisMonth: "New This Month",
+    activeVouchers: "Active Vouchers",
+    usedVouchers: "Used Vouchers",
+    
+    // Customer List
+    searchCustomers: "Search by name, email, or phone...",
+    customerName: "Customer Name",
+    email: "Email",
+    phone: "Phone",
+    points: "Points",
+    totalVisits: "Visits",
+    lastVisit: "Last Visit",
+    joined: "Joined",
+    actions: "Actions",
+    viewDetails: "View Details",
+    adjustPoints: "Adjust Points",
+    noCustomers: "No customers found",
+    
+    // Customer Details
+    customerDetails: "Customer Details",
+    contactInfo: "Contact Information",
+    loyaltyInfo: "Loyalty Information",
+    birthday: "Birthday",
+    pointsBalance: "Points Balance",
+    totalEarned: "Total Earned",
+    totalSpent: "Total Spent",
+    memberSince: "Member Since",
+    
+    // Points History
+    pointsHistory: "Points History",
+    transaction: "Transaction",
+    date: "Date",
+    amount: "Amount",
+    reason: "Reason",
+    bookingConfirmed: "Booking confirmed",
+    firstBookingBonus: "First booking bonus",
+    birthdayBonus: "Birthday bonus",
+    rewardClaimed: "Reward claimed",
+    manualAdjustment: "Manual adjustment",
+    noTransactions: "No transactions yet",
+    
+    // Manual Points Adjustment
+    manualPointsTitle: "Manual Points Adjustment",
+    addPoints: "Add Points",
+    subtractPoints: "Subtract Points",
+    pointsAmount: "Points Amount",
+    adjustmentReason: "Reason for adjustment",
+    reasonPlaceholder: "e.g., Customer complaint compensation",
+    confirm: "Confirm",
+    cancel: "Cancel",
+    adjusting: "Adjusting...",
+    successAdjusted: "Points adjusted successfully",
+    
+    // Voucher Validation
+    validateVoucher: "Validate Voucher Code",
+    enterVoucherCode: "Enter voucher code to validate",
+    checkCode: "Check Code",
+    checking: "Checking...",
+    voucherDetails: "Voucher Details",
+    voucherCode: "Code",
+    voucherType: "Type",
+    voucherCustomer: "Customer",
+    voucherStatus: "Status",
+    voucherCreated: "Created",
+    voucherUsed: "Used",
+    voucherExpires: "Expires",
+    statusUnused: "Unused ✓",
+    statusUsed: "Used",
+    statusExpired: "Expired",
+    markAsUsed: "Mark as Used",
+    cancelVoucher: "Cancel Voucher",
+    discount25: "25% Discount",
+    freeDrink: "Free Drink",
+    freeItem: "Free Item",
+    birthdaySpecial: "Birthday Special",
+    
+    // Recent Activity
+    recentActivity: "Recent Points Activity",
+    earnedPoints: "{customer} earned {points} points",
+    redeemedPoints: "{customer} redeemed {points} points",
+    adjustedPoints: "Adjusted {customer}'s points",
+    
+    // Settings
+    loyaltySettings: "Loyalty Settings",
+    pointsPerBooking: "Points per confirmed booking",
+    firstBookingBonusSetting: "First booking bonus points",
+    birthdayBonusPoints: "Birthday bonus points",
+    saveSettings: "Save Settings",
+    saving: "Saving...",
+    settingsSaved: "Settings saved successfully",
+    
+    // Export
+    exportData: "Export Customer Data",
+    exportCSV: "Export as CSV",
+    exportExcel: "Export as Excel",
+    exporting: "Exporting...",
+  },
+
+  // WhatsApp Messages
+  whatsapp: {
+    bookingReceived: {
+      greeting: "☕ Shayboub Café",
+      thanks: "Thank you {name}!",
+      reservationDetails: "📋 Your Reservation:",
+      date: "📅 {date} at {time}",
+      location: "📍 {location}",
+      guests: "👥 {count} guests",
+      status: "⏳ Status: Pending confirmation",
+      confirmation: "We'll confirm within 1 hour.",
+    },
+    bookingConfirmed: {
+      title: "✅ CONFIRMED!",
+      reserved: "Your table is reserved:",
+      date: "📅 {date} at {time}",
+      location: "📍 {location}",
+      pointsEarned: "⭐ You earned {points} points!",
+      totalPoints: "Total: {total} points",
+      seeYouSoon: "See you soon! 🎉",
+    },
+    birthdayMessage: {
+      title: "🎂 Happy Birthday {name}!",
+      message: "Enjoy a free item on us!",
+      code: "Your code: {code}",
+      howToUse: "Use this code on your next visit!",
+      bonusPoints: "⭐ We also added {points} bonus points!",
+      wishes: "Have a wonderful day! 🎉",
+    },
+  },
 };
 
 export type Translations = typeof en;

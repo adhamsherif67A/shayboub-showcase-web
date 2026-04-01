@@ -1,12 +1,21 @@
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Menu, X, User, LogOut } from "lucide-react";
 import { LOGO_URL } from "@/data/menu";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { t, isRTL } = useLanguage();
+  const { user, isCustomer, logout } = useAuth();
+
+  const handleLogout = async () => {
+    await logout();
+    setOpen(false);
+  };
 
   return (
     <nav 
@@ -22,12 +31,36 @@ const Navbar = () => {
           </span>
         </a>
 
-        <div className={`hidden md:flex items-center gap-8 font-body text-sm text-secondary-foreground/70 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <div className={`hidden md:flex items-center gap-6 font-body text-sm text-secondary-foreground/70 ${isRTL ? 'flex-row-reverse' : ''}`}>
           <a href="#menu" className="hover:text-primary transition-colors">{t.nav.menu}</a>
           <a href="#reservation" className="hover:text-primary transition-colors">{t.nav.reservations}</a>
           <a href="#locations" className="hover:text-primary transition-colors">{t.nav.locations}</a>
           <a href="#about" className="hover:text-primary transition-colors">{t.nav.about}</a>
           <LanguageToggle />
+          
+          {/* Customer Auth Buttons */}
+          {isCustomer && user ? (
+            <>
+              <Link to="/my-account">
+                <Button variant="outline" size="sm" className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <User className="w-4 h-4" />
+                  {user.customerData?.points || 0} {t.loyalty.points}
+                </Button>
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleLogout} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <LogOut className="w-4 h-4" />
+                {t.auth.logout}
+              </Button>
+            </>
+          ) : !user ? (
+            <Link to="/customer-login">
+              <Button variant="outline" size="sm" className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <User className="w-4 h-4" />
+                {t.auth.login}
+              </Button>
+            </Link>
+          ) : null}
+          
           <a
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
             target="_blank"
@@ -61,6 +94,30 @@ const Navbar = () => {
           <div className="pt-2">
             <LanguageToggle />
           </div>
+          
+          {/* Mobile Customer Auth */}
+          {isCustomer && user ? (
+            <>
+              <Link to="/my-account" onClick={() => setOpen(false)}>
+                <Button variant="outline" className="w-full gap-2">
+                  <User className="w-4 h-4" />
+                  {t.auth.myAccount} ({user.customerData?.points || 0} {t.loyalty.points})
+                </Button>
+              </Link>
+              <Button variant="ghost" className="w-full gap-2" onClick={handleLogout}>
+                <LogOut className="w-4 h-4" />
+                {t.auth.logout}
+              </Button>
+            </>
+          ) : !user ? (
+            <Link to="/customer-login" onClick={() => setOpen(false)}>
+              <Button variant="outline" className="w-full gap-2">
+                <User className="w-4 h-4" />
+                {t.auth.login}
+              </Button>
+            </Link>
+          ) : null}
+          
           <a
             href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
             target="_blank"

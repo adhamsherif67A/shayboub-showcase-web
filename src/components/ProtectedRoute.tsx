@@ -22,7 +22,8 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   }
 
   if (!user) {
-    return <Navigate to="/login" replace />;
+    // Redirect customers to customer login, admins/staff to admin login
+    return <Navigate to={requiredRole ? "/login" : "/customer-login"} replace />;
   }
 
   if (requiredRole === "admin" && !isAdmin) {

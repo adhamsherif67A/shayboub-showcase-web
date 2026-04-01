@@ -10,6 +10,8 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import Index from "./pages/Index.tsx";
 import Login from "./pages/Login.tsx";
+import CustomerLogin from "./pages/CustomerLogin.tsx";
+import MyAccount from "./pages/MyAccount.tsx";
 import AdminLayout from "./pages/admin/AdminLayout.tsx";
 import Dashboard from "./pages/admin/Dashboard.tsx";
 import Analytics from "./pages/admin/Analytics.tsx";
@@ -35,6 +37,14 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/customer-login" element={<CustomerLogin />} />
+              
+              {/* Customer Routes */}
+              <Route path="/my-account" element={
+                <ProtectedRoute>
+                  <MyAccount />
+                </ProtectedRoute>
+              } />
               
               {/* Admin Routes */}
               <Route path="/admin" element={
