@@ -25,7 +25,9 @@ import {
   MapPin,
   Users,
   Heart,
-  Trash2
+  Trash2,
+  ArrowLeft,
+  Home
 } from "lucide-react";
 
 interface Reservation {
@@ -285,10 +287,20 @@ const MyAccount = () => {
       {/* Header */}
       <div className="bg-primary text-primary-foreground py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div>
+          {/* Back Button */}
+          <button
+            onClick={() => navigate("/")}
+            className={`flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground mb-4 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
+          >
+            {isRTL ? <ArrowLeft className="h-5 w-5 rotate-180" /> : <ArrowLeft className="h-5 w-5" />}
+            <Home className="h-4 w-4" />
+            <span className="text-sm font-medium">{isRTL ? 'العودة للموقع' : 'Back to Website'}</span>
+          </button>
+          
+          <div className={`flex items-center justify-between mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className={isRTL ? 'text-right' : ''}>
               <h1 className="text-4xl font-bold mb-2">{t.loyalty.myAccount}</h1>
-              <p className="text-primary-foreground/80 flex items-center gap-2">
+              <p className={`text-primary-foreground/80 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <User className="h-4 w-4" />
                 {customerData?.name}
               </p>
@@ -299,7 +311,7 @@ const MyAccount = () => {
             </div>
           </div>
           {customerData?.joinedAt && (
-            <p className="text-sm text-primary-foreground/60">
+            <p className={`text-sm text-primary-foreground/60 ${isRTL ? 'text-right' : ''}`}>
               {t.loyalty.memberSince} {formatTimestamp(customerData.joinedAt)}
             </p>
           )}
