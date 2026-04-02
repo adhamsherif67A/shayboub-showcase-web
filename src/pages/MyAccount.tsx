@@ -285,72 +285,74 @@ const MyAccount = () => {
   return (
     <div className={`min-h-screen bg-gradient-to-b from-background to-muted/20 ${isRTL ? "rtl" : "ltr"}`}>
       {/* Header */}
-      <div className="bg-primary text-primary-foreground py-12 px-4">
+      <div className="bg-primary text-primary-foreground py-8 md:py-12 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Back Button */}
           <button
             onClick={() => navigate("/")}
-            className={`flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground mb-4 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`flex items-center gap-2 text-primary-foreground/80 hover:text-primary-foreground mb-4 transition-colors min-h-[44px] ${isRTL ? 'flex-row-reverse' : ''}`}
           >
             {isRTL ? <ArrowLeft className="h-5 w-5 rotate-180" /> : <ArrowLeft className="h-5 w-5" />}
             <Home className="h-4 w-4" />
             <span className="text-sm font-medium">{isRTL ? 'العودة للموقع' : 'Back to Website'}</span>
           </button>
           
-          <div className={`flex items-center justify-between mb-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
             <div className={isRTL ? 'text-right' : ''}>
-              <h1 className="text-4xl font-bold mb-2">{t.loyalty.myAccount}</h1>
-              <p className={`text-primary-foreground/80 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1">{t.loyalty.myAccount}</h1>
+              <p className={`text-primary-foreground/80 flex items-center gap-2 text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <User className="h-4 w-4" />
                 {customerData?.name}
               </p>
             </div>
-            <div className="text-center">
-              <div className="text-5xl font-bold mb-1">{points}</div>
-              <div className="text-sm text-primary-foreground/80">{t.loyalty.points}</div>
+            <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''} sm:text-center`}>
+              <div className="bg-primary-foreground/10 rounded-xl px-4 py-2 sm:px-6 sm:py-3">
+                <div className="text-3xl sm:text-4xl md:text-5xl font-bold">{points}</div>
+                <div className="text-xs sm:text-sm text-primary-foreground/80">{t.loyalty.points}</div>
+              </div>
             </div>
           </div>
           {customerData?.joinedAt && (
-            <p className={`text-sm text-primary-foreground/60 ${isRTL ? 'text-right' : ''}`}>
+            <p className={`text-xs sm:text-sm text-primary-foreground/60 ${isRTL ? 'text-right' : ''}`}>
               {t.loyalty.memberSince} {formatTimestamp(customerData.joinedAt)}
             </p>
           )}
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 py-6 md:py-8 space-y-6 md:space-y-8">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-3 md:grid-cols-3 gap-3 md:gap-6">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t.loyalty.totalVisits}</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 md:pb-2 px-3 md:px-6 pt-3 md:pt-6">
+              <CardTitle className="text-xs md:text-sm font-medium">{t.loyalty.totalVisits}</CardTitle>
+              <Calendar className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground hidden sm:block" />
             </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{totalVisits}</div>
-              <p className="text-xs text-muted-foreground mt-1">{t.loyalty.visits}</p>
+            <CardContent className="px-3 md:px-6 pb-3 md:pb-6">
+              <div className="text-xl md:text-3xl font-bold">{totalVisits}</div>
+              <p className="text-[10px] md:text-xs text-muted-foreground mt-1">{t.loyalty.visits}</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t.loyalty.totalEarned}</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 md:pb-2 px-3 md:px-6 pt-3 md:pt-6">
+              <CardTitle className="text-xs md:text-sm font-medium">{t.loyalty.totalEarned}</CardTitle>
+              <TrendingUp className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground hidden sm:block" />
             </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{totalPointsEarned}</div>
-              <p className="text-xs text-muted-foreground mt-1">{t.loyalty.points}</p>
+            <CardContent className="px-3 md:px-6 pb-3 md:pb-6">
+              <div className="text-xl md:text-3xl font-bold">{totalPointsEarned}</div>
+              <p className="text-[10px] md:text-xs text-muted-foreground mt-1">{t.loyalty.points}</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{t.loyalty.totalSpent}</CardTitle>
-              <Gift className="h-4 w-4 text-muted-foreground" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 md:pb-2 px-3 md:px-6 pt-3 md:pt-6">
+              <CardTitle className="text-xs md:text-sm font-medium">{t.loyalty.totalSpent}</CardTitle>
+              <Gift className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground hidden sm:block" />
             </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{totalPointsSpent}</div>
-              <p className="text-xs text-muted-foreground mt-1">{t.loyalty.points}</p>
+            <CardContent className="px-3 md:px-6 pb-3 md:pb-6">
+              <div className="text-xl md:text-3xl font-bold">{totalPointsSpent}</div>
+              <p className="text-[10px] md:text-xs text-muted-foreground mt-1">{t.loyalty.points}</p>
             </CardContent>
           </Card>
         </div>

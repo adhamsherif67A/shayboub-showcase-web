@@ -333,47 +333,51 @@ const MenuSection = () => {
           </div>
         </div>
 
-        {/* Filter buttons */}
-        <div className={`flex flex-wrap justify-center gap-2 mb-6 transition-all duration-700 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          {filterOptions.map((filter) => {
-            const Icon = filter.icon;
-            return (
-              <button
-                key={filter.id}
-                onClick={() => setActiveFilter(filter.id)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium 
-                  transition-all duration-300 hover:scale-105 active:scale-95 ${
-                  activeFilter === filter.id
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-                    : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                }`}
-              >
-                {Icon && <Icon className="w-4 h-4" />}
-                {filter.label}
-              </button>
-            );
-          })}
+        {/* Filter buttons - Horizontal scroll on mobile */}
+        <div className={`overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 transition-all duration-700 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <div className="flex md:flex-wrap md:justify-center gap-2 mb-4 md:mb-6 min-w-max md:min-w-0">
+            {filterOptions.map((filter) => {
+              const Icon = filter.icon;
+              return (
+                <button
+                  key={filter.id}
+                  onClick={() => setActiveFilter(filter.id)}
+                  className={`flex items-center gap-1.5 px-4 py-2.5 md:py-2 rounded-full text-sm font-medium 
+                    transition-all duration-300 hover:scale-105 active:scale-95 min-h-[44px] md:min-h-0 whitespace-nowrap ${
+                    activeFilter === filter.id
+                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                      : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                  }`}
+                >
+                  {Icon && <Icon className="w-4 h-4" />}
+                  {filter.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Dietary Filters */}
-        <div className={`flex flex-wrap justify-center gap-2 mb-8 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-          <span className={`text-sm text-muted-foreground self-center ${isRTL ? 'ml-2' : 'mr-2'}`}>{t.menu.dietary.title}:</span>
-          {dietaryOptions.map((dietary) => (
-            <button
-              key={dietary.id}
-              onClick={() => setActiveDietaryFilter(dietary.id === activeDietaryFilter ? "all" : dietary.id)}
-              className={`px-3 py-2 rounded-full text-sm font-medium transition-all duration-300
-                hover:scale-105 active:scale-95 flex items-center gap-2 ${
-                dietary.id === activeDietaryFilter
-                  ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
-                  : "bg-muted text-muted-foreground hover:bg-green-500/10 hover:text-green-600 border border-border hover:border-green-500/50"
-              }`}
-              aria-pressed={dietary.id === activeDietaryFilter}
-            >
-              <span>{dietary.icon}</span>
-              {dietary.label}
-            </button>
-          ))}
+        {/* Dietary Filters - Horizontal scroll on mobile */}
+        <div className={`overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 mb-6 md:mb-8 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+          <div className="flex md:flex-wrap md:justify-center gap-2 min-w-max md:min-w-0">
+            <span className={`text-sm text-muted-foreground self-center whitespace-nowrap ${isRTL ? 'ml-2' : 'mr-2'}`}>{t.menu.dietary.title}:</span>
+            {dietaryOptions.map((dietary) => (
+              <button
+                key={dietary.id}
+                onClick={() => setActiveDietaryFilter(dietary.id === activeDietaryFilter ? "all" : dietary.id)}
+                className={`px-3 py-2.5 md:py-2 rounded-full text-sm font-medium transition-all duration-300
+                  hover:scale-105 active:scale-95 flex items-center gap-2 min-h-[44px] md:min-h-0 whitespace-nowrap ${
+                  dietary.id === activeDietaryFilter
+                    ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
+                    : "bg-muted text-muted-foreground hover:bg-green-500/10 hover:text-green-600 border border-border hover:border-green-500/50"
+                }`}
+                aria-pressed={dietary.id === activeDietaryFilter}
+              >
+                <span>{dietary.icon}</span>
+                {dietary.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Show clear button when in search mode */}
@@ -391,7 +395,7 @@ const MenuSection = () => {
         {/* Category tabs - only show when not in search mode */}
         {!isSearchMode && (
           <nav 
-            className={`flex overflow-x-auto gap-2 pb-4 mb-10 scrollbar-hide ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`flex overflow-x-auto gap-2 pb-4 mb-8 md:mb-10 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0 ${isRTL ? 'flex-row-reverse' : ''}`}
             role="tablist"
             aria-label="Menu categories"
           >
@@ -402,8 +406,8 @@ const MenuSection = () => {
                 role="tab"
                 aria-selected={i === activeCategory}
                 aria-controls={`menu-panel-${i}`}
-                className={`whitespace-nowrap font-body text-sm font-medium px-5 py-2.5 rounded-full border 
-                  transition-all duration-300 shrink-0 hover:scale-105 active:scale-95 ${
+                className={`whitespace-nowrap font-body text-sm font-medium px-5 py-3 md:py-2.5 rounded-full border 
+                  transition-all duration-300 shrink-0 hover:scale-105 active:scale-95 min-h-[44px] md:min-h-0 ${
                   i === activeCategory
                     ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/25"
                     : "bg-transparent text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
