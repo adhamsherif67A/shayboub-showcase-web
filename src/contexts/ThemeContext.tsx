@@ -3,8 +3,6 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 interface ThemeContextType {
   highContrast: boolean;
   toggleHighContrast: () => void;
-  darkMode: boolean;
-  toggleDarkMode: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -12,11 +10,6 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [highContrast, setHighContrast] = useState(() => {
     const saved = localStorage.getItem("shayboub_high_contrast");
-    return saved === "true";
-  });
-
-  const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem("shayboub_dark_mode");
     return saved === "true";
   });
 
@@ -28,13 +21,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     } else {
       root.classList.remove("high-contrast");
     }
-
-    if (darkMode) {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [highContrast, darkMode]);
+  }, [highContrast]);
 
   const toggleHighContrast = () => {
     const newValue = !highContrast;
@@ -42,14 +29,8 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("shayboub_high_contrast", String(newValue));
   };
 
-  const toggleDarkMode = () => {
-    const newValue = !darkMode;
-    setDarkMode(newValue);
-    localStorage.setItem("shayboub_dark_mode", String(newValue));
-  };
-
   return (
-    <ThemeContext.Provider value={{ highContrast, toggleHighContrast, darkMode, toggleDarkMode }}>
+    <ThemeContext.Provider value={{ highContrast, toggleHighContrast }}>
       {children}
     </ThemeContext.Provider>
   );

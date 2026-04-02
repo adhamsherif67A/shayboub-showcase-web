@@ -132,33 +132,12 @@
   --ring: 0 0% 0%;
 }
 
-.high-contrast.dark {
-  --background: 0 0% 0%;
-  --foreground: 0 0% 100%;
-  --card: 0 0% 5%;
-  --card-foreground: 0 0% 100%;
-  --popover: 0 0% 5%;
-  --popover-foreground: 0 0% 100%;
-  --primary: 0 0% 100%;
-  --primary-foreground: 0 0% 0%;
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 85%;
-  --border: 0 0% 80%;
-  --input: 0 0% 80%;
-  --ring: 0 0% 100%;
-}
-
 /* Glassmorphism Card Effect */
 .glass-card {
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
-}
-
-.dark .glass-card {
-  background: rgba(20, 20, 20, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Micro-animations */
