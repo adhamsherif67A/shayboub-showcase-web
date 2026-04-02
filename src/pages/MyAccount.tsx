@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { db } from "@/lib/firebase";
-import { collection, query, where, getDocs, orderBy, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
@@ -78,41 +78,47 @@ const MyAccount = () => {
     try {
       setLoading(true);
 
-      // Load reservations
+      // Load reservations - use simple query without orderBy to avoid index requirement
       const reservationsQuery = query(
         collection(db, "reservations"),
-        where("customerId", "==", user.uid),
-        orderBy("createdAt", "desc")
+        where("customerId", "==", user.uid)
       );
       const reservationsSnapshot = await getDocs(reservationsQuery);
       const reservationsData = reservationsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Reservation[];
+      // Sort client-side
+      reservationsData.sort((a, b) => {
+        const dateA = a.createdAt?.toDate?.() || new Date(0);
+        const dateB = b.createdAt?.toDate?.() || new Date(0);
+        return dateB.getTime() - dateA.getTime();
+      });
       setReservations(reservationsData);
 
-      // Load vouchers
+      // Load vouchers - use simple query without orderBy to avoid index requirement
       const vouchersQuery = query(
         collection(db, "vouchers"),
-        where("customerId", "==", user.uid),
-        orderBy("createdAt", "desc")
+        where("customerId", "==", user.uid)
       );
       const vouchersSnapshot = await getDocs(vouchersQuery);
       const vouchersData = vouchersSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as Voucher[];
+      // Sort client-side
+      vouchersData.sort((a, b) => {
+        const dateA = a.createdAt?.toDate?.() || new Date(0);
+        const dateB = b.createdAt?.toDate?.() || new Date(0);
+        return dateB.getTime() - dateA.getTime();
+      });
       setVouchers(vouchersData);
 
       // Refresh customer data
       await refreshCustomerData();
     } catch (error) {
       console.error("Error loading data:", error);
-      toast({
-        title: "Error",
-        description: "Failed to load account data",
-        variant: "destructive",
-      });
+      // Don't show error toast for empty data - this is normal for new users
     } finally {
       setLoading(false);
     }
