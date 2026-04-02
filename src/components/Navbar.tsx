@@ -56,7 +56,11 @@ const Navbar = () => {
           
           {/* Customer Account - Show when logged in as customer */}
           {showCustomerAccount && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
+              {/* Personalized Greeting */}
+              <span className="text-secondary-foreground font-medium">
+                {isRTL ? `مرحباً، ${user.customerData?.name || user.name}` : `Hi, ${user.customerData?.name || user.name}`}
+              </span>
               <Link to="/my-account">
                 <Button size="sm" className="gap-2 bg-orange-500 hover:bg-orange-600 text-white">
                   <Star className="w-4 h-4" />
@@ -120,6 +124,10 @@ const Navbar = () => {
             {/* Mobile Customer Account */}
             {showCustomerAccount && (
               <>
+                {/* Personalized Greeting - Mobile */}
+                <div className={`text-lg font-semibold text-secondary-foreground pb-2 ${isRTL ? 'text-right' : ''}`}>
+                  {isRTL ? `👋 مرحباً، ${user.customerData?.name || user.name}!` : `👋 Hi, ${user.customerData?.name || user.name}!`}
+                </div>
                 <Link to="/my-account" onClick={() => setOpen(false)}>
                   <Button className="w-full gap-2 bg-orange-500 hover:bg-orange-600 text-white">
                     <Star className="w-4 h-4" />
