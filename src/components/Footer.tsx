@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { LOGO_URL } from "@/data/menu";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -19,7 +20,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <nav className={`flex gap-8 font-body text-sm ${isRTL ? 'flex-row-reverse' : ''}`} aria-label="Footer navigation">
+          <nav className={`flex flex-wrap justify-center gap-6 md:gap-8 font-body text-sm ${isRTL ? 'flex-row-reverse' : ''}`} aria-label="Footer navigation">
             <a href="#menu" className="hover:text-primary transition-colors">{t.footer.links.menu}</a>
             <a href="#locations" className="hover:text-primary transition-colors">{t.footer.links.locations}</a>
             <a href="#about" className="hover:text-primary transition-colors">{t.footer.links.about}</a>
@@ -55,7 +56,18 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-secondary-foreground/10 mt-8 pt-8 text-center">
+        {/* Legal Links */}
+        <div className={`flex justify-center gap-6 mt-6 font-body text-xs ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <Link to="/privacy" className="hover:text-primary transition-colors">
+            {isRTL ? 'سياسة الخصوصية' : 'Privacy Policy'}
+          </Link>
+          <span className="text-secondary-foreground/30">|</span>
+          <Link to="/terms" className="hover:text-primary transition-colors">
+            {isRTL ? 'شروط الخدمة' : 'Terms of Service'}
+          </Link>
+        </div>
+
+        <div className="border-t border-secondary-foreground/10 mt-6 pt-6 text-center">
           <p className="font-body text-xs text-secondary-foreground/40">
             © {currentYear} {isRTL ? 'شيبوب' : 'Shayboub'}. {t.footer.copyright}
           </p>

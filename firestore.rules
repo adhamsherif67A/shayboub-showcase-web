@@ -78,6 +78,7 @@ service cloud.firestore {
     // ========================================
     match /reservations/{reservationId} {
       // Anyone can create reservations (public form)
+      // Rate limiting should be handled at application level
       allow create: if true;
       
       // Customers can read their own reservations
@@ -96,8 +97,11 @@ service cloud.firestore {
     // USERS COLLECTION (Admin/Staff)
     // ========================================
     match /users/{userId} {
-      // Only admins can read/write
-      allow read, write: if isAdmin();
+      // Users can read their own document
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Only admins can write
+      allow write: if isAdmin();
     }
     
     // ========================================
@@ -112,7 +116,18 @@ service cloud.firestore {
     }
     
     // ========================================
-    // MENU ITEMS COLLECTION
+    // MENU COLLECTION
+    // ========================================
+    match /menu/{itemId} {
+      // Anyone can read menu
+      allow read: if true;
+      
+      // Only admins can write
+      allow write: if isAdmin();
+    }
+    
+    // ========================================
+    // MENU ITEMS COLLECTION (legacy)
     // ========================================
     match /menuItems/{itemId} {
       // Anyone can read menu
@@ -126,11 +141,29 @@ service cloud.firestore {
     // LOYALTY SETTINGS COLLECTION
     // ========================================
     match /loyaltySettings/{settingId} {
-      // Anyone can read settings
+      // Anyone can read settings (for displaying rewards info)
       allow read: if true;
       
       // Only admins can write
       allow write: if isAdmin();
+    }
+    
+    // ========================================
+    // ANALYTICS COLLECTION
+    // ========================================
+    match /analytics/{docId} {
+      // Only admins can read analytics
+      allow read: if isAdmin();
+      
+      // Only Cloud Functions can write
+      allow create, update, delete: if false;
+    }
+    
+    // ========================================
+    // DENY ALL OTHER COLLECTIONS
+    // ========================================
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
