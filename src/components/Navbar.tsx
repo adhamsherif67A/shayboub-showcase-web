@@ -10,17 +10,17 @@ import { Button } from "@/components/ui/button";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { t, isRTL } = useLanguage();
-  const { user, isCustomer, logout } = useAuth();
+  const { user, isCustomer, isAdmin, isStaff, logout } = useAuth();
 
   const handleLogout = async () => {
     await logout();
     setOpen(false);
   };
 
-  // Check if user is logged in as customer (not admin/staff)
+  // Show customer account if logged in as customer
   const showCustomerAccount = user && isCustomer;
-  // Show login button when no user is logged in
-  const showLoginButton = !user;
+  // Show login button when: no user OR user is admin/staff (they use separate login)
+  const showLoginButton = !user || (user && (isAdmin || isStaff) && !isCustomer);
 
   return (
     <nav 
@@ -44,7 +44,7 @@ const Navbar = () => {
           <a href="#about" className="hover:text-primary transition-colors">{t.nav.about}</a>
           <LanguageToggle />
           
-          {/* Login Button - Always visible when not logged in */}
+          {/* Login Button - Show when not a customer */}
           {showLoginButton && (
             <Link to="/customer-login">
               <Button size="sm" className="gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold">
