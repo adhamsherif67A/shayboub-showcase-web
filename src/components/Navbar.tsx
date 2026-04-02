@@ -5,6 +5,7 @@ import { LOGO_URL } from "@/data/menu";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -73,6 +74,7 @@ const Navbar = () => {
           <div className="w-px h-5 bg-secondary-foreground/20" />
           
           <LanguageToggle />
+          <ThemeToggle />
           
           {/* Login Button - Show when not a customer */}
           {showLoginButton && (
