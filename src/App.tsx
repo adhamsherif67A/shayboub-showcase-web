@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 import Index from "./pages/Index.tsx";
@@ -35,6 +36,7 @@ const App = () => (
         <PWAInstallPrompt />
         <BrowserRouter>
           <AuthProvider>
+          <FavoritesProvider>
           <Suspense fallback={null}>
             <Routes>
               <Route path="/" element={<Index />} />
@@ -80,6 +82,7 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
+          </FavoritesProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

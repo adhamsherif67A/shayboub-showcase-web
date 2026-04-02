@@ -262,6 +262,106 @@ const ReservationForm = () => {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
+  /* ---------- send WhatsApp confirmation ---------- */
+  
+  const sendWhatsAppConfirmation = (locationLabel: string, orderItems: string[]) => {
+    const message = isRTL
+      ? `☕ *شايبوب كافيه*
+
+شكراً ${formData.name}!
+
+📋 *تفاصيل الحجز:*
+📅 ${formData.date} في ${formatDisplayTime(formData.time)}
+📍 ${locationLabel}
+${formData.serviceType === 'dinein' ? `👥 ${formData.partySize} ضيوف` : ''}
+${orderItems.length > 0 ? `\n🛒 *الطلب:*\n${orderItems.join('\n')}\n💰 الإجمالي: ${cartTotal} ج.م` : ''}
+
+⏳ *الحالة:* في انتظار التأكيد
+سنتواصل معك خلال ساعة للتأكيد.
+
+نتطلع لرؤيتكم! 🎉`
+      : `☕ *Shayboub Café*
+
+Thank you ${formData.name}!
+
+📋 *Your Reservation:*
+📅 ${formData.date} at ${formatDisplayTime(formData.time)}
+📍 ${locationLabel}
+${formData.serviceType === 'dinein' ? `👥 ${formData.partySize} guests` : ''}
+${orderItems.length > 0 ? `\n🛒 *Order:*\n${orderItems.join('\n')}\n💰 Total: ${cartTotal} EGP` : ''}
+
+⏳ *Status:* Pending confirmation
+We'll confirm within 1 hour.
+
+See you soon! 🎉`;
+
+    // Clean phone number and create wa.me link
+    const cleanPhone = formData.phone.replace(/\D/g, '');
+    const phoneWithCountry = cleanPhone.startsWith('0') 
+      ? '2' + cleanPhone 
+      : cleanPhone.startsWith('2') ? cleanPhone : '2' + cleanPhone;
+    
+    const waLink = `https://wa.me/${phoneWithCountry}?text=${encodeURIComponent(message)}`;
+    
+    // Open WhatsApp in new tab
+    window.open(waLink, '_blank');
+  };
+
+  /* ---------- send Email confirmation ---------- */
+  
+  const sendEmailConfirmation = async (locationLabel: string, orderItems: string[]) => {
+    if (!formData.email) return;
+    
+    // Use EmailJS or similar service
+    // For now, we'll use a simple mailto: link as fallback
+    const subject = isRTL 
+      ? `تأكيد الحجز - شايبوب كافيه` 
+      : `Reservation Confirmation - Shayboub Café`;
+    
+    const body = isRTL
+      ? `مرحباً ${formData.name},
+
+شكراً لحجزك في شايبوب كافيه!
+
+تفاصيل الحجز:
+التاريخ: ${formData.date}
+الوقت: ${formatDisplayTime(formData.time)}
+الفرع: ${locationLabel}
+${formData.serviceType === 'dinein' ? `عدد الضيوف: ${formData.partySize}` : ''}
+${orderItems.length > 0 ? `\nالطلب:\n${orderItems.join('\n')}\nالإجمالي: ${cartTotal} ج.م` : ''}
+
+سنتواصل معك للتأكيد.
+
+مع تحيات،
+فريق شايبوب كافيه`
+      : `Hello ${formData.name},
+
+Thank you for your reservation at Shayboub Café!
+
+Reservation Details:
+Date: ${formData.date}
+Time: ${formatDisplayTime(formData.time)}
+Location: ${locationLabel}
+${formData.serviceType === 'dinein' ? `Guests: ${formData.partySize}` : ''}
+${orderItems.length > 0 ? `\nOrder:\n${orderItems.join('\n')}\nTotal: ${cartTotal} EGP` : ''}
+
+We'll contact you to confirm.
+
+Best regards,
+Shayboub Café Team`;
+
+    // For MVP: Use mailto link (works on desktop)
+    // For production: Use EmailJS, SendGrid, or Firebase Functions
+    try {
+      const mailtoLink = `mailto:${formData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      // Don't open mailto, just log for now - will implement EmailJS later
+      console.log('Email would be sent to:', formData.email);
+      console.log('Email link:', mailtoLink);
+    } catch (error) {
+      console.error('Error preparing email:', error);
+    }
+  };
+
   /* ---------- submit ---------- */
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -301,6 +401,16 @@ const ReservationForm = () => {
         // Add customer ID for loyalty points (if logged in)
         ...(isCustomer && user ? { customerId: user.uid } : {}),
       });
+
+      const locationLabel = locationLabels[formData.location] ?? formData.location;
+
+      // Send WhatsApp confirmation
+      sendWhatsAppConfirmation(locationLabel, orderItems);
+      
+      // Send email confirmation if email provided
+      if (formData.email) {
+        sendEmailConfirmation(locationLabel, orderItems);
+      }
 
       setSubmitted(true);
       toast({

@@ -1,11 +1,12 @@
 import { useState, memo, useMemo, useEffect } from "react";
-import { Search, X, Flame, Star, Sparkles, Coffee, IceCream, Sandwich } from "lucide-react";
+import { Search, X, Flame, Star, Sparkles, Coffee, IceCream, Sandwich, Heart } from "lucide-react";
 import { menuData } from "@/data/menu";
 import { useAnimateOnScroll } from "@/hooks/use-animate-on-scroll";
 import { Skeleton } from "@/components/ui/skeleton";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 
 const tagStyles: Record<string, string> = {
   new: "bg-green-600 text-white",
@@ -38,14 +39,23 @@ const defaultTagLabels: Record<string, string> = {
 };
 
 // Memoized menu item component for better rendering performance
-const MenuItemCard = memo(({ item, index, categoryName, tagLabels = defaultTagLabels }: { 
+const MenuItemCard = memo(({ item, index, categoryName, tagLabels = defaultTagLabels, onToggleFavorite, isFavorite }: { 
   item: typeof menuData[0]['items'][0]; 
   index: number; 
   categoryName?: string;
   tagLabels?: Record<string, string>;
+  onToggleFavorite?: (item: typeof menuData[0]['items'][0], categoryName: string) => void;
+  isFavorite?: boolean;
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onToggleFavorite && categoryName) {
+      onToggleFavorite(item, categoryName);
+    }
+  };
 
   return (
     <article
@@ -83,8 +93,20 @@ const MenuItemCard = memo(({ item, index, categoryName, tagLabels = defaultTagLa
             ))}
           </div>
         )}
+        {/* Favorite button */}
+        <button
+          onClick={handleFavoriteClick}
+          className={`absolute top-2 right-2 p-2 rounded-full transition-all duration-200
+            ${isFavorite 
+              ? 'bg-red-500 text-white shadow-lg scale-110' 
+              : 'bg-white/80 text-gray-600 hover:bg-white hover:text-red-500 hover:scale-110'
+            }`}
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+        >
+          <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
+        </button>
         {/* Overlay on hover */}
-        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300" />
+        <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 transition-colors duration-300 pointer-events-none" />
       </div>
       <div className="p-4">
         <h4 className="font-body font-semibold text-foreground text-sm mb-1 group-hover:text-primary transition-colors">
@@ -119,6 +141,23 @@ const MenuSection = () => {
   const [liveMenuData, setLiveMenuData] = useState(menuData);
   const [loadingFirestore, setLoadingFirestore] = useState(true);
   const { t, isRTL } = useLanguage();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+
+  // Toggle favorite handler
+  const handleToggleFavorite = (item: typeof menuData[0]['items'][0], categoryName: string) => {
+    const itemId = `${categoryName}-${item.name}`;
+    if (isFavorite(itemId)) {
+      removeFavorite(itemId);
+    } else {
+      addFavorite({
+        id: itemId,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        category: categoryName
+      });
+    }
+  };
 
   // Filter button options with translations
   const filterOptions = [
@@ -129,6 +168,7 @@ const MenuSection = () => {
     { id: "hot", label: isRTL ? "مشروبات ساخنة" : "Hot Drinks", icon: Coffee },
     { id: "cold", label: isRTL ? "مشروبات باردة" : "Cold Drinks", icon: IceCream },
     { id: "food", label: isRTL ? "طعام" : "Food", icon: Sandwich },
+    { id: "favorites", label: isRTL ? "المفضلة" : "Favorites", icon: Heart },
   ];
 
   // Dietary filter options with translations
@@ -203,6 +243,21 @@ const MenuSection = () => {
     const query = searchQuery.toLowerCase().trim();
     const results: { item: typeof liveMenuData[0]['items'][0]; categoryName: string }[] = [];
 
+    // Special handling for favorites filter
+    if (activeFilter === "favorites") {
+      liveMenuData.forEach((category) => {
+        category.items.forEach((item) => {
+          const itemId = `${category.name}-${item.name}`;
+          if (isFavorite(itemId)) {
+            if (!query || item.name.toLowerCase().includes(query)) {
+              results.push({ item, categoryName: category.name });
+            }
+          }
+        });
+      });
+      return results;
+    }
+
     liveMenuData.forEach((category) => {
       // Category-based filtering
       if (activeFilter === "hot" && !hotDrinkCategories.includes(category.name)) return;
@@ -230,7 +285,7 @@ const MenuSection = () => {
     });
 
     return results;
-  }, [searchQuery, activeFilter, activeDietaryFilter, isSearchMode, liveMenuData]);
+  }, [searchQuery, activeFilter, activeDietaryFilter, isSearchMode, liveMenuData, isFavorite]);
 
   const category = liveMenuData[activeCategory];
 
@@ -383,7 +438,15 @@ const MenuSection = () => {
             {filteredItems && filteredItems.length > 0 && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                 {filteredItems.map(({ item, categoryName }, index) => (
-                  <MenuItemCard key={`${categoryName}-${item.name}`} item={item} index={index} categoryName={categoryName} tagLabels={tagLabels} />
+                  <MenuItemCard 
+                    key={`${categoryName}-${item.name}`} 
+                    item={item} 
+                    index={index} 
+                    categoryName={categoryName} 
+                    tagLabels={tagLabels}
+                    onToggleFavorite={handleToggleFavorite}
+                    isFavorite={isFavorite(`${categoryName}-${item.name}`)}
+                  />
                 ))}
               </div>
             )}
@@ -404,7 +467,15 @@ const MenuSection = () => {
               key={activeCategory}
             >
               {category.items.map((item, index) => (
-                <MenuItemCard key={item.name} item={item} index={index} tagLabels={tagLabels} />
+                <MenuItemCard 
+                  key={item.name} 
+                  item={item} 
+                  index={index} 
+                  categoryName={category.name}
+                  tagLabels={tagLabels}
+                  onToggleFavorite={handleToggleFavorite}
+                  isFavorite={isFavorite(`${category.name}-${item.name}`)}
+                />
               ))}
             </div>
           </>

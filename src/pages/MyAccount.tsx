@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useFavorites } from "@/contexts/FavoritesContext";
 import { db } from "@/lib/firebase";
 import { collection, query, where, getDocs, addDoc, serverTimestamp } from "firebase/firestore";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,7 +23,9 @@ import {
   Copy,
   User,
   MapPin,
-  Users
+  Users,
+  Heart,
+  Trash2
 } from "lucide-react";
 
 interface Reservation {
@@ -53,6 +56,7 @@ interface Voucher {
 const MyAccount = () => {
   const { user, loading: authLoading, refreshCustomerData } = useAuth();
   const { t, language } = useLanguage();
+  const { favorites, removeFavorite, loading: favoritesLoading } = useFavorites();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [reservations, setReservations] = useState<Reservation[]>([]);
@@ -581,6 +585,77 @@ const MyAccount = () => {
                         </p>
                       </div>
                     )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Favorite Items */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Heart className="h-5 w-5 text-red-500" />
+              {isRTL ? "المفضلة" : "Favorite Items"}
+            </CardTitle>
+            <CardDescription>
+              {isRTL ? "العناصر المحفوظة من القائمة" : "Your saved menu items"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {favoritesLoading ? (
+              <div className="text-center py-8 text-muted-foreground">
+                {isRTL ? "جاري التحميل..." : "Loading..."}
+              </div>
+            ) : favorites.length === 0 ? (
+              <div className="text-center py-12">
+                <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-lg font-medium mb-2">
+                  {isRTL ? "لا توجد مفضلات بعد" : "No favorites yet"}
+                </p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  {isRTL 
+                    ? "احفظ العناصر المفضلة لديك من القائمة بالضغط على أيقونة القلب" 
+                    : "Save your favorite items from the menu by tapping the heart icon"}
+                </p>
+                <Button onClick={() => navigate("/#menu")}>
+                  {isRTL ? "استعراض القائمة" : "Browse Menu"}
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {favorites.map((item) => (
+                  <div
+                    key={item.id}
+                    className="border rounded-lg overflow-hidden bg-card hover:shadow-md transition-shadow"
+                  >
+                    <div className="aspect-square overflow-hidden relative">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        onClick={() => {
+                          removeFavorite(item.id);
+                          toast({
+                            title: isRTL ? "تمت الإزالة" : "Removed",
+                            description: isRTL 
+                              ? `تمت إزالة ${item.name} من المفضلة` 
+                              : `${item.name} removed from favorites`,
+                          });
+                        }}
+                        className="absolute top-2 right-2 p-2 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="p-3">
+                      <h4 className="font-medium text-sm">{item.name}</h4>
+                      <p className="text-xs text-muted-foreground">{item.price}</p>
+                      <p className="text-xs text-primary mt-1">{item.category}</p>
+                    </div>
                   </div>
                 ))}
               </div>
