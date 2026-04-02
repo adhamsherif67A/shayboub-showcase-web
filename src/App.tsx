@@ -38,8 +38,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <PWAInstallPrompt />
-        <CookieConsent />
         <BrowserRouter>
+          <CookieConsent />
           <AuthProvider>
           <FavoritesProvider>
           <Suspense fallback={null}>
