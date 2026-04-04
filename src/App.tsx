@@ -24,6 +24,7 @@ import Reservations from "./pages/admin/Reservations.tsx";
 import ReservationCalendar from "./pages/admin/ReservationCalendar.tsx";
 import StaffManagement from "./pages/admin/StaffManagement.tsx";
 import AdminLoyalty from "./pages/admin/Loyalty.tsx";
+import VoucherManagement from "./pages/admin/VoucherManagement.tsx";
 
 // Lazy load legal pages
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy.tsx"));
@@ -75,6 +76,7 @@ const App = () => (
                 <Route path="calendar" element={<ReservationCalendar />} />
                 <Route path="staff" element={<StaffManagement />} />
                 <Route path="loyalty" element={<AdminLoyalty />} />
+                <Route path="vouchers" element={<VoucherManagement />} />
               </Route>
 
               {/* Staff Routes (same layout, limited access) */}
