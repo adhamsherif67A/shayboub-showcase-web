@@ -1,30 +1,57 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Mail, Lock, AlertCircle } from "lucide-react";
+import { Mail, Lock, AlertCircle, LogOut } from "lucide-react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login, user, isAdmin } = useAuth();
+  const { login, logout, user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if already logged in
+  // Only redirect if already logged in as admin/staff
   useEffect(() => {
     if (user && user.role) {
-      // Only redirect admins to admin, everyone else stays on this page or goes home
       if (isAdmin) {
         navigate("/admin", { replace: true });
       } else if (user.role === "staff") {
         navigate("/staff", { replace: true });
-      } else {
-        // Customers shouldn't be using admin login page
-        navigate("/", { replace: true });
       }
+      // If customer, DON'T redirect - show "switch account" option instead
     }
   }, [user, isAdmin, navigate]);
+
+  // If user is logged in but not admin/staff, show switch account option
+  if (user && user.role && user.role !== "admin" && user.role !== "staff") {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center px-4">
+        <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Staff/Admin Login</h2>
+          <p className="text-gray-600 mb-2">You're currently logged in as:</p>
+          <p className="font-semibold text-orange-600 mb-6">{user.email}</p>
+          <p className="text-gray-500 mb-6 text-sm">This is a customer account. To access admin/staff area, please log out and use an admin or staff account.</p>
+          <button
+            onClick={async () => {
+              await logout();
+              window.location.reload();
+            }}
+            className="w-full bg-orange-600 text-white py-3 rounded-xl font-semibold hover:bg-orange-700 transition-colors flex items-center justify-center gap-2"
+          >
+            <LogOut size={20} />
+            Log Out & Switch Account
+          </button>
+          <button
+            onClick={() => navigate("/")}
+            className="mt-4 text-orange-600 hover:text-orange-700 font-medium"
+          >
+            ← Back to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
