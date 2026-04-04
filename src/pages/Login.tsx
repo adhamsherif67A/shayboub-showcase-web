@@ -13,13 +13,15 @@ const Login = () => {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) {
-      const targetPath = isAdmin ? "/admin" : "/staff";
-      const currentPath = window.location.pathname;
-      
-      // Only redirect if we're not already on the target path
-      if (!currentPath.startsWith(targetPath)) {
-        navigate(targetPath, { replace: true });
+    if (user && user.role) {
+      // Only redirect admins to admin, everyone else stays on this page or goes home
+      if (isAdmin) {
+        navigate("/admin", { replace: true });
+      } else if (user.role === "staff") {
+        navigate("/staff", { replace: true });
+      } else {
+        // Customers shouldn't be using admin login page
+        navigate("/", { replace: true });
       }
     }
   }, [user, isAdmin, navigate]);

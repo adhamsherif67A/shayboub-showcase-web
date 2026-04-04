@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface ProtectedRouteProps {
@@ -8,7 +8,8 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
-  const { user, loading, isAdmin, isStaff } = useAuth();
+  const { user, loading, isAdmin, isStaff, isCustomer } = useAuth();
+  const location = useLocation();
 
   // Show loading while auth is initializing
   if (loading) {
@@ -27,28 +28,48 @@ const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
     return <Navigate to={requiredRole ? "/login" : "/customer-login"} replace />;
   }
 
-  // Wait for role to be determined before checking permissions
-  // This prevents redirect loops when role is still loading
-  if (user && !user.role) {
+  // For admin/staff routes, check permissions
+  if (requiredRole === "admin") {
+    if (isAdmin) {
+      return <>{children}</>;
+    }
+    // Not admin - show access denied instead of redirect loop
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-muted-foreground">Checking permissions...</p>
+        <div className="text-center p-8">
+          <h1 className="text-2xl font-bold text-destructive mb-2">Access Denied</h1>
+          <p className="text-muted-foreground mb-4">You don't have admin permissions.</p>
+          <p className="text-sm text-muted-foreground">Logged in as: {user.email}</p>
+          <p className="text-sm text-muted-foreground">Role: {user.role || "unknown"}</p>
+          <a href="/" className="mt-4 inline-block text-primary hover:underline">
+            ← Back to Home
+          </a>
         </div>
       </div>
     );
   }
 
-  // Check role permissions
-  if (requiredRole === "admin" && !isAdmin) {
-    return <Navigate to="/staff" replace />;
+  if (requiredRole === "staff") {
+    if (isStaff) {
+      return <>{children}</>;
+    }
+    // Not staff - show access denied instead of redirect loop
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center p-8">
+          <h1 className="text-2xl font-bold text-destructive mb-2">Access Denied</h1>
+          <p className="text-muted-foreground mb-4">You don't have staff permissions.</p>
+          <p className="text-sm text-muted-foreground">Logged in as: {user.email}</p>
+          <p className="text-sm text-muted-foreground">Role: {user.role || "unknown"}</p>
+          <a href="/" className="mt-4 inline-block text-primary hover:underline">
+            ← Back to Home
+          </a>
+        </div>
+      </div>
+    );
   }
 
-  if (requiredRole === "staff" && !isStaff) {
-    return <Navigate to="/login" replace />;
-  }
-
+  // For customer routes (no requiredRole), just check if logged in
   return <>{children}</>;
 };
 
