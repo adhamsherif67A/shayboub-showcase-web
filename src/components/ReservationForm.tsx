@@ -1,11 +1,12 @@
 import { useState, useMemo, useRef, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { menuData, type MenuItem } from "@/data/menu";
-import { X, Plus, Minus, Search, ShoppingBag, Calendar, Clock, MapPin, Users, User, Phone, Mail, FileText, CheckCircle2 } from "lucide-react";
+import { X, Plus, Minus, Search, ShoppingBag, Calendar, Clock, MapPin, Users, User, Phone, Mail, FileText, CheckCircle2, Ticket, Tag } from "lucide-react";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { validateVoucher, applyVoucher, type Voucher } from "@/services/voucherService";
 
 /** Flying animation item */
 interface FlyingItem {
@@ -38,6 +39,13 @@ const ReservationForm = () => {
   const [sizeModalOpen, setSizeModalOpen] = useState(false);
   const [selectedItemForSize, setSelectedItemForSize] = useState<{categoryName: string, item: MenuItem} | null>(null);
   const [flyingItems, setFlyingItems] = useState<FlyingItem[]>([]);
+  
+  // Voucher state
+  const [voucherCode, setVoucherCode] = useState("");
+  const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
+  const [voucherDiscount, setVoucherDiscount] = useState(0);
+  const [voucherLoading, setVoucherLoading] = useState(false);
+  const [voucherError, setVoucherError] = useState("");
   
   // Refs for fly-to-cart animation
   const cartTargetRef = useRef<HTMLDivElement>(null);
@@ -187,6 +195,56 @@ const ReservationForm = () => {
   };
 
   const cartTotal = calculateCartTotal();
+  const finalTotal = Math.max(0, cartTotal - voucherDiscount);
+
+  /* ---------- voucher validation ---------- */
+  
+  const handleApplyVoucher = async () => {
+    if (!voucherCode.trim()) {
+      setVoucherError(isRTL ? "الرجاء إدخال رمز القسيمة" : "Please enter voucher code");
+      return;
+    }
+
+    setVoucherLoading(true);
+    setVoucherError("");
+
+    try {
+      const validation = await validateVoucher(
+        voucherCode.trim(),
+        cartTotal,
+        user?.uid
+      );
+
+      if (validation.valid && validation.voucher && validation.discount) {
+        setAppliedVoucher(validation.voucher);
+        setVoucherDiscount(validation.discount);
+        toast({
+          title: isRTL ? "✅ تم تطبيق القسيمة!" : "✅ Voucher Applied!",
+          description: isRTL 
+            ? `خصم ${validation.discount} ج.م` 
+            : `Discount: ${validation.discount} EGP`,
+        });
+      } else {
+        setVoucherError(validation.error || (isRTL ? "رمز القسيمة غير صالح" : "Invalid voucher code"));
+        setAppliedVoucher(null);
+        setVoucherDiscount(0);
+      }
+    } catch (error) {
+      console.error("Error validating voucher:", error);
+      setVoucherError(isRTL ? "حدث خطأ أثناء التحقق من القسيمة" : "Error validating voucher");
+      setAppliedVoucher(null);
+      setVoucherDiscount(0);
+    } finally {
+      setVoucherLoading(false);
+    }
+  };
+
+  const handleRemoveVoucher = () => {
+    setAppliedVoucher(null);
+    setVoucherDiscount(0);
+    setVoucherCode("");
+    setVoucherError("");
+  };
 
   /* ---------- location name helper ---------- */
   
@@ -396,11 +454,23 @@ Shayboub Café Team`;
         message: formData.specialRequests || "",
         orderItems: orderItems.length > 0 ? orderItems.join(", ") : "",
         totalAmount: cartTotal,
+        voucherCode: appliedVoucher?.code || null,
+        voucherDiscount: voucherDiscount || 0,
+        finalAmount: finalTotal,
         status: "pending",
         createdAt: serverTimestamp(),
         // Add customer ID for loyalty points (if logged in)
         ...(isCustomer && user ? { customerId: user.uid } : {}),
       });
+
+      // Mark voucher as used
+      if (appliedVoucher && user?.uid) {
+        try {
+          await applyVoucher(appliedVoucher.id!, user.uid);
+        } catch (error) {
+          console.error("Error applying voucher:", error);
+        }
+      }
 
       const locationLabel = locationLabels[formData.location] ?? formData.location;
 
@@ -688,6 +758,79 @@ Shayboub Café Team`;
                     <span className="text-lg font-bold text-primary">{cartTotal.toFixed(2)} EGP</span>
                   </div>
                 </div>
+
+                {/* Voucher Section */}
+                {cart.length > 0 && (
+                  <div className="border border-border rounded-lg p-3 space-y-2">
+                    <div className={`flex items-center gap-2 text-sm font-medium ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <Ticket className="w-4 h-4 text-primary" />
+                      <span>{isRTL ? "هل لديك قسيمة خصم؟" : "Have a voucher code?"}</span>
+                    </div>
+                    
+                    {!appliedVoucher ? (
+                      <div className={`flex gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <input
+                          type="text"
+                          value={voucherCode}
+                          onChange={(e) => setVoucherCode(e.target.value.toUpperCase())}
+                          placeholder={isRTL ? "أدخل الرمز" : "Enter code"}
+                          className={`flex-1 px-3 py-1.5 text-sm border border-input rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-ring ${isRTL ? 'text-right' : ''}`}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyVoucher}
+                          disabled={voucherLoading}
+                          className="px-4 py-1.5 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:opacity-90 disabled:opacity-50"
+                        >
+                          {voucherLoading ? "..." : (isRTL ? "تطبيق" : "Apply")}
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-2">
+                        <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
+                          <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <Tag className="w-4 h-4 text-green-600" />
+                            <div className={isRTL ? 'text-right' : ''}>
+                              <div className="text-xs font-mono font-bold text-green-700 dark:text-green-400">
+                                {appliedVoucher.code}
+                              </div>
+                              <div className="text-xs text-green-600 dark:text-green-500">
+                                {appliedVoucher.description}
+                              </div>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handleRemoveVoucher}
+                            className="text-red-600 hover:text-red-700 p-1"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {voucherError && (
+                      <p className={`text-xs text-red-600 ${isRTL ? 'text-right' : ''}`}>
+                        {voucherError}
+                      </p>
+                    )}
+
+                    {/* Discount & Final Total */}
+                    {voucherDiscount > 0 && (
+                      <div className="space-y-1 pt-2 border-t border-border">
+                        <div className={`flex justify-between items-center text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
+                          <span className="text-muted-foreground">{isRTL ? "الخصم:" : "Discount:"}</span>
+                          <span className="text-green-600 font-semibold">-{voucherDiscount.toFixed(2)} EGP</span>
+                        </div>
+                        <div className={`flex justify-between items-center ${isRTL ? 'flex-row-reverse' : ''}`}>
+                          <span className="text-sm font-bold">{isRTL ? "المجموع النهائي:" : "Final Total:"}</span>
+                          <span className="text-lg font-bold text-primary">{finalTotal.toFixed(2)} EGP</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
@@ -911,6 +1054,23 @@ Shayboub Café Team`;
                         <span className="font-medium text-foreground">{t.reservation.summary.total}</span>
                         <span className="font-bold text-primary">{cartTotal.toFixed(0)} EGP</span>
                       </div>
+                      
+                      {/* Voucher Discount in Summary */}
+                      {appliedVoucher && voucherDiscount > 0 && (
+                        <>
+                          <div className={`flex justify-between text-xs pt-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <span className="text-green-600 flex items-center gap-1">
+                              <Ticket className="w-3 h-3" />
+                              {appliedVoucher.code}
+                            </span>
+                            <span className="text-green-600 font-medium">-{voucherDiscount.toFixed(0)} EGP</span>
+                          </div>
+                          <div className={`flex justify-between text-sm pt-1 border-t border-border/30 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <span className="font-bold text-foreground">{isRTL ? "المجموع النهائي" : "Final Total"}</span>
+                            <span className="font-bold text-primary text-lg">{finalTotal.toFixed(0)} EGP</span>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
