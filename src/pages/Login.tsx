@@ -14,10 +14,12 @@ const Login = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      if (isAdmin) {
-        navigate("/admin");
-      } else {
-        navigate("/staff");
+      const targetPath = isAdmin ? "/admin" : "/staff";
+      const currentPath = window.location.pathname;
+      
+      // Only redirect if we're not already on the target path
+      if (!currentPath.startsWith(targetPath)) {
+        navigate(targetPath, { replace: true });
       }
     }
   }, [user, isAdmin, navigate]);
