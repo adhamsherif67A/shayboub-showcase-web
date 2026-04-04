@@ -855,6 +855,81 @@ export const ar: Translations = {
     exporting: "جاري التصدير...",
   },
 
+  // الأخطاء وصفحة 404
+  errors: {
+    notFoundTitle: "404",
+    notFoundMessage: "عذراً! الصفحة غير موجودة",
+    returnHome: "العودة إلى الرئيسية",
+    accessDenied: "تم رفض الوصول",
+    noPermission: "ليس لديك صلاحية للوصول إلى هذه الصفحة.",
+    loggedInAs: "مسجل الدخول كـ:",
+    yourRole: "الدور:",
+    backToHome: "← العودة إلى الرئيسية",
+  },
+
+  // تثبيت التطبيق
+  pwa: {
+    installTitle: "تثبيت تطبيق شيبوب",
+    addToHomeScreen: "أضفه إلى شاشتك الرئيسية للوصول السريع!",
+    iosStep1: "1. اضغط على زر المشاركة أدناه",
+    iosStep2: "2. اختر \"إضافة إلى الشاشة الرئيسية\"",
+    androidDescription: "ثبته للوصول السريع للحجوزات والقائمة والعروض!",
+    installButton: "تثبيت التطبيق",
+    dismiss: "ليس الآن",
+  },
+
+  // تسجيل دخول المدير
+  adminAuth: {
+    title: "إدارة شيبوب",
+    subtitle: "سجل الدخول لإدارة مقهاك",
+    switchAccountTitle: "تسجيل دخول الموظفين/المدير",
+    currentlyLoggedIn: "أنت مسجل الدخول حالياً كـ:",
+    customerAccountWarning: "هذا حساب عميل. للوصول إلى لوحة التحكم، يرجى تسجيل الخروج واستخدام حساب مدير أو موظف.",
+    logoutAndSwitch: "تسجيل الخروج وتبديل الحساب",
+    emailLabel: "البريد الإلكتروني",
+    passwordLabel: "كلمة المرور",
+    signingIn: "جاري تسجيل الدخول...",
+    signInButton: "تسجيل الدخول",
+    forgotPassword: "نسيت كلمة المرور؟",
+    invalidCredentials: "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+    invalidEmail: "عنوان البريد الإلكتروني غير صحيح",
+    tooManyAttempts: "محاولات كثيرة جداً. يرجى المحاولة لاحقاً.",
+    loginFailed: "فشل تسجيل الدخول. يرجى المحاولة مرة أخرى.",
+  },
+
+  // إدارة القائمة
+  adminMenu: {
+    categories: {
+      hotCoffee: "قهوة ساخنة",
+      coldCoffee: "قهوة باردة",
+      tea: "شاي",
+      juices: "عصائر",
+      smoothies: "سموذي",
+      desserts: "حلويات",
+      sandwiches: "ساندويتشات",
+      mainDishes: "أطباق رئيسية",
+      hotDrinks: "مشروبات ساخنة",
+      coldDrinks: "مشروبات باردة",
+      pastries: "معجنات",
+      breakfast: "فطور",
+    },
+    tags: {
+      new: "جديد",
+      topRated: "الأعلى تقييماً",
+      spicy: "حار",
+      popular: "شائع",
+      vegan: "نباتي",
+      sugarFree: "خالي من السكر",
+    },
+    alerts: {
+      fillRequired: "يرجى ملء جميع الحقول المطلوبة",
+      saveFailed: "فشل في حفظ عنصر القائمة",
+      deleteFailed: "فشل في حذف عنصر القائمة",
+      saveSuccess: "تم حفظ عنصر القائمة بنجاح",
+      deleteSuccess: "تم حذف عنصر القائمة بنجاح",
+    },
+  },
+
   // رسائل واتساب
   whatsapp: {
     bookingReceived: {

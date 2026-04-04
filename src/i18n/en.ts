@@ -862,6 +862,81 @@ export const en = {
     exporting: "Exporting...",
   },
 
+  // Errors & 404 Page
+  errors: {
+    notFoundTitle: "404",
+    notFoundMessage: "Oops! Page not found",
+    returnHome: "Return to Home",
+    accessDenied: "Access Denied",
+    noPermission: "You don't have permission to access this page.",
+    loggedInAs: "Logged in as:",
+    yourRole: "Role:",
+    backToHome: "← Back to Home",
+  },
+
+  // PWA Installation
+  pwa: {
+    installTitle: "Install Shayboub App",
+    addToHomeScreen: "Add to your home screen for quick access!",
+    iosStep1: "1. Tap the Share button below",
+    iosStep2: "2. Select \"Add to Home Screen\"",
+    androidDescription: "Install for quick access to reservations, menu, and offers!",
+    installButton: "Install App",
+    dismiss: "Not now",
+  },
+
+  // Admin Auth (Login Page)
+  adminAuth: {
+    title: "Shayboub Admin",
+    subtitle: "Sign in to manage your café",
+    switchAccountTitle: "Staff/Admin Login",
+    currentlyLoggedIn: "You're currently logged in as:",
+    customerAccountWarning: "This is a customer account. To access admin/staff area, please log out and use an admin or staff account.",
+    logoutAndSwitch: "Log Out & Switch Account",
+    emailLabel: "Email",
+    passwordLabel: "Password",
+    signingIn: "Signing in...",
+    signInButton: "Sign In",
+    forgotPassword: "Forgot password?",
+    invalidCredentials: "Invalid email or password",
+    invalidEmail: "Invalid email address",
+    tooManyAttempts: "Too many failed attempts. Please try again later.",
+    loginFailed: "Failed to login. Please try again.",
+  },
+
+  // Admin Menu Management
+  adminMenu: {
+    categories: {
+      hotCoffee: "Hot Coffee",
+      coldCoffee: "Cold Coffee",
+      tea: "Tea",
+      juices: "Juices",
+      smoothies: "Smoothies",
+      desserts: "Desserts",
+      sandwiches: "Sandwiches",
+      mainDishes: "Main Dishes",
+      hotDrinks: "Hot Drinks",
+      coldDrinks: "Cold Drinks",
+      pastries: "Pastries",
+      breakfast: "Breakfast",
+    },
+    tags: {
+      new: "New",
+      topRated: "Top Rated",
+      spicy: "Spicy",
+      popular: "Popular",
+      vegan: "Vegan",
+      sugarFree: "Sugar Free",
+    },
+    alerts: {
+      fillRequired: "Please fill in all required fields",
+      saveFailed: "Failed to save menu item",
+      deleteFailed: "Failed to delete menu item",
+      saveSuccess: "Menu item saved successfully",
+      deleteSuccess: "Menu item deleted successfully",
+    },
+  },
+
   // WhatsApp Messages
   whatsapp: {
     bookingReceived: {

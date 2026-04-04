@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { Mail, Lock, AlertCircle, LogOut } from "lucide-react";
 
 const Login = () => {
@@ -9,6 +10,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const { login, logout, user, isAdmin } = useAuth();
+  const { t, isRTL } = useLanguage();
   const navigate = useNavigate();
 
   // Only redirect if already logged in as admin/staff
@@ -26,12 +28,12 @@ const Login = () => {
   // If user is logged in but not admin/staff, show switch account option
   if (user && user.role && user.role !== "admin" && user.role !== "staff") {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-100 flex items-center justify-center px-4" dir={isRTL ? "rtl" : "ltr"}>
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Staff/Admin Login</h2>
-          <p className="text-gray-600 mb-2">You're currently logged in as:</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t.adminAuth.switchAccountTitle}</h2>
+          <p className="text-gray-600 mb-2">{t.adminAuth.currentlyLoggedIn}</p>
           <p className="font-semibold text-orange-600 mb-6">{user.email}</p>
-          <p className="text-gray-500 mb-6 text-sm">This is a customer account. To access admin/staff area, please log out and use an admin or staff account.</p>
+          <p className="text-gray-500 mb-6 text-sm">{t.adminAuth.customerAccountWarning}</p>
           <button
             onClick={async () => {
               await logout();
@@ -40,13 +42,13 @@ const Login = () => {
             className="w-full bg-orange-600 text-white py-3 rounded-xl font-semibold hover:bg-orange-700 transition-colors flex items-center justify-center gap-2"
           >
             <LogOut size={20} />
-            Log Out & Switch Account
+            {t.adminAuth.logoutAndSwitch}
           </button>
           <button
             onClick={() => navigate("/")}
             className="mt-4 text-orange-600 hover:text-orange-700 font-medium"
           >
-            ← Back to Home
+            {t.errors.backToHome}
           </button>
         </div>
       </div>
@@ -64,13 +66,13 @@ const Login = () => {
     } catch (err: any) {
       console.error(err);
       if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password") {
-        setError("Invalid email or password");
+        setError(t.adminAuth.invalidCredentials);
       } else if (err.code === "auth/invalid-email") {
-        setError("Invalid email address");
+        setError(t.adminAuth.invalidEmail);
       } else if (err.code === "auth/too-many-requests") {
-        setError("Too many failed attempts. Please try again later.");
+        setError(t.adminAuth.tooManyAttempts);
       } else {
-        setError("Failed to login. Please try again.");
+        setError(t.adminAuth.loginFailed);
       }
     } finally {
       setLoading(false);
@@ -78,7 +80,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-secondary px-4">
+    <div className="min-h-screen flex items-center justify-center bg-secondary px-4" dir={isRTL ? "rtl" : "ltr"}>
       <div className="w-full max-w-md">
         <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
           {/* Logo */}
@@ -91,10 +93,10 @@ const Login = () => {
               />
             </div>
             <h1 className="font-display text-2xl font-bold text-foreground">
-              Shayboub Admin
+              {t.adminAuth.title}
             </h1>
             <p className="text-muted-foreground text-sm mt-1">
-              Sign in to manage your café
+              {t.adminAuth.subtitle}
             </p>
           </div>
 
@@ -110,10 +112,10 @@ const Login = () => {
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                Email
+                {t.adminAuth.emailLabel}
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Mail className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground`} />
                 <input
                   id="email"
                   type="email"
@@ -121,20 +123,20 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@shayboub.com"
                   required
-                  className="w-full pl-11 pr-4 py-3 rounded-lg border border-border bg-background 
+                  className={`w-full ${isRTL ? 'pr-11 pl-4' : 'pl-11 pr-4'} py-3 rounded-lg border border-border bg-background 
                     text-foreground placeholder:text-muted-foreground
                     focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary
-                    transition-all"
+                    transition-all`}
                 />
               </div>
             </div>
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-foreground mb-2">
-                Password
+                {t.adminAuth.passwordLabel}
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Lock className={`absolute ${isRTL ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground`} />
                 <input
                   id="password"
                   type="password"
@@ -142,10 +144,10 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-11 pr-4 py-3 rounded-lg border border-border bg-background 
+                  className={`w-full ${isRTL ? 'pr-11 pl-4' : 'pl-11 pr-4'} py-3 rounded-lg border border-border bg-background 
                     text-foreground placeholder:text-muted-foreground
                     focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary
-                    transition-all"
+                    transition-all`}
                 />
               </div>
             </div>
@@ -161,10 +163,10 @@ const Login = () => {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Signing in...
+                  {t.adminAuth.signingIn}
                 </span>
               ) : (
-                "Sign In"
+                t.adminAuth.signInButton
               )}
             </button>
           </form>
@@ -175,7 +177,7 @@ const Login = () => {
               href="/" 
               className="text-sm text-muted-foreground hover:text-primary transition-colors"
             >
-              ← Back to website
+              {t.errors.backToHome}
             </a>
           </div>
         </div>

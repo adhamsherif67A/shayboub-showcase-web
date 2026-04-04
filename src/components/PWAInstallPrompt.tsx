@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { X, Download, Share, PlusSquare } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const PWAInstallPrompt = () => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
+  const { t, isRTL } = useLanguage();
 
   useEffect(() => {
     // Check if on admin routes - don't show there
@@ -76,17 +78,17 @@ const PWAInstallPrompt = () => {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-50 animate-in slide-in-from-bottom duration-300">
+    <div className={`fixed bottom-4 ${isRTL ? 'right-4 left-4 md:right-4 md:left-auto' : 'left-4 right-4 md:left-auto md:right-4'} md:max-w-sm z-50 animate-in slide-in-from-bottom duration-300`} dir={isRTL ? "rtl" : "ltr"}>
       <div className="bg-card border-2 border-primary/20 rounded-xl shadow-2xl p-4">
         <button
           onClick={handleDismiss}
-          className="absolute top-2 right-2 p-1 rounded-full hover:bg-muted transition-colors"
-          aria-label="Dismiss"
+          className={`absolute top-2 ${isRTL ? 'left-2' : 'right-2'} p-1 rounded-full hover:bg-muted transition-colors`}
+          aria-label={t.pwa.dismiss}
         >
           <X className="w-4 h-4 text-muted-foreground" />
         </button>
         
-        <div className="flex items-start gap-3 pr-6">
+        <div className={`flex items-start gap-3 ${isRTL ? 'pl-6' : 'pr-6'}`}>
           <div className="w-12 h-12 shrink-0 bg-primary/10 rounded-lg flex items-center justify-center">
             <img 
               src="/images/shayboub-logo.png" 
@@ -97,23 +99,23 @@ const PWAInstallPrompt = () => {
           
           <div className="flex-1">
             <h3 className="font-display font-bold text-foreground text-sm mb-1">
-              Install Shayboub App
+              {t.pwa.installTitle}
             </h3>
             
             {isIOS ? (
               // iOS Instructions
               <div>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Add to your home screen for quick access!
+                  {t.pwa.addToHomeScreen}
                 </p>
                 <div className="bg-muted/50 rounded-lg p-3 space-y-2">
                   <div className="flex items-center gap-2 text-xs">
                     <Share className="w-4 h-4 text-primary" />
-                    <span className="text-foreground">1. Tap the <strong>Share</strong> button below</span>
+                    <span className="text-foreground">{t.pwa.iosStep1}</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
                     <PlusSquare className="w-4 h-4 text-primary" />
-                    <span className="text-foreground">2. Select <strong>"Add to Home Screen"</strong></span>
+                    <span className="text-foreground">{t.pwa.iosStep2}</span>
                   </div>
                 </div>
               </div>
@@ -121,14 +123,14 @@ const PWAInstallPrompt = () => {
               // Android/Desktop Install Button
               <div>
                 <p className="text-xs text-muted-foreground mb-3">
-                  Install for quick access to reservations, menu, and offers!
+                  {t.pwa.androidDescription}
                 </p>
                 <button
                   onClick={handleInstall}
                   className="w-full bg-primary text-primary-foreground font-semibold text-sm px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Install App
+                  {t.pwa.installButton}
                 </button>
               </div>
             )}

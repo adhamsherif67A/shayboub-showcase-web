@@ -28,25 +28,27 @@ interface MenuItem {
   tags: string[];
 }
 
-const categories = [
-  "Hot Coffee",
-  "Cold Coffee", 
-  "Tea",
-  "Juices",
-  "Smoothies",
-  "Desserts",
-  "Sandwiches",
-  "Main Dishes"
-];
-
-const tagOptions = [
-  { value: "new", label: "New", icon: Sparkles },
-  { value: "topRated", label: "Top Rated", icon: Star },
-  { value: "spicy", label: "Spicy", icon: Flame },
-];
-
 const MenuManagement = () => {
   const { t, isRTL } = useLanguage();
+  
+  // Get categories with translations
+  const categories = [
+    { value: "Hot Coffee", label: isRTL ? t.adminMenu.categories.hotCoffee : "Hot Coffee" },
+    { value: "Cold Coffee", label: isRTL ? t.adminMenu.categories.coldCoffee : "Cold Coffee" },
+    { value: "Tea", label: isRTL ? t.adminMenu.categories.tea : "Tea" },
+    { value: "Juices", label: isRTL ? t.adminMenu.categories.juices : "Juices" },
+    { value: "Smoothies", label: isRTL ? t.adminMenu.categories.smoothies : "Smoothies" },
+    { value: "Desserts", label: isRTL ? t.adminMenu.categories.desserts : "Desserts" },
+    { value: "Sandwiches", label: isRTL ? t.adminMenu.categories.sandwiches : "Sandwiches" },
+    { value: "Main Dishes", label: isRTL ? t.adminMenu.categories.mainDishes : "Main Dishes" },
+  ];
+
+  const tagOptions = [
+    { value: "new", label: isRTL ? t.adminMenu.tags.new : "New", icon: Sparkles },
+    { value: "topRated", label: isRTL ? t.adminMenu.tags.topRated : "Top Rated", icon: Star },
+    { value: "spicy", label: isRTL ? t.adminMenu.tags.spicy : "Spicy", icon: Flame },
+  ];
+
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -62,7 +64,7 @@ const MenuManagement = () => {
     nameAr: "",
     description: "",
     price: "",
-    category: categories[0],
+    category: "Hot Coffee",
     image: "",
     tags: [] as string[]
   });
@@ -105,7 +107,7 @@ const MenuManagement = () => {
         nameAr: "",
         description: "",
         price: "",
-        category: categories[0],
+        category: "Hot Coffee",
         image: "",
         tags: []
       });
@@ -115,7 +117,7 @@ const MenuManagement = () => {
 
   const handleSave = async () => {
     if (!formData.name || !formData.price || !formData.category) {
-      alert("Please fill in all required fields");
+      alert(t.adminMenu.alerts.fillRequired);
       return;
     }
 
@@ -141,7 +143,7 @@ const MenuManagement = () => {
       setShowModal(false);
     } catch (error) {
       console.error("Error saving menu item:", error);
-      alert("Failed to save menu item");
+      alert(t.adminMenu.alerts.saveFailed);
     } finally {
       setSaving(false);
     }
@@ -154,7 +156,7 @@ const MenuManagement = () => {
       setDeleteConfirm(null);
     } catch (error) {
       console.error("Error deleting menu item:", error);
-      alert("Failed to delete menu item");
+      alert(t.adminMenu.alerts.deleteFailed);
     }
   };
 
@@ -252,7 +254,7 @@ const MenuManagement = () => {
         >
           <option value="">{t.admin.menuManagement.allCategories}</option>
           {categories.map(cat => (
-            <option key={cat} value={cat}>{t.admin.menuManagement.categories[cat as keyof typeof t.admin.menuManagement.categories] || cat}</option>
+            <option key={cat.value} value={cat.value}>{cat.label}</option>
           ))}
         </select>
       </div>
@@ -411,7 +413,7 @@ const MenuManagement = () => {
                     className={`w-full px-4 py-2 rounded-lg border border-border bg-background focus:outline-none focus:ring-2 focus:ring-primary/50 ${isRTL ? 'text-right' : ''}`}
                   >
                     {categories.map(cat => (
-                      <option key={cat} value={cat}>{t.admin.menuManagement.categories[cat as keyof typeof t.admin.menuManagement.categories] || cat}</option>
+                      <option key={cat.value} value={cat.value}>{cat.label}</option>
                     ))}
                   </select>
                 </div>
@@ -434,9 +436,6 @@ const MenuManagement = () => {
                   {tagOptions.map(tag => {
                     const Icon = tag.icon;
                     const isSelected = formData.tags.includes(tag.value);
-                    const tagLabel = tag.value === "new" ? t.admin.menuManagement.new : 
-                                     tag.value === "topRated" ? t.admin.menuManagement.top : 
-                                     t.admin.menuManagement.spicy;
                     return (
                       <button
                         key={tag.value}
@@ -449,7 +448,7 @@ const MenuManagement = () => {
                         }`}
                       >
                         <Icon className="w-4 h-4" />
-                        {tagLabel}
+                        {tag.label}
                       </button>
                     );
                   })}
