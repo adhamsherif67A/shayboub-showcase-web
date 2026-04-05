@@ -52,14 +52,14 @@ const Navbar = () => {
 
   return (
     <nav 
-      className="fixed top-0 left-0 right-0 z-50 bg-secondary/95 backdrop-blur-md border-b border-secondary-foreground/10 shadow-sm"
+      className="fixed top-0 left-0 right-0 z-50 bg-secondary/95 backdrop-blur-md border-b border-secondary-foreground/10 shadow-sm safe-area-top"
       role="navigation"
       aria-label="Main navigation"
     >
-      <div className={`max-w-6xl mx-auto px-6 flex items-center justify-between h-16 ${isRTL ? 'flex-row-reverse' : ''}`}>
-        <Link to="/" className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`} aria-label="Shayboub - Home">
-          <img src={LOGO_URL} alt="" className="h-10 w-10 rounded-lg object-contain" aria-hidden="true" />
-          <span className="font-display text-xl font-bold text-secondary-foreground">
+      <div className={`max-w-6xl mx-auto px-3 sm:px-4 md:px-6 flex items-center justify-between h-14 sm:h-16 ${isRTL ? 'flex-row-reverse' : ''}`}>
+        <Link to="/" className={`flex items-center gap-2 sm:gap-3 ${isRTL ? 'flex-row-reverse' : ''}`} aria-label="Shayboub - Home">
+          <img src={LOGO_URL} alt="" className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg object-contain" aria-hidden="true" />
+          <span className="font-display text-lg sm:text-xl font-bold text-secondary-foreground">
             {isRTL ? 'شيبوب' : 'Shayboub'}
           </span>
         </Link>
@@ -175,7 +175,7 @@ const Navbar = () => {
         {/* Mobile Menu Button */}
         <button 
           onClick={() => setOpen(!open)} 
-          className="md:hidden text-secondary-foreground"
+          className="md:hidden text-secondary-foreground p-2 -mr-2 touch-manipulation"
           aria-expanded={open}
           aria-controls="mobile-menu"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -188,7 +188,7 @@ const Navbar = () => {
       {open && (
         <div 
           id="mobile-menu"
-          className={`md:hidden bg-secondary border-t border-secondary-foreground/10 px-6 py-6 space-y-4 font-body text-sm ${isRTL ? 'text-right' : ''}`}
+          className={`md:hidden bg-secondary border-t border-secondary-foreground/10 px-4 sm:px-6 py-4 sm:py-6 space-y-3 sm:space-y-4 font-body text-sm ${isRTL ? 'text-right' : ''}`}
         >
           <a href="#menu" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary py-2">{t.nav.menu}</a>
           <a href="#reservation" onClick={() => setOpen(false)} className="block text-secondary-foreground/70 hover:text-primary py-2">{t.nav.reservations}</a>
