@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { collection, getDocs, updateDoc, doc, deleteDoc, Timestamp } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, deleteDoc, Timestamp, getDoc, increment, serverTimestamp, addDoc, query, where } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { toast } from "sonner";
 import { 
   Search, 
   Filter,
@@ -21,7 +22,8 @@ import {
   FileSpreadsheet,
   Trash2,
   DollarSign,
-  CalendarDays
+  CalendarDays,
+  Star
 } from "lucide-react";
 import * as XLSX from 'xlsx';
 
@@ -40,6 +42,8 @@ interface Reservation {
   totalAmount?: number;
   status: "pending" | "confirmed" | "cancelled";
   createdAt: any;
+  customerId?: string; // Link to customers collection for loyalty points
+  pointsAwarded?: number; // Track points given
 }
 
 const Reservations = () => {
@@ -100,6 +104,74 @@ const Reservations = () => {
     }
   };
 
+  // Award loyalty points to customer
+  const awardLoyaltyPoints = async (reservation: Reservation): Promise<number> => {
+    // Check if customer has customerId (logged in when booking)
+    if (!reservation.customerId) {
+      console.log("No customerId found - guest booking, no points awarded");
+      return 0;
+    }
+
+    // Check if points already awarded
+    if (reservation.pointsAwarded && reservation.pointsAwarded > 0) {
+      console.log("Points already awarded for this reservation");
+      return 0;
+    }
+
+    try {
+      const customerRef = doc(db, "customers", reservation.customerId);
+      const customerSnap = await getDoc(customerRef);
+
+      if (!customerSnap.exists()) {
+        console.log("Customer document not found:", reservation.customerId);
+        return 0;
+      }
+
+      const customerData = customerSnap.data();
+      const isFirstBooking = (customerData.totalVisits || 0) === 0;
+      
+      // Points calculation
+      const basePoints = 10;
+      const firstBookingBonus = isFirstBooking ? 20 : 0; // 20 bonus for first booking
+      const totalPoints = basePoints + firstBookingBonus;
+
+      // Update customer document
+      await updateDoc(customerRef, {
+        points: increment(totalPoints),
+        totalPointsEarned: increment(totalPoints),
+        totalVisits: increment(1),
+        lastVisit: serverTimestamp(),
+      });
+
+      // Log the points transaction
+      await addDoc(collection(db, "pointsLog"), {
+        customerId: reservation.customerId,
+        customerName: reservation.name,
+        customerEmail: reservation.email || null,
+        reservationId: reservation.id,
+        points: totalPoints,
+        type: "earned",
+        reason: isFirstBooking ? "First booking bonus + Confirmed reservation" : "Confirmed reservation",
+        breakdown: {
+          base: basePoints,
+          firstBookingBonus: firstBookingBonus,
+        },
+        createdAt: serverTimestamp(),
+      });
+
+      // Mark points as awarded on reservation
+      await updateDoc(doc(db, "reservations", reservation.id), {
+        pointsAwarded: totalPoints,
+      });
+
+      console.log(`Awarded ${totalPoints} points to customer ${reservation.customerId}`);
+      return totalPoints;
+    } catch (error) {
+      console.error("Error awarding loyalty points:", error);
+      return 0;
+    }
+  };
+
   const updateStatus = async (id: string, status: Reservation["status"]) => {
     setUpdatingId(id);
     try {
@@ -107,16 +179,44 @@ const Reservations = () => {
       
       const reservation = reservations.find(r => r.id === id);
       if (reservation && status === "confirmed") {
+        // Award loyalty points
+        const pointsAwarded = await awardLoyaltyPoints(reservation);
+        
+        // Show success notification
+        if (pointsAwarded > 0) {
+          toast.success(
+            isRTL 
+              ? `✅ تم التأكيد! تم منح ${pointsAwarded} نقطة لـ ${reservation.name}`
+              : `✅ Confirmed! ${pointsAwarded} points awarded to ${reservation.name}`,
+            { duration: 5000 }
+          );
+        } else if (reservation.customerId) {
+          toast.success(
+            isRTL 
+              ? `✅ تم تأكيد الحجز لـ ${reservation.name}`
+              : `✅ Reservation confirmed for ${reservation.name}`,
+            { duration: 3000 }
+          );
+        } else {
+          toast.success(
+            isRTL 
+              ? `✅ تم التأكيد (حجز ضيف - لا نقاط)`
+              : `✅ Confirmed (Guest booking - no points)`,
+            { duration: 3000 }
+          );
+        }
+
+        // Send SMS
         const smsMessage = `Hi ${reservation.name}! Your reservation at Shayboub Cafe for ${reservation.date} at ${reservation.time} has been confirmed. We look forward to serving you! - Shayboub Team`;
         await sendSMS(reservation.phone, smsMessage);
       }
       
       setReservations(prev => 
-        prev.map(r => r.id === id ? { ...r, status } : r)
+        prev.map(r => r.id === id ? { ...r, status, pointsAwarded: status === "confirmed" ? (reservations.find(res => res.id === id)?.pointsAwarded || 0) : r.pointsAwarded } : r)
       );
     } catch (error) {
       console.error("Error updating reservation:", error);
-      alert("Failed to update reservation status");
+      toast.error(isRTL ? "فشل تحديث الحالة" : "Failed to update status");
     } finally {
       setUpdatingId(null);
     }
@@ -478,7 +578,22 @@ const Reservations = () => {
               <div className="flex flex-col gap-4">
                 {/* Header with name and status */}
                 <div className={`flex items-center justify-between gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                  <h3 className="font-semibold text-foreground text-lg">{reservation.name}</h3>
+                  <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <h3 className="font-semibold text-foreground text-lg">{reservation.name}</h3>
+                    {/* Loyalty Member Badge */}
+                    {reservation.customerId && (
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <Star className="w-3 h-3" />
+                        {isRTL ? "عضو" : "Member"}
+                      </span>
+                    )}
+                    {/* Points Awarded Badge */}
+                    {reservation.pointsAwarded && reservation.pointsAwarded > 0 && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                        +{reservation.pointsAwarded} {isRTL ? "نقطة" : "pts"}
+                      </span>
+                    )}
+                  </div>
                   {getStatusBadge(reservation.status)}
                 </div>
 
