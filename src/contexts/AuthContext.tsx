@@ -137,33 +137,54 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
 
   const loadUserData = async (firebaseUser: User, additionalData?: Partial<CustomerData>) => {
-    // First check if user is admin/staff
-    const usersQuery = query(
-      collection(db, "users"),
-      where("uid", "==", firebaseUser.uid)
-    );
-    const querySnapshot = await getDocs(usersQuery);
-    
-    if (!querySnapshot.empty) {
-      // User is admin or staff
-      const userData = querySnapshot.docs[0].data();
-      setUser({
-        uid: firebaseUser.uid,
-        email: firebaseUser.email,
-        phone: firebaseUser.phoneNumber,
-        role: userData.role as UserRole,
-        name: userData.name || "User",
+    try {
+      // Add timeout to prevent infinite loading
+      const timeoutPromise = new Promise<null>((_, reject) => {
+        setTimeout(() => reject(new Error('Firestore query timeout')), 10000);
       });
-    } else {
-      // User is a customer
-      const customerData = await getOrCreateCustomerData(firebaseUser, additionalData);
+
+      // First check if user is admin/staff
+      const usersQuery = query(
+        collection(db, "users"),
+        where("uid", "==", firebaseUser.uid)
+      );
+      
+      const querySnapshot = await Promise.race([
+        getDocs(usersQuery),
+        timeoutPromise
+      ]) as any;
+      
+      if (querySnapshot && !querySnapshot.empty) {
+        // User is admin or staff
+        const userData = querySnapshot.docs[0].data();
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          phone: firebaseUser.phoneNumber,
+          role: userData.role as UserRole,
+          name: userData.name || "User",
+        });
+      } else {
+        // User is a customer
+        const customerData = await getOrCreateCustomerData(firebaseUser, additionalData);
+        setUser({
+          uid: firebaseUser.uid,
+          email: firebaseUser.email,
+          phone: firebaseUser.phoneNumber,
+          role: "customer",
+          name: customerData?.name || firebaseUser.displayName || "User",
+          customerData: customerData || undefined,
+        });
+      }
+    } catch (error) {
+      console.error("Error loading user data:", error);
+      // Set basic user data even if Firestore fails
       setUser({
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         phone: firebaseUser.phoneNumber,
         role: "customer",
-        name: customerData?.name || firebaseUser.displayName || "User",
-        customerData: customerData || undefined,
+        name: firebaseUser.displayName || "User",
       });
     }
   };
@@ -171,7 +192,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser: User | null) => {
       if (firebaseUser) {
-        await loadUserData(firebaseUser);
+        try {
+          await loadUserData(firebaseUser);
+        } catch (error) {
+          console.error("Auth state change error:", error);
+          // Still set basic user data
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            phone: firebaseUser.phoneNumber,
+            role: "customer",
+            name: firebaseUser.displayName || "User",
+          });
+        }
       } else {
         setUser(null);
       }

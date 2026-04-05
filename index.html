@@ -2,13 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- Allow zooming for accessibility, but prevent auto-zoom on input focus -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     
     <!-- Preconnect to critical origins for faster loading -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://media.alimento.io" crossorigin />
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://identitytoolkit.googleapis.com" crossorigin />
     <link rel="dns-prefetch" href="https://media.alimento.io" />
+    <link rel="dns-prefetch" href="https://firebase.googleapis.com" />
     
     <!-- Preload critical hero image for LCP optimization -->
     <link rel="preload" as="image" href="https://media.alimento.io/business_banner/45/17312570137548139.png" fetchpriority="high" />
@@ -156,7 +160,54 @@
   </head>
 
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Initial loading state for better perceived performance -->
+      <style>
+        #initial-loader {
+          position: fixed;
+          inset: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #faf8f5;
+          z-index: 9999;
+          transition: opacity 0.3s ease;
+        }
+        #initial-loader.fade-out {
+          opacity: 0;
+          pointer-events: none;
+        }
+        .loader-spinner {
+          width: 48px;
+          height: 48px;
+          border: 4px solid #e5e7eb;
+          border-top-color: #ea580c;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      </style>
+      <div id="initial-loader">
+        <div class="loader-spinner"></div>
+      </div>
+      <script>
+        // Remove loader when React mounts
+        window.addEventListener('DOMContentLoaded', function() {
+          var loader = document.getElementById('initial-loader');
+          if (loader) {
+            // Give React a moment to render
+            setTimeout(function() {
+              loader.classList.add('fade-out');
+              setTimeout(function() {
+                loader.remove();
+              }, 300);
+            }, 100);
+          }
+        });
+      </script>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
