@@ -109,15 +109,15 @@ const Navbar = () => {
               
               {/* Dropdown Menu */}
               {userMenuOpen && (
-                <div className={`absolute top-full mt-2 w-64 bg-card rounded-xl shadow-xl border border-border overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ${isRTL ? 'left-0' : 'right-0'}`}>
+                <div className={`absolute top-full mt-2 w-[calc(100vw-2rem)] sm:w-64 max-w-xs bg-card rounded-xl shadow-xl border border-border overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ${isRTL ? 'left-0' : 'right-0'}`}>
                   {/* User Info Header */}
-                  <div className="px-4 py-3 bg-muted/50 border-b border-border">
-                    <p className="font-semibold text-foreground">{userName}</p>
-                    <p className="text-xs text-muted-foreground">{user?.email || user?.phone}</p>
+                  <div className="px-3 sm:px-4 py-3 bg-muted/50 border-b border-border">
+                    <p className="font-semibold text-foreground truncate">{userName}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user?.email || user?.phone}</p>
                   </div>
                   
                   {/* Points Display */}
-                  <div className="px-4 py-3 bg-gradient-to-r from-orange-500/10 to-orange-600/10 border-b border-border">
+                  <div className="px-3 sm:px-4 py-3 bg-gradient-to-r from-orange-500/10 to-orange-600/10 border-b border-border">
                     <div className={`flex items-center justify-between ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <span className="text-sm text-foreground">{isRTL ? 'نقاطك' : 'Your Points'}</span>
                       <span className="flex items-center gap-1 text-orange-500 font-bold">

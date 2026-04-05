@@ -7,28 +7,28 @@ const Footer = () => {
   const { t, isRTL } = useLanguage();
   
   return (
-    <footer className="bg-secondary text-secondary-foreground/60 section-padding !py-12" role="contentinfo">
+    <footer className="bg-secondary text-secondary-foreground/60 px-4 sm:px-6 md:px-12 lg:px-24 py-8 sm:py-12" role="contentinfo">
       <div className="max-w-6xl mx-auto">
-        <div className={`flex flex-col md:flex-row justify-between items-center gap-8 ${isRTL ? 'md:flex-row-reverse' : ''}`}>
-          <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <img src={LOGO_URL} alt="" className="h-12 w-12 rounded-lg object-contain" aria-hidden="true" />
+        <div className={`flex flex-col md:flex-row justify-between items-center gap-6 sm:gap-8 ${isRTL ? 'md:flex-row-reverse' : ''}`}>
+          <div className={`flex items-center gap-3 sm:gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <img src={LOGO_URL} alt="" className="h-10 w-10 sm:h-12 sm:w-12 rounded-lg object-contain" aria-hidden="true" />
             <div className={isRTL ? 'text-right' : ''}>
-              <h3 className="font-display text-2xl font-bold text-primary">
+              <h3 className="font-display text-xl sm:text-2xl font-bold text-primary">
                 {isRTL ? 'شيبوب' : 'Shayboub'}
               </h3>
-              <p className="font-body text-sm text-secondary-foreground/70">{t.footer.tagline}</p>
+              <p className="font-body text-xs sm:text-sm text-secondary-foreground/70">{t.footer.tagline}</p>
             </div>
           </div>
 
-          <nav className={`flex flex-wrap justify-center gap-6 md:gap-8 font-body text-sm ${isRTL ? 'flex-row-reverse' : ''}`} aria-label="Footer navigation">
-            <a href="#menu" className="hover:text-primary transition-colors">{t.footer.links.menu}</a>
-            <a href="#locations" className="hover:text-primary transition-colors">{t.footer.links.locations}</a>
-            <a href="#about" className="hover:text-primary transition-colors">{t.footer.links.about}</a>
+          <nav className={`flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-8 font-body text-sm ${isRTL ? 'flex-row-reverse' : ''}`} aria-label="Footer navigation">
+            <a href="#menu" className="hover:text-primary transition-colors py-1">{t.footer.links.menu}</a>
+            <a href="#locations" className="hover:text-primary transition-colors py-1">{t.footer.links.locations}</a>
+            <a href="#about" className="hover:text-primary transition-colors py-1">{t.footer.links.about}</a>
             <a
               href="https://www.talabat.com/egypt/shayboub-fetar-w-3asha"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-primary transition-colors"
+              className="hover:text-primary transition-colors py-1"
             >
               {t.footer.links.talabat}
             </a>
@@ -39,7 +39,7 @@ const Footer = () => {
               href="https://www.facebook.com/Shayboubeg/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-body text-sm hover:text-primary transition-colors"
+              className="font-body text-sm hover:text-primary transition-colors py-1"
               aria-label="Visit Shayboub on Facebook"
             >
               {t.footer.social.facebook}
@@ -48,7 +48,7 @@ const Footer = () => {
               href="https://www.instagram.com/shayboub.eg/"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-body text-sm hover:text-primary transition-colors"
+              className="font-body text-sm hover:text-primary transition-colors py-1"
               aria-label="Visit Shayboub on Instagram"
             >
               {t.footer.social.instagram}
@@ -57,12 +57,12 @@ const Footer = () => {
         </div>
 
         {/* Legal Links */}
-        <div className={`flex justify-center gap-6 mt-6 font-body text-xs ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <Link to="/privacy" className="hover:text-primary transition-colors">
+        <div className={`flex flex-wrap justify-center gap-3 sm:gap-4 mt-6 font-body text-xs ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <Link to="/privacy" className="hover:text-primary transition-colors py-1">
             {isRTL ? 'سياسة الخصوصية' : 'Privacy Policy'}
           </Link>
           <span className="text-secondary-foreground/30">|</span>
-          <Link to="/terms" className="hover:text-primary transition-colors">
+          <Link to="/terms" className="hover:text-primary transition-colors py-1">
             {isRTL ? 'شروط الخدمة' : 'Terms of Service'}
           </Link>
         </div>

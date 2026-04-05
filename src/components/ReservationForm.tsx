@@ -540,17 +540,17 @@ Shayboub Café Team`;
   const errorCls = `text-destructive text-xs mt-1 ${isRTL ? 'text-right' : ''}`;
 
   return (
-    <section id="reservation" className={`py-20 bg-muted/40 ${isRTL ? 'rtl' : ''}`}>
-      <div className="max-w-2xl mx-auto px-6">
+    <section id="reservation" className={`py-12 sm:py-20 bg-muted/40 ${isRTL ? 'rtl' : ''}`}>
+      <div className="max-w-2xl mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-8 sm:mb-10">
           <span className="inline-block text-primary font-body text-sm tracking-widest uppercase mb-2">
             {t.reservation.header}
           </span>
-          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
             {t.reservation.title}
           </h2>
-          <p className="text-muted-foreground mt-2 max-w-md mx-auto">
+          <p className="text-muted-foreground mt-2 max-w-md mx-auto text-sm sm:text-base">
             {t.reservation.subtitle}
           </p>
         </div>
@@ -558,18 +558,18 @@ Shayboub Café Team`;
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="bg-card rounded-2xl p-6 md:p-10 shadow-lg border border-border space-y-6"
+          className="bg-card rounded-2xl p-4 sm:p-6 md:p-10 shadow-lg border border-border space-y-5 sm:space-y-6"
         >
           {/* Service Type */}
           <fieldset>
             <legend className={`font-body text-sm font-semibold text-foreground mb-3 ${isRTL ? 'text-right w-full' : ''}`}>
               {t.reservation.serviceType.title}
             </legend>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {(["dinein", "pickup"] as const).map((type) => (
                 <label
                   key={type}
-                  className={`flex flex-col items-center gap-1 cursor-pointer rounded-xl border-2 p-4 transition-colors ${
+                  className={`flex flex-col items-center gap-1 cursor-pointer rounded-xl border-2 p-3 sm:p-4 transition-colors min-h-[60px] ${
                     formData.serviceType === type
                       ? "border-primary bg-primary/5"
                       : "border-border hover:border-primary/40"
@@ -680,17 +680,17 @@ Shayboub Café Team`;
               </p>
               
               {/* Benefits */}
-              <div className={`flex flex-wrap items-center justify-center gap-6 mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                <div className={`flex items-center gap-2 text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <div className={`flex flex-wrap items-center justify-center gap-2 sm:gap-4 md:gap-6 mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full"></div>
                   <span className="font-medium">{t.reservation.preOrder.benefits.fresh}</span>
                 </div>
-                <div className={`flex items-center gap-2 text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full"></div>
                   <span className="font-medium">{t.reservation.preOrder.benefits.ready}</span>
                 </div>
-                <div className={`flex items-center gap-2 text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className={`flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-green-700 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-green-500 rounded-full"></div>
                   <span className="font-medium">{t.reservation.preOrder.benefits.efficient}</span>
                 </div>
               </div>
@@ -698,13 +698,13 @@ Shayboub Café Team`;
               <button
                 type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
-                className={`inline-flex items-center gap-3 px-8 py-3 rounded-lg font-semibold text-white transition-all ${
+                className={`inline-flex items-center gap-2 sm:gap-3 px-6 sm:px-8 py-3 rounded-lg font-semibold text-white transition-all text-sm sm:text-base ${
                   menuOpen 
                     ? "bg-red-500 hover:bg-red-600" 
                     : "bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl"
                 } transform hover:scale-105`}
               >
-                <span className="text-sm">
+                <span>
                   {menuOpen ? t.reservation.preOrder.closeMenu : t.reservation.preOrder.addItems}
                 </span>
               </button>
@@ -716,9 +716,9 @@ Shayboub Café Team`;
                 {cart.map((c) => (
                   <div
                     key={`${c.categoryName}-${c.item.name}-${c.selectedSize}`}
-                    className={`flex items-center justify-between bg-background rounded-lg px-3 py-2 border border-border text-sm ${isRTL ? 'flex-row-reverse' : ''}`}
+                    className={`flex items-center justify-between bg-background rounded-lg px-2 sm:px-3 py-2 border border-border text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}
                   >
-                    <span className={`text-foreground font-medium truncate ${isRTL ? 'ml-2' : 'mr-2'}`}>
+                    <span className={`text-foreground font-medium truncate max-w-[50%] sm:max-w-none ${isRTL ? 'ml-2' : 'mr-2'}`}>
                       {c.item.name}
                       {c.selectedSize && (
                         <span className={`text-muted-foreground ${isRTL ? 'mr-1' : 'ml-1'}`}>
@@ -729,23 +729,23 @@ Shayboub Café Team`;
                         <span className={`text-muted-foreground ${isRTL ? 'mr-1' : 'ml-1'}`}>({c.item.price})</span>
                       )}
                     </span>
-                    <div className={`flex items-center gap-2 shrink-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    <div className={`flex items-center gap-1.5 sm:gap-2 shrink-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <button
                         type="button"
                         onClick={() => updateQuantity(c.item.name, c.categoryName, c.selectedSize || 'medium', -1)}
-                        className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors touch-target"
                         aria-label={`${t.reservation.preOrder.decrease} ${c.item.name}`}
                       >
-                        <Minus className="w-3 h-3" />
+                        <Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </button>
-                      <span className="w-5 text-center font-semibold text-foreground">{c.quantity}</span>
+                      <span className="w-6 text-center font-semibold text-foreground">{c.quantity}</span>
                       <button
                         type="button"
                         onClick={() => updateQuantity(c.item.name, c.categoryName, c.selectedSize || 'medium', 1)}
-                        className="w-7 h-7 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors"
+                        className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-border flex items-center justify-center hover:bg-muted transition-colors touch-target"
                         aria-label={`${t.reservation.preOrder.increase} ${c.item.name}`}
                       >
-                        <Plus className="w-3 h-3" />
+                        <Plus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                       </button>
                     </div>
                   </div>
@@ -836,9 +836,9 @@ Shayboub Café Team`;
 
             {/* Menu browser modal-like panel */}
             {menuOpen && (
-              <div className="border border-border rounded-xl bg-background max-h-[400px] overflow-y-auto">
+              <div className="border border-border rounded-xl bg-background max-h-[60vh] sm:max-h-[400px] overflow-y-auto">
                 {/* Search */}
-                <div className="sticky top-0 bg-background border-b border-border p-3 z-10">
+                <div className="sticky top-0 bg-background border-b border-border p-2 sm:p-3 z-10">
                   <div className="relative">
                     <Search className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground ${isRTL ? 'right-3' : 'left-3'}`} />
                     <input
@@ -846,16 +846,16 @@ Shayboub Café Team`;
                       placeholder={t.reservation.preOrder.searchPlaceholder}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className={`w-full py-2 text-sm border border-input rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${isRTL ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3'}`}
+                      className={`w-full py-2.5 text-sm border border-input rounded-lg bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring ${isRTL ? 'pr-9 pl-3 text-right' : 'pl-9 pr-3'}`}
                     />
                   </div>
                 </div>
 
                 {/* Categories & Items */}
-                <div className="p-3 space-y-4">
+                <div className="p-2 sm:p-3 space-y-3 sm:space-y-4">
                   {filteredMenu.map((cat) => (
                     <div key={cat.name}>
-                      <h4 className={`font-display text-sm font-bold text-foreground mb-2 sticky top-[60px] bg-background py-1 ${isRTL ? 'text-right' : ''}`}>
+                      <h4 className={`font-display text-sm font-bold text-foreground mb-2 sticky top-[52px] sm:top-[60px] bg-background py-1 ${isRTL ? 'text-right' : ''}`}>
                         {cat.name}
                       </h4>
                       <div className="space-y-1">
@@ -866,14 +866,14 @@ Shayboub Café Team`;
                               key={`${cat.name}-${item.name}`}
                               className={`flex items-center justify-between py-2 px-2 rounded-lg hover:bg-muted/50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
                             >
-                              <div className={`flex items-center gap-3 min-w-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                              <div className={`flex items-center gap-2 sm:gap-3 min-w-0 ${isRTL ? 'flex-row-reverse' : ''}`}>
                                 <img
                                   src={item.image}
                                   alt={item.name}
-                                  className="w-10 h-10 rounded-lg object-cover shrink-0"
+                                  className="w-11 h-11 sm:w-10 sm:h-10 rounded-lg object-cover shrink-0"
                                   loading="lazy"
-                                  width={40}
-                                  height={40}
+                                  width={44}
+                                  height={44}
                                 />
                                 <div className={`min-w-0 ${isRTL ? 'text-right' : ''}`}>
                                   <p className="text-sm font-medium text-foreground truncate">{item.name}</p>
@@ -885,7 +885,7 @@ Shayboub Café Team`;
                                   <button
                                     type="button"
                                     onClick={() => updateQuantity(item.name, cat.name, -1)}
-                                    className="w-7 h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-colors"
+                                    className="w-8 h-8 sm:w-7 sm:h-7 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 transition-colors touch-target"
                                     aria-label={`${t.reservation.preOrder.decrease} ${item.name}`}
                                   >
                                     <Minus className="w-3 h-3" />

@@ -309,9 +309,9 @@ const MenuSection = () => {
         </p>
 
         {/* Search bar */}
-        <div className={`max-w-md mx-auto mb-6 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className={`max-w-md mx-auto mb-4 sm:mb-6 transition-all duration-700 delay-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="relative">
-            <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground ${isRTL ? 'right-4' : 'left-4'}`} />
+            <Search className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground ${isRTL ? 'right-3 sm:right-4' : 'left-3 sm:left-4'}`} />
             <input
               type="text"
               placeholder={t.menu.searchPlaceholder}
@@ -319,12 +319,12 @@ const MenuSection = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               className={`w-full py-3 rounded-full border border-border bg-card text-foreground 
                 placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 
-                focus:border-primary transition-all duration-300 ${isRTL ? 'pr-12 pl-10 text-right' : 'pl-12 pr-10'}`}
+                focus:border-primary transition-all duration-300 text-base ${isRTL ? 'pr-10 sm:pr-12 pl-8 sm:pl-10 text-right' : 'pl-10 sm:pl-12 pr-8 sm:pr-10'}`}
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className={`absolute top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors ${isRTL ? 'left-4' : 'right-4'}`}
+                className={`absolute top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1 ${isRTL ? 'left-2 sm:left-4' : 'right-2 sm:right-4'}`}
                 aria-label="Clear search"
               >
                 <X className="w-5 h-5" />
@@ -334,7 +334,7 @@ const MenuSection = () => {
         </div>
 
         {/* Filter buttons - Horizontal scroll on mobile */}
-        <div className={`overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 transition-all duration-700 delay-400 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className={`overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 transition-all duration-700 delay-400 scrollbar-hide ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="flex md:flex-wrap md:justify-center gap-2 mb-4 md:mb-6 min-w-max md:min-w-0">
             {filterOptions.map((filter) => {
               const Icon = filter.icon;
@@ -342,8 +342,8 @@ const MenuSection = () => {
                 <button
                   key={filter.id}
                   onClick={() => setActiveFilter(filter.id)}
-                  className={`flex items-center gap-1.5 px-4 py-2.5 md:py-2 rounded-full text-sm font-medium 
-                    transition-all duration-300 hover:scale-105 active:scale-95 min-h-[44px] md:min-h-0 whitespace-nowrap ${
+                  className={`flex items-center gap-1.5 px-3 sm:px-4 py-2.5 rounded-full text-sm font-medium 
+                    transition-all duration-300 hover:scale-105 active:scale-95 min-h-[44px] whitespace-nowrap touch-target ${
                     activeFilter === filter.id
                       ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
                       : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"
@@ -358,15 +358,15 @@ const MenuSection = () => {
         </div>
 
         {/* Dietary Filters - Horizontal scroll on mobile */}
-        <div className={`overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 mb-6 md:mb-8 transition-all duration-700 delay-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+        <div className={`overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 mb-4 sm:mb-6 md:mb-8 transition-all duration-700 delay-500 scrollbar-hide ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
           <div className="flex md:flex-wrap md:justify-center gap-2 min-w-max md:min-w-0">
             <span className={`text-sm text-muted-foreground self-center whitespace-nowrap ${isRTL ? 'ml-2' : 'mr-2'}`}>{t.menu.dietary.title}:</span>
             {dietaryOptions.map((dietary) => (
               <button
                 key={dietary.id}
                 onClick={() => setActiveDietaryFilter(dietary.id === activeDietaryFilter ? "all" : dietary.id)}
-                className={`px-3 py-2.5 md:py-2 rounded-full text-sm font-medium transition-all duration-300
-                  hover:scale-105 active:scale-95 flex items-center gap-2 min-h-[44px] md:min-h-0 whitespace-nowrap ${
+                className={`px-3 py-2.5 rounded-full text-sm font-medium transition-all duration-300
+                  hover:scale-105 active:scale-95 flex items-center gap-2 min-h-[44px] whitespace-nowrap touch-target ${
                   dietary.id === activeDietaryFilter
                     ? "bg-green-500 text-white shadow-lg shadow-green-500/25"
                     : "bg-muted text-muted-foreground hover:bg-green-500/10 hover:text-green-600 border border-border hover:border-green-500/50"
@@ -440,7 +440,7 @@ const MenuSection = () => {
 
             {/* Search results grid */}
             {filteredItems && filteredItems.length > 0 && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
                 {filteredItems.map(({ item, categoryName }, index) => (
                   <MenuItemCard 
                     key={`${categoryName}-${item.name}`} 
@@ -458,13 +458,13 @@ const MenuSection = () => {
         ) : (
           <>
             {/* Category title */}
-            <h3 className={`font-display text-2xl font-semibold text-primary mb-8 animate-fade-in ${isRTL ? 'text-right' : ''}`} key={category.name}>
+            <h3 className={`font-display text-xl sm:text-2xl font-semibold text-primary mb-6 sm:mb-8 animate-fade-in ${isRTL ? 'text-right' : ''}`} key={category.name}>
               {category.name}
             </h3>
 
             {/* Items grid */}
             <div 
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5"
               role="tabpanel"
               id={`menu-panel-${activeCategory}`}
               aria-labelledby={`tab-${activeCategory}`}
@@ -486,14 +486,14 @@ const MenuSection = () => {
         )}
 
         {/* Order CTA */}
-        <div className="text-center mt-12">
+        <div className="text-center mt-8 sm:mt-12">
           <a
             href="https://shaypoub.alimento.io/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block bg-primary text-primary-foreground font-body font-semibold px-8 py-4 rounded-lg 
+            className="inline-block bg-primary text-primary-foreground font-body font-semibold px-6 sm:px-8 py-3 sm:py-4 rounded-lg 
               hover:opacity-90 hover:scale-105 hover:shadow-xl hover:shadow-primary/25 
-              active:scale-95 transition-all duration-300"
+              active:scale-95 transition-all duration-300 text-sm sm:text-base"
           >
             {isRTL ? 'اطلب الآن' : 'Order Online Now'}
           </a>
